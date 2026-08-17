@@ -1,0 +1,144 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container" style="position:relative;">
+  <button class="user-profile-btn" (click)="toggleUserMenu()">      <div class="avatar-circle">{{ currentUser.initials }}</div>
+      <div class="user-info">
+        <span class="user-name">{{ currentUser.name }}</span>
+        <span class="user-role">{{ currentUser.role }}</span>
+      </div>
+    </button>
+
+    <div class="dropdown-menu" [class.show]="userMenuOpen">
+      <div class="dropdown-header">Switch HR Profile</div>
+
+      <div class="dropdown-item" *ngFor="let user of users"
+           [class.active]="user.initials === currentUser.initials"
+           (click)="switchUser(user)">
+        <div class="avatar-circle" style="width:24px;height:24px;font-size:10px;"
+             [style.background]="user.avatarColor || null">{{ user.initials }}</div>
+        <div>
+          <div>{{ user.name }}</div>
+          <div style="font-size:10px;color:var(--text-muted);">{{ user.subtitle }}</div>
+        </div>
+      </div>
+
+      <div class="dropdown-divider"></div>
+
+      <div class="dropdown-item" style="color:var(--danger);" (click)="logout()">
+        🚪 Log out
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="top-bar">
+  <div class="breadcrumb">Administration / Trips / Publish</div>
+</div>
+
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <h1>Configure Trip Publication</h1>
+      <p>Configure the trip, departures, eligibility, capacity, and approval rules before publication.</p>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" (click)="saveDraft()">Save draft</button>
+      <button class="btn btn-warning" (click)="toggleReason('return')">Return</button>
+      <button class="btn btn-danger" (click)="toggleReason('reject')">Reject</button>
+      <button class="btn btn-primary" (click)="publish()">Publish</button>
+    </div>
+  </div>
+
+  <div class="reason-panel" [class.show]="activeReason === 'return'">
+    <label>Reason for returning <span class="req">*</span></label>
+    <textarea class="form-control" rows="3" [(ngModel)]="returnReason" name="returnReason"
+              placeholder="Please type the specific details or changes required…"></textarea>
+    <div class="reason-actions">
+      <button class="btn btn-ghost btn-sm" (click)="toggleReason(null)">Cancel</button>
+      <button class="btn btn-warning btn-sm" (click)="submitReason('Return')">Submit return</button>
+    </div>
+  </div>
+
+  <div class="reason-panel" [class.show]="activeReason === 'reject'">
+    <label>Reason for rejection <span class="req">*</span></label>
+    <textarea class="form-control" rows="3" [(ngModel)]="rejectReason" name="rejectReason"
+              placeholder="Please enter the reason for rejecting this trip…"></textarea>
+    <div class="reason-actions">
+      <button class="btn btn-ghost btn-sm" (click)="toggleReason(null)">Cancel</button>
+      <button class="btn btn-danger btn-sm" (click)="submitReason('Rejection')">Confirm rejection</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Trip Information</div>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1;">
+        <label>Trip title <span class="req">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="tripTitle" name="tripTitle"
+               placeholder="e.g. Steigenberger El Gouna">
+      </div>
+      <div class="form-group">
+        <label>Destination <span class="req">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="destination" name="destination"
+               placeholder="Destination city">
+      </div>
+      <div class="form-group">
+        <label>Duration <span class="req">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="duration" name="duration"
+               placeholder="e.g. 5 days 4 nights">
+      </div>
+      <div class="form-group">
+        <label>Registration opens <span class="req">*</span></label>
+        <input type="datetime-local" class="form-control" [(ngModel)]="registrationOpens" name="registrationOpens">
+      </div>
+      <div class="form-group">
+        <label>Registration closes <span class="req">*</span></label>
+        <input type="datetime-local" class="form-control" [(ngModel)]="registrationCloses" name="registrationCloses">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;border-bottom:none;padding-bottom:0;margin-bottom:12px;">
+      <span>Departures Configuration</span>
+      <button class="btn btn-outline btn-sm" (click)="addDeparture()">+ Add departure</button>
+    </div>
+
+    <div class="departures-box">
+      <div class="form-row" *ngFor="let departure of departures; let i = index" style="align-items:end;">
+        <div class="form-group" style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;font-weight:700;color:var(--primary);">Departure slot #{{ i + 1 }}</span>
+          <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger);" (click)="removeDeparture(i)">Remove</button>
+        </div>
+        <div class="form-group">
+          <label>Start date <span class="req">*</span></label>
+          <input type="date" class="form-control" [(ngModel)]="departure.startDate" [name]="'startDate' + i">
+        </div>
+        <div class="form-group">
+          <label>End date <span class="req">*</span></label>
+          <input type="date" class="form-control" [(ngModel)]="departure.endDate" [name]="'endDate' + i">
+        </div>
+        <div class="form-group">
+          <label>Capacity (travelers) <span class="req">*</span></label>
+          <input type="number" class="form-control" [(ngModel)]="departure.capacity" [name]="'capacity' + i" min="1">
+        </div>
+        <div class="form-group">
+          <label>Bus seats <span class="req">*</span></label>
+          <input type="number" class="form-control" [(ngModel)]="departure.busSeats" [name]="'busSeats' + i" min="0">
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-outline border-dashed btn-sm" (click)="addDeparture()">+ Add departure</button>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="'Request Follow-up - ' + ${request.requestId}">Request Follow-up – Trip System</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="./style.css" />
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e5bb8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Suez Canal Bank
+    </div>
+    <ul class="nav-links">
+      <li><a th:href="@{/employee/services}">Employee Services</a></li>
+      <li><a th:href="@{/employee-dashboard}">Trips</a></li>
+      <li><a th:href="@{/my-requests}" class="active">My requests</a></li>
+      <li><a th:href="@{/tasks}">Tasks</a></li>
+    </ul>
+    <div class="user-badge">
+      <div class="avatar" th:text="${user.initials}">AH</div>
+      <span th:text="${user.role + ' · ' + user.fullName}">Employee · Ahmed Hassan</span>
+    </div>
+  </nav>
+
+  <div class="page-header container" style="max-width:900px;margin:0 auto;padding:28px 24px 12px;">
+    <div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+        <a href="employee-dashboard.html" style="color:var(--accent);text-decoration:none;">← Back to dashboard</a>
+      </p>
+      <h1>Request Follow-up</h1>
+      <p th:text="${request.tripTitle + ' · Departure ' + #temporals.format(request.departureDate, 'dd-MMM-yyyy')}">
+        Steigenberger El Gouna · Departure 26-Jul-2026
+      </p>
+    </div>
+
+    <span class="badge" 
+          th:classappend="${request.status == 'APPROVED' ? 'badge-approved' : (request.status == 'REJECTED' ? 'badge-rejected' : 'badge-pending')}"
+          style="font-size:13px;padding:6px 14px;"
+          th:text="${request.statusDisplay}">
+      Pending – Awaiting Manager
+    </span>
+  </div>
+
+  <div class="container" style="max-width:900px;">
+
+    <div class="card">
+      <div class="card-title">Request Summary</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Request ID</label>
+          <div style="font-weight:600;" th:text="${request.requestId}">TRP-2026-00487</div>
+        </div>
+        <div class="form-group">
+          <label>Submitted on</label>
+          <div style="font-weight:600;" th:text="${#temporals.format(request.submittedAt, 'dd-MMM-yyyy hh:mm a')}">18-Jul-2026 11:24 AM</div>
+        </div>
+        <div class="form-group">
+          <label>Companions</label>
+          <div style="font-weight:600;" th:text="${request.companionCount + ' adults'}">2 adults</div>
+        </div>
+        <div class="form-group">
+          <label>Total amount</label>
+          <div style="font-weight:600;color:var(--primary);" th:text="${#numbers.formatDecimal(request.totalAmount, 1, 'COMMA', 0, 'POINT') + ' EGP'}">9,900 EGP</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Approval Process Timeline</div>
+
+      <div class="timeline">
+        <div th:each="step, iterStat : ${request.timelineSteps}" 
+             class="timeline-item" 
+             th:classappend="${step.completed ? 'done' : (step.current ? 'current' : '')}">
+          
+          <div class="dot" th:text="${step.completed ? '✓' : iterStat.count}">1</div>
+          <div class="tl-title" th:text="${step.title}">Application Submitted</div>
+          
+          <div class="tl-meta" th:utext="${step.metaDescription}">
+            18-Jul-2026 11:24 AM · by Ahmed Hassan (Employee)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:8px;" th:if="${request.status == 'PENDING'}">
+      <form th:action="@{/requests/{id}/cancel(id=${request.id})}" method="post">
+        <button type="submit" class="btn btn-ghost" onclick="return confirm('Are you sure you want to cancel this request?')">Cancel request</button>
+      </form>
+      
+      <form th:action="@{/requests/{id}/remind(id=${request.id})}" method="post">
+        <button type="submit" class="btn btn-outline">Send reminder</button>
+      </form>
+    </div>
+
+  </div>
+
+</body>
+</html>

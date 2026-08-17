@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manager History – Trip System</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e5bb8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Suez Canal Bank
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Employee Services</a></li>
+      <li><a href="employee-dashboard.html">Trips</a></li>
+      <li><a href="my-requests.html">My requests</a></li>
+      <li><a href="#">Tasks</a></li>
+      <li><a href="manager-history.html" class="active">History</a></li>
+      <li><a href="#">Administration</a></li>
+    </ul>
+    <div class="user-badge">
+      <div class="avatar">MS</div>
+      Manager · Mohamed Salah
+    </div>
+  </nav>
+
+  <div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+    <div>
+      <h1>Approval History</h1>
+      <p>Review and action employee trip requests under your authority.</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Pending your action</div>
+        <div class="stat-value" style="color:var(--pending)">4</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Approved (this month)</div>
+        <div class="stat-value" style="color:var(--success)">7</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rejected</div>
+        <div class="stat-value" style="color:var(--danger)">2</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Expired</div>
+        <div class="stat-value" style="color:var(--text-muted)">1</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tabs" id="historyTabs">
+        <button class="tab active" data-tab="pending">Pending <span style="background:var(--pending-bg);color:var(--pending);padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;">4</span></button>
+        <button class="tab" data-tab="approved">Approved</button>
+        <button class="tab" data-tab="rejected">Rejected</button>
+        <button class="tab" data-tab="expired">Expired</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Employee Name</th>
+              <th>Employee ID</th>
+              <th>Trip Name</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Submission Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="pending">
+              <td><strong>TRP-2026-00487</strong></td>
+              <td class="emp-name">Ahmed Hassan</td>
+              <td class="emp-id">EMP-1042</td>
+              <td class="trip-name">Steigenberger El Gouna</td>
+              <td>26-Jul-2026</td>
+              <td>30-Jul-2026</td>
+              <td>18-Jul-2026</td>
+              <td><span class="badge badge-pending">Pending</span></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-success" onclick="actionRow(this,'approved')">Approve</button>
+                <button class="btn btn-sm btn-danger"  onclick="actionRow(this,'rejected')">Reject</button>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><strong>TRP-2026-00491</strong></td>
+              <td class="emp-name">Sara Ali</td>
+              <td class="emp-id">EMP-1088</td>
+              <td class="trip-name">Marsa Alam Resort</td>
+              <td>15-Aug-2026</td>
+              <td>18-Aug-2026</td>
+              <td>20-Jul-2026</td>
+              <td><span class="badge badge-pending">Pending</span></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-success" onclick="actionRow(this,'approved')">Approve</button>
+                <button class="btn btn-sm btn-danger"  onclick="actionRow(this,'rejected')">Reject</button>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><strong>TRP-2026-00495</strong></td>
+              <td class="emp-name">Omar Farouk</td>
+              <td class="emp-id">EMP-1102</td>
+              <td class="trip-name">Steigenberger El Gouna</td>
+              <td>02-Aug-2026</td>
+              <td>06-Aug-2026</td>
+              <td>21-Jul-2026</td>
+              <td><span class="badge badge-pending">Pending</span></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-success" onclick="actionRow(this,'approved')">Approve</button>
+                <button class="btn btn-sm btn-danger"  onclick="actionRow(this,'rejected')">Reject</button>
+              </td>
+            </tr>
+            <tr data-status="pending">
+              <td><strong>TRP-2026-00501</strong></td>
+              <td class="emp-name">Nour El-Din</td>
+              <td class="emp-id">EMP-1154</td>
+              <td class="trip-name">Ain Sokhna Escape</td>
+              <td>05-Sep-2026</td>
+              <td>07-Sep-2026</td>
+              <td>22-Jul-2026</td>
+              <td><span class="badge badge-pending">Pending</span></td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-sm btn-success" onclick="actionRow(this,'approved')">Approve</button>
+                <button class="btn btn-sm btn-danger"  onclick="actionRow(this,'rejected')">Reject</button>
+              </td>
+            </tr>
+
+            <tr data-status="approved" style="display:none;">
+              <td><strong>TRP-2026-00312</strong></td>
+              <td class="emp-name">Ahmed Hassan</td>
+              <td class="emp-id">EMP-1042</td>
+              <td class="trip-name">Ain Sokhna Weekend</td>
+              <td>05-Jun-2026</td>
+              <td>07-Jun-2026</td>
+              <td>01-May-2026</td>
+              <td><span class="badge badge-approved">Approved</span></td>
+              <td><button class="btn btn-sm btn-outline">View</button></td>
+            </tr>
+            <tr data-status="approved" style="display:none;">
+              <td><strong>TRP-2026-00288</strong></td>
+              <td class="emp-name">Sara Ali</td>
+              <td class="emp-id">EMP-1088</td>
+              <td class="trip-name">Sharm El Sheikh</td>
+              <td>12-May-2026</td>
+              <td>16-May-2026</td>
+              <td>20-Apr-2026</td>
+              <td><span class="badge badge-approved">Approved</span></td>
+              <td><button class="btn btn-sm btn-outline">View</button></td>
+            </tr>
+
+            <tr data-status="rejected" style="display:none;">
+              <td><strong>TRP-2026-00245</strong></td>
+              <td class="emp-name">Omar Farouk</td>
+              <td class="emp-id">EMP-1102</td>
+              <td class="trip-name">Sharm El Sheikh</td>
+              <td>10-Apr-2026</td>
+              <td>14-Apr-2026</td>
+              <td>01-Mar-2026</td>
+              <td><span class="badge badge-rejected">Rejected</span></td>
+              <td><button class="btn btn-sm btn-outline">View</button></td>
+            </tr>
+
+            <tr data-status="expired" style="display:none;">
+              <td><strong>TRP-2026-00190</strong></td>
+              <td class="emp-name">Nour El-Din</td>
+              <td class="emp-id">EMP-1154</td>
+              <td class="trip-name">Marsa Alam Resort</td>
+              <td>01-Mar-2026</td>
+              <td>04-Mar-2026</td>
+              <td>10-Feb-2026</td>
+              <td><span class="badge badge-expired">Expired</span></td>
+              <td><button class="btn btn-sm btn-outline">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('#historyTabs .tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#historyTabs .tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.tab;
+        document.querySelectorAll('#historyTable tbody tr').forEach(row => {
+          row.style.display = (row.dataset.status === filter) ? '' : 'none';
+        });
+      });
+    });
+
+    // Handle Approve / Reject Actions
+    function actionRow(btn, newStatus) {
+      const row = btn.closest('tr');
+      const action = newStatus === 'approved' ? 'Approve' : 'Reject';
+      if (!confirm(`${action} this request?`)) return;
+
+      const requestId = row.cells[0].innerText.trim();
+      const empName = row.querySelector('.emp-name').innerText.trim();
+      const empId = row.querySelector('.emp-id').innerText.trim();
+      const tripName = row.querySelector('.trip-name').innerText.trim();
+      const startDate = row.cells[4].innerText.trim();
+      const endDate = row.cells[5].innerText.trim();
+
+      // If approved, store record so it can be added to the Employee Page
+      if (newStatus === 'approved') {
+        const approvedRecord = {
+          requestId,
+          empName,
+          empId,
+          tripName,
+          startDate,
+          endDate,
+          approvalDate: new Date().toISOString().split('T')[0]
+        };
+
+        let currentApproved = JSON.parse(localStorage.getItem('approvedEmployees') || '[]');
+        currentApproved.push(approvedRecord);
+        localStorage.setItem('approvedEmployees', JSON.stringify(currentApproved));
+
+        alert(`Request ${requestId} approved! ${empName} (${empId}) has been added to the employee records.`);
+      }
+
+      // Update UI Status
+      row.dataset.status = newStatus;
+      const badge = row.querySelector('.badge');
+      badge.className = 'badge badge-' + newStatus;
+      badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+
+      // Replace action buttons with View
+      const actionCell = row.querySelector('td:last-child');
+      actionCell.innerHTML = '<button class="btn btn-sm btn-outline">View</button>';
+
+      // Hide row if not matching current tab
+      const activeTab = document.querySelector('#historyTabs .tab.active').dataset.tab;
+      if (activeTab !== newStatus) row.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

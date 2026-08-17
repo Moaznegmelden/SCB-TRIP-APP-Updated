@@ -1,0 +1,98 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container">
+  <button class="user-profile-btn" type="button">
+    <div class="avatar-circle">AH</div>
+    <div class="user-info">
+      <span class="user-name">Employee · Ahmed Hassan</span>
+      <span class="user-role">Employee Portal</span>
+    </div>
+  </button>
+</div>
+</header>
+<div class="top-bar page-shell-nav">
+  <div class="breadcrumb">Portal / My requests</div>
+  <ul class="page-nav-links"><li><a href="#">Employee Services</a></li>
+    <li><a routerLink="/employee-dashboard">Trips</a></li>
+    <li><a routerLink="/my-requests" class="active">My requests</a></li>
+    <li><a href="#">Tasks</a></li></ul>
+</div>
+
+<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+  <div>
+    <h1>My Requests</h1>
+    <p>View, track, and manage all your submitted trip requests and application statuses.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" style="color:var(--pending)">{{ statPending }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved</div>
+      <div class="stat-value" style="color:var(--success)">{{ statApproved }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" style="color:var(--danger)">{{ statRejected }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Submitted</div>
+      <div class="stat-value">{{ statTotal }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Submitted Requests</div>
+
+    <div class="tabs" id="requestTabs">
+      <button class="tab" [class.active]="activeTab === 'all'" (click)="switchTab('all')">All</button>
+      <button class="tab" [class.active]="activeTab === 'pending'" (click)="switchTab('pending')">Pending</button>
+      <button class="tab" [class.active]="activeTab === 'approved'" (click)="switchTab('approved')">Approved</button>
+      <button class="tab" [class.active]="activeTab === 'rejected'" (click)="switchTab('rejected')">Rejected</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="requestsTable">
+        <thead>
+          <tr>
+            <th>Trip</th>
+            <th>Destination</th>
+            <th>Departure</th>
+            <th>Applied On</th>
+            <th>Companions</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let req of filteredRequests">
+            <td><strong>{{ req.tripTitle }}</strong></td>
+            <td>{{ req.destination }}</td>
+            <td>{{ req.departure }}</td>
+            <td>{{ req.appliedOn }}</td>
+            <td>{{ req.companions }}</td>
+            <td><span class="badge" [ngClass]="'badge-' + req.status">{{ req.statusDisplay }}</span></td>
+            <td><a routerLink="/follow-up" class="btn btn-sm btn-outline">View</a></td>
+          </tr>
+          <tr *ngIf="loadError">
+            <td colspan="7">Unable to load requests. Start the backend server.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Dashboard – Trip System</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e5bb8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Suez Canal Bank
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Employee Services</a></li>
+      <li><a href="employee-dashboard.html" class="active">Trips</a></li>
+      <li><a href="myreq.html">My requests</a></li>
+      <li><a href="#">Tasks</a></li>
+    </ul>
+    <div class="user-badge">
+      <div class="avatar">AH</div>
+      Employee · Ahmed Hassan
+    </div>
+  </nav>
+
+  <div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+    <div>
+      <h1>Active Trips Dashboard</h1>
+      <p>Browse available active trips and apply for upcoming departures.</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>Active Trips</span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-muted);">Registration open</span>
+      </div>
+
+      <div class="trip-grid">
+        <a href="trip-details.html?id=gouna" class="trip-card" style="text-decoration:none;color:inherit;">
+          <div class="trip-img">🏖️</div>
+          <div class="trip-body">
+            <h3>Steigenberger El Gouna</h3>
+            <div class="dest">El Gouna · Red Sea</div>
+            <div class="trip-meta">
+              <span>5 days / 4 nights</span>
+              <span>26 – 30 Jul 2026</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="badge badge-active">Open</span>
+              <span style="font-size:13px;color:var(--accent);font-weight:600;">View details →</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:8080/api';
+
+    async function loadTrips() {
+      const container = document.querySelector('.trip-grid');
+      if (!container) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/trips/active`, {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Failed to load trips');
+        const trips = await response.json();
+
+        if (!trips.length) {
+          container.innerHTML = '<div class="card" style="grid-column:1/-1;">No active trips available right now.</div>';
+          return;
+        }
+
+        container.innerHTML = trips.map(trip => `
+          <a href="trip-details.html?id=${trip.tripId}" class="trip-card" style="text-decoration:none;color:inherit;">
+            <div class="trip-img">🏖️</div>
+            <div class="trip-body">
+              <h3>${trip.title}</h3>
+              <div class="dest">${trip.destination}</div>
+              <div class="trip-meta">
+                <span>${trip.durationDays || 'N/A'} days</span>
+                <span>${trip.registrationOpen || 'Open'} → ${trip.registrationClose || 'Open'}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="badge badge-active">Open</span>
+                <span style="font-size:13px;color:var(--accent);font-weight:600;">View details →</span>
+              </div>
+            </div>
+          </a>
+        `).join('');
+      } catch (error) {
+        container.innerHTML = '<div class="card" style="grid-column:1/-1;">Unable to connect to the backend. Start the Spring Boot app on port 8080 and try again.</div>';
+      }
+    }
+
+    loadTrips();
+  </script>
+</body>
+</html>

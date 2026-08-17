@@ -1,0 +1,74 @@
+{
+  "hash": "2189e575",
+  "configHash": "92dd411c",
+  "lockfileHash": "b200e9a2",
+  "browserHash": "73c4f8c8",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "724a8f88",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "03054244",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "b6c9b092",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "d60b5f4b",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "e9060d8d",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "ea594fa7",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "_xhr-chunk-CsaxJH5p": {
+      "file": "_xhr-chunk-CsaxJH5p.js",
+      "isDynamicEntry": false
+    },
+    "common-BhRRuP5I": {
+      "file": "common-BhRRuP5I.js",
+      "isDynamicEntry": false
+    },
+    "core-BOi6uYdK": {
+      "file": "core-BOi6uYdK.js",
+      "isDynamicEntry": false
+    },
+    "createObject-iGUg9A2l": {
+      "file": "createObject-iGUg9A2l.js",
+      "isDynamicEntry": false
+    },
+    "from-DD4CXDOt": {
+      "file": "from-DD4CXDOt.js",
+      "isDynamicEntry": false
+    },
+    "http-B24KhmSH": {
+      "file": "http-B24KhmSH.js",
+      "isDynamicEntry": false
+    },
+    "platform-browser-cog4M41-": {
+      "file": "platform-browser-cog4M41-.js",
+      "isDynamicEntry": false
+    }
+  }
+}

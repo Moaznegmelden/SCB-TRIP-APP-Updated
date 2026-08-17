@@ -1,0 +1,36 @@
+:host { display:block; min-height:100vh; }
+
+/* Internal route index. This is a utility page, not one of the six production mockups. */
+.page-header[style*="max-width:800px"] {
+  width:min(100%,900px) !important;
+  max-width:900px !important;
+  margin:38px auto 0 !important;
+  padding:0 var(--gutter) 14px !important;
+}
+.page-header h1 { font-size:24px; }
+
+.container[style*="max-width:800px"] {
+  width:min(100%,900px) !important;
+  max-width:900px !important;
+}
+
+.page-list { list-style:none; margin:0; padding:0; }
+.page-list li {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+}
+.page-list a { color:var(--primary); font-weight:750; text-decoration:none; }
+.page-list a:hover { text-decoration:underline; }
+.page-list .tag { padding:5px 9px; border-radius:999px; background:var(--info-bg); color:var(--primary); font-size:10px; font-weight:750; }
+.container > .card[style*="margin-top:28px"] { margin-top:22px !important; }
+.container > .card code { font-family:var(--mono); font-size:12px; }
+
+@media (max-width:600px) { .page-list li { align-items:flex-start; flex-direction:column; } }

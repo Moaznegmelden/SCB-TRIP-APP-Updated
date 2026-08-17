@@ -1,0 +1,62 @@
+:host { display:block; min-height:100vh; }
+
+/* Publication controls — same HR administration design language as page 13. */
+.top-bar { max-width:var(--shell); }
+
+.page-header { padding-top:24px; }
+.page-header h1 { font-size:24px; }
+.page-header > div:last-child { display:flex !important; flex-wrap:wrap; gap:8px !important; }
+
+.reason-panel { max-width:var(--shell); margin-left:auto; margin-right:auto; }
+
+.reason-panel textarea { min-height:96px; }
+
+.container > .card { padding:22px; }
+.container > .card .form-row { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.container > .card .form-group[style*="grid-column"] { grid-column:1/-1 !important; }
+
+.container > .card .card-title[style*="border-bottom:none"] {
+  border-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+.departures-box {
+  margin-top:4px;
+  padding:18px;
+  background:#F8FAFD;
+  border:1px dashed #C8D5E5;
+  border-radius:12px;
+}
+.departures-box .form-row { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.departures-box .form-group[style*="grid-column"] { grid-column:1/-1 !important; }
+.departures-box .btn { min-height:36px; }
+
+.dropdown-menu {
+  display:none;
+  position:absolute;
+  right:0;
+  top:calc(100% + 8px);
+  min-width:220px;
+  padding:8px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--shadow-md);
+}
+.dropdown-menu.show { display:block; }
+.dropdown-header { padding:8px 10px; color:var(--text-muted); font-size:10px; font-weight:750; text-transform:uppercase; }
+.dropdown-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:8px; font-size:12px; cursor:pointer; }
+.dropdown-item:hover,
+.dropdown-item.active { background:#F2F6FB; }
+.dropdown-divider { height:1px; margin:6px 0; background:var(--border); }
+
+@media (max-width:900px) {
+  .container > .card .form-row,
+  .departures-box .form-row { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:650px) {
+  .page-header > div:last-child { width:100%; }
+  .page-header > div:last-child .btn { flex:1; }
+  .container > .card .form-row,
+  .departures-box .form-row { grid-template-columns:1fr; }
+}

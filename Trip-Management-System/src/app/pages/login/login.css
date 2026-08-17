@@ -1,0 +1,86 @@
+:host {
+  display:flex;
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  padding:28px 18px;
+}
+
+/* Login is intentionally separate from the authenticated portal shell. */
+.login-container {
+  width:min(100%,430px);
+  margin:0;
+  padding:32px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 14px 38px rgba(7,50,115,.10);
+}
+
+.login-container .top-bar {
+  width:100%;
+  min-height:auto;
+  padding:0;
+  margin:0 0 28px;
+  border:0;
+  background:transparent;
+  flex-direction:row;
+}
+
+.logo-container img { width:185px; height:auto; display:block; }
+.language-switch { display:flex; align-items:center; gap:12px; }
+.language-switch button {
+  width:auto;
+  min-height:auto;
+  padding:4px 0;
+  border:0;
+  border-bottom:2px solid transparent;
+  border-radius:0;
+  background:transparent;
+  color:var(--text-muted);
+  font-size:13px;
+  font-weight:750;
+}
+.language-switch button.active { color:var(--primary); border-bottom-color:var(--primary); }
+.language-switch button:hover { color:var(--primary); background:transparent; }
+
+.login-container h1 {
+  margin:0 0 22px;
+  color:var(--primary-dark);
+  text-align:center;
+  font-size:27px;
+  line-height:1.25;
+  font-weight:800;
+}
+
+.login-container > input {
+  display:block;
+  width:100%;
+  min-height:44px;
+  margin:0 0 13px;
+  padding:10px 13px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fff;
+  color:var(--text);
+  outline:none;
+}
+.login-container > input:focus { border-color:var(--primary); box-shadow:var(--shadow-focus); }
+
+.login-container > button {
+  width:100%;
+  min-height:44px;
+  margin-top:4px;
+  border:1px solid var(--primary);
+  border-radius:8px;
+  background:var(--primary);
+  color:#fff;
+  font-size:14px;
+  font-weight:750;
+}
+.login-container > button:hover { background:var(--primary-dark); }
+
+@media (max-width:520px) {
+  .login-container { padding:26px 22px; }
+  .logo-container img { width:160px; }
+}

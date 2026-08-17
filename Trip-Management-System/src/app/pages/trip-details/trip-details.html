@@ -1,0 +1,128 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container">
+  <button class="user-profile-btn" type="button">
+    <div class="avatar-circle">AH</div>
+    <div class="user-info">
+      <span class="user-name">Employee · Ahmed Hassan</span>
+      <span class="user-role">Employee Portal</span>
+    </div>
+  </button>
+</div>
+</header>
+<div class="top-bar page-shell-nav">
+  <div class="breadcrumb">Portal / Trips</div>
+  <ul class="page-nav-links"><li><a href="#">Employee Services</a></li>
+    <li><a href="employee-dashboard.html" class="active">Trips</a></li>
+    <li><a href="employee-dashboard.html">My requests</a></li>
+    <li><a href="#">Tasks</a></li></ul>
+</div>
+
+<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+  <div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+      <a href="employee-dashboard.html" style="color:var(--accent);text-decoration:none;">← Back to dashboard</a>
+    </p>
+    <h1>{{ tripName }}</h1>
+    <p>{{ tripLocationDuration }}</p>
+  </div>
+<button
+  type="button"
+  class="btn btn-primary"
+  (click)="goToApplication()">
+  Apply for this trip
+</button>
+</div>
+
+<div class="container">
+
+  <div style="height:200px;border-radius:var(--radius);background:linear-gradient(135deg,#1e5bb8,#3b82f6);display:grid;place-items:center;color:#fff;font-size:64px;margin-bottom:20px;">
+    🏖️
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;">
+
+    <div>
+      <div class="card">
+        <div class="card-title">Trip Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Destination</label>
+            <div style="font-size:15px;font-weight:600;">{{ infoDestination }}</div>
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <div style="font-size:15px;font-weight:600;">{{ infoDuration }}</div>
+          </div>
+          <div class="form-group">
+            <label>Registration Opens</label>
+            <div style="font-size:15px;font-weight:600;">{{ infoRegOpen }}</div>
+          </div>
+          <div class="form-group">
+            <label>Registration Closes</label>
+            <div style="font-size:15px;font-weight:600;">{{ infoRegClose }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Departures</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let batch of departures">
+                <td>{{ batch.startDate || 'N/A' }}</td>
+                <td>{{ batch.endDate || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Description &amp; Notes</div>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.7;">
+          {{ description }}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="position:sticky;top:72px;">
+        <div class="card-title">Quick Summary</div>
+        <div style="font-size:14px;line-height:2;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Base price (employee)</span><strong>{{ priceEmployee }}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Companion (adult)</span><strong>{{ priceCompanion }}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Child (2–12 yrs)</span><strong>{{ priceChild }}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Bus seat</span><strong>{{ priceBus }}</strong></div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;" />
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+          Price is calculated on the application form based on your companions and options.
+        </div>
+<button
+  type="button"
+  class="btn btn-primary"
+  style="width:100%;justify-content:center;"
+  (click)="goToApplication()">
+  Apply now
+</button>
+      </div>
+    </div>
+
+  </div>
+</div>

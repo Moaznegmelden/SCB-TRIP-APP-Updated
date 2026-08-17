@@ -1,0 +1,56 @@
+<div class="page-header container" style="max-width:800px;margin:40px auto 0;padding:0 24px;">
+  <div>
+    <h1>Trip System – Employee Track</h1>
+    <p>Front-end pages matching the admin design language (Suez Canal Bank).</p>
+  </div>
+</div>
+
+<div class="container" style="max-width:800px;">
+  <ul class="page-list">
+    <li>
+      <div>
+        <a routerLink="/employee-dashboard">1. Employee Dashboard</a>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">My requests (tabs) + Active trips grid</div>
+      </div>
+      <span class="tag">Employee</span>
+    </li>
+    <li>
+      <div>
+        <a routerLink="/trip-details">2. Trip Details / Select Trip</a>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Full info, departures, pricing summary → Apply</div>
+      </div>
+      <span class="tag">Employee</span>
+    </li>
+    <li>
+      <div>
+        <a routerLink="/application">3. Application + Price Calculator</a>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Companions, options, live calculator with constraints</div>
+      </div>
+      <span class="tag">Employee</span>
+    </li>
+    <li>
+      <div>
+        <a routerLink="/follow-up">4. Follow-up (Process Timeline)</a>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Where the request is, who is waiting for approval</div>
+      </div>
+      <span class="tag">Employee</span>
+    </li>
+    <li>
+      <div>
+        <a routerLink="/manager-history">5. Manager History Dashboard</a>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Pending / Approved / Rejected / Expired + Approve/Reject actions</div>
+      </div>
+      <span class="tag">Manager</span>
+    </li>
+  </ul>
+
+  <div class="card" style="margin-top:28px;">
+    <div class="card-title">Design notes</div>
+    <ul style="font-size:14px;color:var(--text-muted);line-height:1.8;padding-left:18px;">
+      <li>Same color palette, card style, form fields and typography as the admin Create/Publish screens.</li>
+      <li>Shared CSS in <code>./style.css</code> – change tokens once to restyle everything.</li>
+      <li>Price calculator variables are at the top of <code>application.html</code> (easy to replace with API values).</li>
+      <li>All pages are pure HTML/CSS/JS – no build step. Drop into any folder or convert to React/Vue components later.</li>
+    </ul>
+  </div>
+</div>

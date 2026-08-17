@@ -1,0 +1,208 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container">
+  <button class="user-profile-btn" type="button">
+    <div class="avatar-circle">AH</div>
+    <div class="user-info">
+      <span class="user-name">Employee · Ahmed Hassan</span>
+      <span class="user-role">Employee Portal</span>
+    </div>
+  </button>
+</div>
+</header>
+
+<div class="top-bar">
+  <div class="breadcrumb">Portal / Trips / Apply</div>
+  <ul class="page-nav-links">
+    <li><a href="#">Employee Services</a></li>
+    <li><a routerLink="/employee-dashboard" class="active">Trips</a></li>
+    <li><a routerLink="/employee-dashboard">My requests</a></li>
+    <li><a href="#">Tasks</a></li>
+  </ul>
+</div>
+
+<div class="page-header container">
+  <div>
+    <h1>Apply for Trip</h1>
+    <p>Steigenberger El Gouna · Configure companions, options and review the price.</p>
+  </div>
+  <a routerLink="/trip-details" class="btn btn-outline btn-sm">← Back to trip details</a>
+</div>
+
+<div class="container">
+  <form id="applicationForm" (ngSubmit)="onSubmit()">
+
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;">
+
+      <!-- Left: Form -->
+      <div>
+        <!-- Departure selection -->
+        <div class="card">
+          <div class="card-title">Departure Slot *</div>
+          <div class="form-row">
+            <div class="form-group" style="grid-column:1/-1;">
+              <label>Select departure <span class="req">*</span></label>
+              <select class="form-control" id="departure" name="departure" required [(ngModel)]="departure">
+                <option value="">Select departure…</option>
+                <option value="1" data-base="2800">#1 · 26-Jul-2026 → 30-Jul-2026 (42 seats left)</option>
+                <option value="2" data-base="2800">#2 · 02-Aug-2026 → 06-Aug-2026 (55 seats left)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Companions -->
+        <div class="card">
+          <div class="card-title">Companions</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">
+            Max 3 companions · Allowed family degrees: 1st &amp; 2nd degree only.
+          </p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Adult companions (12+ yrs)</label>
+              <input type="number" class="form-control" id="adults" name="adults" min="0" max="3"
+                     [(ngModel)]="adults" (ngModelChange)="onAdultsChange()" />
+            </div>
+            <div class="form-group">
+              <label>Children (2–12 yrs)</label>
+              <input type="number" class="form-control" id="children" name="children" min="0" max="3"
+                     [(ngModel)]="children" (ngModelChange)="onChildrenChange()" />
+            </div>
+            <div class="form-group">
+              <label>Infants (&lt; 2 yrs – free)</label>
+              <input type="number" class="form-control" id="infants" name="infants" min="0" max="2"
+                     [(ngModel)]="infants" />
+            </div>
+          </div>
+
+          <div id="companionDetails" style="margin-top:12px;">
+            <div class="form-row" style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;"
+                 *ngFor="let companion of adultCompanions; let i = index">
+              <div class="form-group">
+                <label>Adult {{ i + 1 }} – Full name *</label>
+                <input type="text" class="form-control" required placeholder="Full name"
+                       name="adultName{{ i }}" [(ngModel)]="companion.name" />
+              </div>
+              <div class="form-group">
+                <label>Relation *</label>
+                <select class="form-control" required name="adultRelation{{ i }}" [(ngModel)]="companion.relation">
+                  <option value="">Select…</option>
+                  <option>Spouse</option>
+                  <option>Parent</option>
+                  <option>Sibling</option>
+                  <option>Child (adult)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>National ID *</label>
+                <input type="text" class="form-control" required placeholder="14 digits"
+                       name="adultNationalId{{ i }}" [(ngModel)]="companion.nationalId" />
+              </div>
+            </div>
+
+            <div class="form-row" style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;"
+                 *ngFor="let companion of childCompanions; let i = index">
+              <div class="form-group">
+                <label>Child {{ i + 1 }} – Full name *</label>
+                <input type="text" class="form-control" required placeholder="Full name"
+                       name="childName{{ i }}" [(ngModel)]="companion.name" />
+              </div>
+              <div class="form-group">
+                <label>Date of birth *</label>
+                <input type="date" class="form-control" required
+                       name="childDob{{ i }}" [(ngModel)]="companion.dob" />
+              </div>
+              <div class="form-group">
+                <label>National ID / Birth cert *</label>
+                <input type="text" class="form-control" required
+                       name="childNationalId{{ i }}" [(ngModel)]="companion.nationalId" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="card">
+          <div class="card-title">Options</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="busSeat" name="busSeat" [(ngModel)]="busSeat" style="margin-right:8px;" />
+                Include bus transportation (Cairo ↔ El Gouna)
+              </label>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="extraActivity" name="extraActivity" [(ngModel)]="extraActivity" style="margin-right:8px;" />
+                Extra water activity (+450 EGP)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card">
+          <div class="card-title">Additional Notes (optional)</div>
+          <textarea class="form-control" id="notes" name="notes" rows="3"
+                    placeholder="Any special requests or medical notes…" [(ngModel)]="notes"></textarea>
+        </div>
+      </div>
+
+      <!-- Right: Price Calculator (sticky) -->
+      <div>
+        <div class="calc-box" style="position:sticky;top:72px;">
+          <h4>💰 Price Calculator</h4>
+
+          <div class="calc-row">
+            <span>Employee (base)</span>
+            <span id="lineEmployee">{{ format(PRICE.employee) }}</span>
+          </div>
+          <div class="calc-row">
+            <span>Adult companions × <span id="lblAdults">{{ adults }}</span></span>
+            <span id="lineAdults">{{ format(adultsCost) }}</span>
+          </div>
+          <div class="calc-row">
+            <span>Children × <span id="lblChildren">{{ children }}</span></span>
+            <span id="lineChildren">{{ format(childrenCost) }}</span>
+          </div>
+          <div class="calc-row">
+            <span>Infants × <span id="lblInfants">{{ infants }}</span></span>
+            <span>0 EGP</span>
+          </div>
+          <div class="calc-row">
+            <span>Bus seats × <span id="lblBus">{{ busPersons }}</span></span>
+            <span id="lineBus">{{ format(busCost) }}</span>
+          </div>
+          <div class="calc-row">
+            <span>Extra activity</span>
+            <span id="lineActivity">{{ format(activityCost) }}</span>
+          </div>
+
+          <div class="calc-row total">
+            <span>Total</span>
+            <span id="lineTotal">{{ format(total) }}</span>
+          </div>
+
+          <p style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.5;">
+            Constraints: total companions ≤ 3 · infants free · bus charged per person (employee + adults + children).
+            Price is deducted from salary or paid at finance desk after approval.
+          </p>
+
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;" [disabled]="submitting">
+            {{ submitting ? 'Submitting…' : 'Submit for approval' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>

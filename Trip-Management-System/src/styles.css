@@ -1,0 +1,1622 @@
+/* =========================================================
+   GLOBAL DESIGN TOKENS
+   Shared across the entire application
+   ========================================================= */
+
+:root {
+  --primary: #003399;
+  --primary-dark: #002266;
+  --primary-light: #2b5a9e;
+
+  --accent: #003399;
+  --accent-hover: #002266;
+
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+
+  --border: #e2e8f0;
+  --border-focus: #1e5bb8;
+
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+
+  --info: #2563eb;
+  --info-bg: #dbeafe;
+
+  --pending: #7c3aed;
+  --pending-bg: #ede9fe;
+
+  /* SCB-specific aliases */
+  --scb-blue: #003399;
+  --scb-dark-blue: #002266;
+  --scb-light-blue: #e6ecf5;
+  --scb-bg: #f8f9fa;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+
+  --shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+
+  --shadow-md:
+    0 4px 12px rgba(0, 0, 0, 0.08);
+
+  --font:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   GLOBAL BODY
+   ========================================================= */
+
+html {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SHARED SCB BRAND HEADER
+   ========================================================= */
+
+/*
+   This is the main branded header used throughout
+   the application.
+
+   Layout:
+
+   [ SCB LOGO + NAME ]  ───────── BLUE LINE ─────────  [ USER ]
+*/
+
+.brand-header {
+  width: 100%;
+  min-height: 78px;
+
+  display: flex;
+  align-items: center;
+
+  background: #ffffff;
+
+  padding: 12px 40px;
+
+  border-bottom: 1px solid #e0e4ec;
+
+  gap: 22px;
+}
+
+
+/* =========================================================
+   SCB LOGO
+   ========================================================= */
+
+.scb-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  flex-shrink: 0;
+}
+
+
+/* Blue wave logo */
+
+.scb-logo-waves {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  width: 88px;
+  height: 48px;
+
+  flex-shrink: 0;
+}
+
+
+/* Individual waves */
+
+.scb-wave {
+  width: 25px;
+  height: 42px;
+
+  background-color: var(--scb-blue);
+
+  border-radius: 16px 4px 16px 4px;
+
+  transform: skewX(-12deg);
+}
+
+.scb-wave:nth-child(2) {
+  height: 46px;
+}
+
+.scb-wave:nth-child(3) {
+  height: 42px;
+}
+
+
+/* Suez Canal Bank text */
+
+.scb-logo-text {
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+
+  font-weight: 700;
+  font-size: 21px;
+
+  line-height: 1.05;
+
+  color: #4b5563;
+
+  letter-spacing: -0.3px;
+
+  white-space: nowrap;
+}
+
+
+/*
+   Wide blue line beside the logo.
+
+   This uses the existing HTML structure so you do NOT
+   need to add another element to your pages.
+*/
+
+.brand-header::after {
+  content: "";
+
+  display: block;
+
+  width: 470px;
+  height: 14px;
+
+  background: var(--scb-blue);
+
+  margin-left: 10px;
+
+  flex-shrink: 1;
+}
+
+
+/* =========================================================
+   USER PROFILE AREA
+   ========================================================= */
+
+.user-dropdown-container {
+  position: relative;
+
+  margin-left: auto;
+
+  flex-shrink: 0;
+}
+
+
+/* User profile button */
+
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 5px 10px 5px 5px;
+
+  background: #f1f5f9;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 24px;
+
+  cursor: pointer;
+
+  color: var(--text);
+
+  font-family: inherit;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.user-profile-btn:hover {
+  background: #e8eef6;
+  border-color: #d5deea;
+}
+
+
+/* User avatar */
+
+.avatar-circle {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--scb-blue);
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+
+/* User information */
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: 700;
+
+  color: var(--text);
+}
+
+.user-role {
+  font-size: 10px;
+
+  color: var(--text-muted);
+
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   USER DROPDOWN
+   ========================================================= */
+
+.dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 8px);
+  right: 0;
+
+  width: 260px;
+
+  background: #ffffff;
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  box-shadow: var(--shadow-md);
+
+  padding: 6px;
+
+  z-index: 1000;
+
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+
+.dropdown-header {
+  padding: 10px 12px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  color: var(--text-muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+}
+
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  padding: 9px 10px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  color: var(--text);
+
+  font-size: 13px;
+
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background: #f1f5f9;
+}
+
+
+.dropdown-divider {
+  height: 1px;
+
+  background: var(--border);
+
+  margin: 5px 0;
+}
+
+
+/* =========================================================
+   LEGACY / EMPLOYEE TOP NAVIGATION
+   Kept because some existing pages still use it.
+   ========================================================= */
+
+.top-nav {
+  display: grid;
+
+  grid-template-columns: auto 1fr auto;
+
+  align-items: center;
+
+  gap: 24px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e0e4ec;
+
+  padding: 10px 24px;
+}
+
+
+.top-nav .logo {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  font-weight: 800;
+  font-size: 16px;
+
+  color: #2b3674;
+
+  white-space: nowrap;
+}
+
+
+/* Navigation links */
+
+.nav-links {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 4px;
+
+  list-style: none;
+
+  padding: 4px;
+
+  background: #f1f4f9;
+
+  border-radius: 24px;
+
+  justify-self: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  padding: 7px 16px;
+
+  border-radius: 20px;
+
+  white-space: nowrap;
+
+  transition: all 0.15s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--accent);
+
+  color: #ffffff;
+}
+
+
+/* User badge used by older employee header */
+
+.user-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  background: #eff6ff;
+
+  border-radius: 24px;
+
+  padding: 4px 14px 4px 4px;
+
+  font-size: 13px;
+
+  color: var(--primary);
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.user-badge .avatar {
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  color: #ffffff;
+
+  display: grid;
+
+  place-items: center;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   TOP BAR / BREADCRUMB
+   ========================================================= */
+
+.top-bar {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 10px 24px;
+
+  background: var(--bg);
+
+  border-bottom: 2px solid var(--primary);
+}
+
+
+.breadcrumb {
+  font-size: 12px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+
+  color: var(--primary);
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION LINKS
+   ========================================================= */
+
+.page-nav-links {
+  display: flex;
+
+  gap: 4px;
+
+  list-style: none;
+
+  padding: 4px;
+
+  background: #f1f4f9;
+
+  border-radius: 24px;
+}
+
+.page-nav-links a {
+  text-decoration: none;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  padding: 6px 14px;
+
+  border-radius: 20px;
+
+  white-space: nowrap;
+
+  transition: all 0.15s ease;
+}
+
+.page-nav-links a:hover,
+.page-nav-links a.active {
+  color: #ffffff;
+
+  background: var(--accent);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 24px;
+}
+
+.page-header h1 {
+  font-size: 20px;
+
+  font-weight: 700;
+
+  color: var(--primary);
+
+  letter-spacing: -0.2px;
+}
+
+.page-header p {
+  font-size: 13px;
+
+  color: var(--text-muted);
+
+  margin-top: 4px;
+}
+
+
+/* =========================================================
+   PAGE TITLE / SECTION TITLE
+   ========================================================= */
+
+.page-title {
+  color: var(--scb-blue);
+
+  font-weight: 700;
+}
+
+.section-title {
+  color: var(--scb-blue);
+
+  font-weight: 700;
+
+  border-bottom: 2px solid #edf1f7;
+
+  padding-bottom: 10px;
+
+  margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   CONTAINER / MAIN LAYOUT
+   ========================================================= */
+
+.container {
+  width: 100%;
+
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding: 0 24px 40px;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+  background: var(--card-bg);
+
+  border: 1px solid #e6e9ef;
+
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+
+  padding: 24px;
+
+  margin-bottom: 20px;
+}
+
+
+.card-title {
+  font-size: 17px;
+
+  font-weight: 700;
+
+  color: var(--primary);
+
+  margin-bottom: 18px;
+
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.card-header {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 9px 18px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  border: none;
+
+  cursor: pointer;
+
+  transition: all 0.15s ease;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  font-family: inherit;
+}
+
+
+.btn-primary {
+  background: var(--accent);
+
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+
+  color: #ffffff;
+}
+
+
+.btn-outline {
+  background: #ffffff;
+
+  color: var(--accent);
+
+  border: 1.5px solid var(--accent);
+}
+
+.btn-outline:hover {
+  background: #eff6ff;
+
+  color: var(--accent);
+}
+
+
+.btn-success {
+  background: var(--success);
+
+  color: #ffffff;
+}
+
+.btn-danger {
+  background: var(--danger);
+
+  color: #ffffff;
+}
+
+.btn-warning {
+  background: #f59e0b;
+
+  color: #ffffff;
+}
+
+
+.btn-ghost {
+  background: transparent;
+
+  color: var(--text-muted);
+
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  background: #f1f5f9;
+}
+
+
+.btn-sm {
+  padding: 6px 12px;
+
+  font-size: 13px;
+}
+
+
+/* SCB button variants */
+
+.btn-scb-primary {
+  background-color: var(--scb-blue);
+
+  color: #ffffff;
+
+  font-weight: 600;
+}
+
+.btn-scb-primary:hover {
+  background-color: var(--scb-dark-blue);
+
+  color: #ffffff;
+}
+
+
+.btn-scb-outline {
+  background: #ffffff;
+
+  border: 1.5px solid var(--scb-blue);
+
+  color: var(--scb-blue);
+
+  font-weight: 600;
+}
+
+.btn-scb-outline:hover {
+  background-color: var(--scb-light-blue);
+
+  color: var(--scb-blue);
+}
+
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+.form-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(200px, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+
+.form-group label,
+.form-label {
+  display: block;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+
+  margin-bottom: 6px;
+}
+
+
+.form-label {
+  font-size: 11px;
+
+  font-weight: 700;
+
+  color: #6c757d;
+}
+
+
+.form-group label .req,
+.req {
+  color: var(--danger);
+}
+
+
+.form-control {
+  width: 100%;
+
+  padding: 10px 14px;
+
+  border: 1.5px solid var(--border);
+
+  border-radius: var(--radius-sm);
+
+  font-size: 14px;
+
+  color: var(--text);
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  font-family: inherit;
+}
+
+
+.form-control:focus {
+  outline: none;
+
+  border-color: var(--border-focus);
+
+  box-shadow:
+    0 0 0 3px rgba(30, 91, 184, 0.12);
+}
+
+
+.form-control::placeholder {
+  color: var(--text-light);
+}
+
+
+select.form-control {
+  appearance: none;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+
+  background-position: right 12px center;
+
+  padding-right: 32px;
+}
+
+
+/* Bootstrap-style form select support */
+
+.form-select:focus {
+  border-color: var(--scb-blue);
+
+  box-shadow:
+    0 0 0 0.2rem rgba(0, 51, 153, 0.15);
+}
+
+
+textarea.form-control {
+  resize: vertical;
+
+  min-height: 140px;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.3px;
+}
+
+
+.badge-approved {
+  background: var(--success-bg);
+
+  color: var(--success);
+}
+
+.badge-pending {
+  background: var(--pending-bg);
+
+  color: var(--pending);
+}
+
+.badge-rejected {
+  background: var(--danger-bg);
+
+  color: var(--danger);
+}
+
+.badge-expired {
+  background: #f1f5f9;
+
+  color: var(--text-muted);
+}
+
+.badge-active {
+  background: var(--info-bg);
+
+  color: var(--info);
+}
+
+
+/* Generic status badge */
+
+.status-badge {
+  font-size: 14px;
+
+  padding: 8px 18px;
+
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tabs {
+  display: flex;
+
+  gap: 0;
+
+  border-bottom: 2px solid var(--border);
+
+  margin-bottom: 20px;
+}
+
+
+.tab {
+  padding: 10px 20px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+  background: none;
+
+  border: none;
+
+  border-bottom: 2px solid transparent;
+
+  margin-bottom: -2px;
+
+  cursor: pointer;
+
+  transition: all 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--accent);
+}
+
+.tab.active {
+  color: var(--accent);
+
+  border-bottom-color: var(--accent);
+}
+
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 14px;
+}
+
+
+th {
+  text-align: left;
+
+  padding: 10px 14px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+
+  border-bottom: 1px solid var(--border);
+
+  background: #f8fafc;
+}
+
+
+td {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid var(--border);
+
+  vertical-align: middle;
+}
+
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: #f8fafc;
+}
+
+
+/* Bootstrap table support */
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: #f4f6fb;
+
+  color: var(--scb-blue);
+
+  font-size: 12px;
+
+  text-transform: uppercase;
+
+  font-weight: 700;
+
+  vertical-align: middle;
+}
+
+.table tbody td {
+  vertical-align: middle;
+}
+
+
+/* =========================================================
+   COMMON STAT CARDS
+   These are reusable UI elements, not dashboard layout.
+   ========================================================= */
+
+.stats-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(160px, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 24px;
+}
+
+
+.stat-card {
+  background: #ffffff;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 16px 18px;
+
+  box-shadow: var(--shadow);
+}
+
+
+.stat-card .stat-label {
+  font-size: 12px;
+
+  color: var(--text-muted);
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+}
+
+
+.stat-card .stat-value {
+  font-size: 26px;
+
+  font-weight: 700;
+
+  color: var(--primary);
+
+  margin-top: 4px;
+}
+
+
+/* =========================================================
+   COMMON EMPTY STATE
+   ========================================================= */
+
+.empty {
+  text-align: center;
+
+  padding: 48px 20px;
+
+  color: var(--text-muted);
+}
+
+.empty svg {
+  margin-bottom: 12px;
+
+  opacity: 0.4;
+}
+
+
+/* =========================================================
+   COMMON APPROVAL / INFORMATION STYLES
+   ========================================================= */
+
+.approval-summary h3 {
+  color: var(--scb-blue);
+
+  font-weight: 700;
+
+  margin-bottom: 0;
+}
+
+
+.approval-summary h6 {
+  color: #6c757d;
+
+  font-size: 12px;
+
+  text-transform: uppercase;
+
+  margin-bottom: 8px;
+}
+
+
+.info-field {
+  background-color: #f8f9fc;
+}
+
+
+.info-field:disabled {
+  background-color: #f8f9fc;
+
+  color: #495057;
+
+  opacity: 1;
+}
+
+
+.manager-review {
+  background-color: #fafbfc;
+
+  border: 1px dashed #cbd5e1;
+
+  border-radius: 12px;
+
+  padding: 24px;
+}
+
+
+.summary-card {
+  border-left: 5px solid var(--scb-blue);
+}
+
+
+/* =========================================================
+   COMMON UTILITIES
+   ========================================================= */
+
+.text-scb {
+  color: var(--scb-blue) !important;
+}
+
+
+.border-dashed {
+  border-style: dashed !important;
+}
+
+
+.btn-success,
+.btn-danger {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .brand-header {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .brand-header::after {
+    width: 300px;
+  }
+
+  .scb-logo-waves {
+    width: 76px;
+    height: 42px;
+  }
+
+  .scb-wave {
+    width: 21px;
+    height: 38px;
+  }
+
+  .scb-logo-text {
+    font-size: 19px;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-header {
+    min-height: 70px;
+
+    padding: 10px 18px;
+
+    gap: 12px;
+  }
+
+  .brand-header::after {
+    width: 180px;
+
+    height: 10px;
+  }
+
+  .scb-logo-waves {
+    width: 62px;
+
+    height: 34px;
+
+    gap: 3px;
+  }
+
+  .scb-wave {
+    width: 17px;
+
+    height: 31px;
+  }
+
+  .scb-logo-text {
+    font-size: 16px;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .container {
+    padding-left: 16px;
+
+    padding-right: 16px;
+  }
+
+  .top-bar {
+    padding-left: 16px;
+
+    padding-right: 16px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .brand-header::after {
+    display: none;
+  }
+
+  .scb-logo-text {
+    font-size: 15px;
+  }
+
+  .scb-logo-waves {
+    width: 55px;
+  }
+
+  .scb-wave {
+    width: 15px;
+
+    height: 28px;
+  }
+
+  .page-header {
+    padding: 18px 0;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .dropdown-menu {
+    right: -5px;
+
+    width: 240px;
+  }
+}
+
+/* =========================================================
+   FINAL SHARED HEADER - IDENTICAL ON ALL PORTAL PAGES
+   ========================================================= */
+
+.brand-header {
+  width: 100%;
+  height: 74px;
+  min-height: 74px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 10px 40px;
+  border-bottom: 1px solid #dbe4f0;
+  gap: 22px;
+  position: relative;
+  z-index: 100;
+}
+
+.brand-header .scb-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.scb-logo-waves {
+  width: 86px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.scb-wave {
+  width: 25px;
+  height: 42px;
+  background: #0047B8;
+  border-radius: 15px 4px 15px 4px;
+  transform: skewX(-12deg);
+}
+
+.scb-wave:nth-child(2) { height: 47px; }
+.scb-wave:nth-child(3) { height: 42px; }
+
+.scb-logo-text {
+  color: #4b5563;
+  font-family: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  font-size: 21px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.header-brand-line {
+  flex: 1 1 auto;
+  min-width: 100px;
+  height: 14px;
+  background: #0047B8;
+  position: relative;
+  top: -5px;
+}
+
+.brand-header .user-dropdown-container {
+  flex-shrink: 0;
+  position: relative;
+  margin-left: 0;
+}
+
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 8px 4px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  color: #1e293b;
+  font-family: inherit;
+}
+
+.user-profile-btn:hover { background: #f6f8fb; }
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #0047B8;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-info { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.user-name { font-size: 10px; font-weight: 700; color: #1e293b; white-space: nowrap; }
+.user-role { font-size: 9px; color: #64748b; margin-top: 2px; white-space: nowrap; }
+
+.page-shell-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+}
+
+.page-shell-nav .page-nav-links { margin-left: auto; }
+
+/* Legacy top-nav pages now use the same shared header if any remain */
+.top-nav {
+  width: 100%;
+  height: 74px;
+  min-height: 74px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 10px 40px;
+  border-bottom: 1px solid #dbe4f0;
+  gap: 22px;
+}
+
+@media (max-width: 768px) {
+  .brand-header, .top-nav { padding: 8px 18px; height: 70px; min-height: 70px; gap: 14px; }
+  .scb-logo-waves { width: 62px; height: 34px; gap: 3px; }
+  .scb-wave { width: 17px; height: 30px; }
+  .scb-wave:nth-child(2) { height: 34px; }
+  .scb-logo-text { font-size: 16px; }
+  .user-role { display: none; }
+}
+
+
+/* =========================================================
+   FINAL HEADER CORRECTION
+   ONE BLUE LINE ONLY - USER ALWAYS AT FAR RIGHT
+   ========================================================= */
+.brand-header::after,
+.top-nav::after {
+  content: none !important;
+  display: none !important;
+}
+
+.brand-header .header-brand-line {
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 100px;
+  height: 14px;
+  background: #0047B8;
+  position: relative;
+  top: -5px;
+}
+
+.brand-header .user-dropdown-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  flex: 0 0 auto !important;
+  order: 3;
+}
+
+.brand-header .scb-logo-container {
+  order: 1;
+  flex: 0 0 auto;
+}
+
+.brand-header .header-brand-line {
+  order: 2;
+}
+
+@media (max-width: 768px) {
+  .brand-header .header-brand-line {
+    height: 10px;
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-header .header-brand-line {
+    display: block !important;
+  }
+}

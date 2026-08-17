@@ -1,0 +1,22 @@
+:host { display:block; min-height:100vh; }
+
+/* Manager/HR worklist. */
+.container-fluid.px-4 { padding-left:0 !important; padding-right:0 !important; }
+.container-fluid.px-4 > .top-bar,
+.container-fluid.px-4 > .d-flex,
+.container-fluid.px-4 > .card { width:min(100%,var(--shell)); margin-left:auto; margin-right:auto; }
+
+.container-fluid.px-4 > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+.container-fluid.px-4 > .d-flex h3 { color:var(--primary-dark); font-size:24px; }
+
+.container-fluid.px-4 > .card { overflow:hidden; padding:0; }
+.container-fluid.px-4 > .card .card-body { padding:0; }
+.container-fluid.px-4 table { min-width:980px; }
+.container-fluid.px-4 th { white-space:nowrap; }
+.container-fluid.px-4 td { font-size:12px; }
+.container-fluid.px-4 td:first-child { color:var(--primary-dark); }
+.container-fluid.px-4 .btn-scb-primary { min-width:72px; }
+
+@media (max-width:768px) {
+  .container-fluid.px-4 > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+}

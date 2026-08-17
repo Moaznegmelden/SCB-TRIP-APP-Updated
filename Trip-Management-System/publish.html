@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Trip Publication - Suez Canal Bank</title>
+    <style>
+        :root {
+            --scb-blue: #003399;
+            --scb-dark-blue: #002266;
+            --scb-light-blue: #e6ecf5;
+            --scb-bg: #f8f9fa;
+            --card-bg: #FFFFFF;
+            --border-color: #DBE4F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --input-bg: #F8FAFC;
+            --danger: #DC2626;
+            --warning: #D97706;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--scb-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Top Header */
+        .header {
+            height: 74px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Logo Container Styling */
+        .scb-logo-container {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .scb-logo-container img {
+            height: 42px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-links a.active {
+            color: var(--scb-blue);
+            font-weight: 600;
+        }
+
+        /* HR User Dropdown Menu */
+        .user-dropdown-container {
+            position: relative;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--scb-light-blue);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px 6px 6px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-profile-btn:hover {
+            background: #d8e3f3;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--scb-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--scb-blue);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 48px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            width: 220px;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 10px 16px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-main);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--scb-light-blue);
+            color: var(--scb-blue);
+        }
+
+        .dropdown-item.active {
+            font-weight: 600;
+            color: var(--scb-blue);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .page-title p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #F1F5F9;
+        }
+
+        .btn-warning {
+            background: #FEF3C7;
+            border-color: #FCD34D;
+            color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background: #FDE68A;
+        }
+
+        .btn-danger {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #FCA5A5;
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--scb-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--scb-dark-blue);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: var(--scb-blue);
+            color: var(--scb-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--scb-light-blue);
+        }
+
+        .btn-danger-text {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            color: var(--scb-blue);
+        }
+
+        /* Form Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        label .required {
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="datetime-local"],
+        input[type="date"],
+        textarea,
+        select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--scb-blue);
+            background: #FFFFFF;
+        }
+
+        /* Departure Row */
+        .departure-row {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .departure-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Modal Popup Styling */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+       <a href="#" class="scb-logo-container">
+    <img src="logo.png" alt="Suez Canal Bank Logo">
+</a>
+
+        <ul class="nav-links">
+            <li><a href="#">Employee Services</a></li>
+            <li><a href="#">Trips</a></li>
+            <li><a href="#">My requests</a></li>
+            <li><a href="#">Tasks</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#" class="active">Administration</a></li>
+        </ul>
+
+        <div class="user-dropdown-container">
+            <button class="user-profile-btn" onclick="toggleDropdown()">
+                <div class="avatar" id="userAvatar">HU</div>
+                <div class="user-info">
+                    <span class="user-name" id="userName">HR User</span>
+                    <span class="user-role" id="userRole">Maker Authority</span>
+                </div>
+                <span style="font-size: 10px; color: var(--text-muted); margin-left: 4px;">▼</span>
+            </button>
+
+            <div class="dropdown-menu" id="userMenu">
+                <div class="dropdown-header">Switch HR Profile</div>
+                
+                <div class="dropdown-item active" onclick="switchUser('HR User', 'Maker Authority', 'HU')">
+                    <div class="avatar" style="width:24px; height:24px; font-size:10px;">HU</div>
+                    <div>
+                        <div>HR User</div>
+                        <div style="font-size: 10px; color: var(--text-muted);">Trip Administrator</div>
+                    </div>
+                </div>
+
+                <div class="dropdown-item" onclick="switchUser('HR Manager', 'Approver Authority', 'HM')">
+                    <div class="avatar" style="width:24px; height:24px; font-size:10px; background:#059669;">HM</div>
+                    <div>
+                        <div>HR Manager</div>
+                        <div style="font-size: 10px; color: var(--text-muted);">Approver</div>
+                    </div>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-item" style="color: var(--danger);" onclick="alert('Logging out...')">
+                    <span>🚪 Log out</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumb">Administration / Trips</div>
+        
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Configure Trip Publication</h1>
+                <p>Configure the trip, departures, eligibility, capacity, and approval rules before publication.</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary">Save draft</button>
+                <button class="btn btn-warning" onclick="openModal('returnModal')">Return</button>
+                <button class="btn btn-danger" onclick="openModal('rejectModal')">Reject</button>
+                <button class="btn btn-primary">Publish</button>
+            </div>
+        </div>
+
+        <div class="main-column">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Trip Information</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Trip Title <span class="required">*</span></label>
+                        <input type="text" value="Steigenberger El Gouna" placeholder="e.g. Steigenberger El Gouna">
+                    </div>
+                    <div class="form-group">
+                        <label>Destination <span class="required">*</span></label>
+                        <input type="text" value="El Gouna" placeholder="Destination city">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration <span class="required">*</span></label>
+                        <input type="text" value="5 days / 4 nights" placeholder="e.g. 5 days 4 nights">
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Opens <span class="required">*</span></label>
+                        <input type="datetime-local" value="2026-07-20T09:00">
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Closes <span class="required">*</span></label>
+                        <input type="datetime-local" value="2026-07-27T16:00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Departures Configuration</h2>
+                    <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;">+ Add departure</button>
+                </div>
+
+                <div class="departure-row">
+                    <div class="departure-row-header">
+                        <span>Departure Slot #1</span>
+                        <button class="btn-danger-text">Remove</button>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Start Date <span class="required">*</span></label>
+                            <input type="date" value="2026-07-26">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date <span class="required">*</span></label>
+                            <input type="date" value="2026-07-30">
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity (Travelers) <span class="required">*</span></label>
+                            <input type="number" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Bus Seats <span class="required">*</span></label>
+                            <input type="number" value="50" min="0">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="returnModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color: var(--warning);">Return Request</h3>
+                <button class="modal-close" onclick="closeModal('returnModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Reason for Returning <span class="required">*</span></label>
+                <textarea rows="4" placeholder="Please type the specific details or changes required..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('returnModal')">Cancel</button>
+                <button class="btn btn-warning" onclick="submitModal('Return')">Submit Return</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color: var(--danger);">Reject Request</h3>
+                <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Reason for Rejection <span class="required">*</span></label>
+                <textarea rows="4" placeholder="Please enter the reason for rejecting this trip..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('rejectModal')">Cancel</button>
+                <button class="btn btn-danger" onclick="submitModal('Rejection')">Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById("userMenu").classList.toggle("show");
+        }
+
+        function switchUser(name, role, initials) {
+            document.getElementById("userName").innerText = name;
+            document.getElementById("userRole").innerText = role;
+            document.getElementById("userAvatar").innerText = initials;
+            document.getElementById("userMenu").classList.remove("show");
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function submitModal(action) {
+            alert(action + " submitted successfully.");
+            closeModal('returnModal');
+            closeModal('rejectModal');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-dropdown-container')) {
+                var menu = document.getElementById("userMenu");
+                if (menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                }
+            }
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

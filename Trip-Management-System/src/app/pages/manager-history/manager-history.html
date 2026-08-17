@@ -1,0 +1,109 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container">
+  <button class="user-profile-btn" type="button">
+    <div class="avatar-circle">MS</div>
+    <div class="user-info">
+      <span class="user-name">Manager · Mohamed Salah</span>
+      <span class="user-role">Manager</span>
+    </div>
+  </button>
+</div>
+</header>
+<div class="top-bar page-shell-nav">
+  <div class="breadcrumb">Portal / My requests</div>
+  <ul class="page-nav-links"><li><a href="#">Employee Services</a></li>
+    <li><a routerLink="/employee-dashboard">Trips</a></li>
+    <li><a routerLink="/my-requests">My requests</a></li>
+    <li><a href="#">Tasks</a></li>
+    <li><a routerLink="/manager-history" class="active">History</a></li>
+    <li><a href="#">Administration</a></li></ul>
+</div>
+
+<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+  <div>
+    <h1>Approval History</h1>
+    <p>Review and action employee trip requests under your authority.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Pending your action</div>
+      <div class="stat-value" style="color:var(--pending)">{{ statPendingAction }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved (this month)</div>
+      <div class="stat-value" style="color:var(--success)">{{ statApprovedThisMonth }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" style="color:var(--danger)">{{ statRejected }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Expired</div>
+      <div class="stat-value" style="color:var(--text-muted)">{{ statExpired }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs" id="historyTabs">
+      <button class="tab" [class.active]="activeTab === 'pending'" (click)="switchTab('pending')">
+        Pending <span style="background:var(--pending-bg);color:var(--pending);padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;">{{ pendingCount }}</span>
+      </button>
+      <button class="tab" [class.active]="activeTab === 'approved'" (click)="switchTab('approved')">Approved</button>
+      <button class="tab" [class.active]="activeTab === 'rejected'" (click)="switchTab('rejected')">Rejected</button>
+      <button class="tab" [class.active]="activeTab === 'expired'" (click)="switchTab('expired')">Expired</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Request ID</th>
+            <th>Employee Name</th>
+            <th>Employee ID</th>
+            <th>Trip Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Submission Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let req of filteredRequests">
+            <td><strong>{{ req.requestId }}</strong></td>
+            <td class="emp-name">{{ req.empName }}</td>
+            <td class="emp-id">{{ req.empId }}</td>
+            <td class="trip-name">{{ req.tripName }}</td>
+            <td>{{ req.startDate }}</td>
+            <td>{{ req.endDate }}</td>
+            <td>{{ req.submissionDate }}</td>
+            <td><span class="badge" [ngClass]="'badge-' + req.status">{{ statusLabel(req.status) }}</span></td>
+            <td style="white-space:nowrap;">
+              <ng-container *ngIf="req.status === 'pending'; else viewBtn">
+                <button class="btn btn-sm btn-success" (click)="actionRow(req, 'approved')">Approve</button>
+                <button class="btn btn-sm btn-danger" (click)="actionRow(req, 'rejected')">Reject</button>
+              </ng-container>
+              <ng-template #viewBtn>
+                <button class="btn btn-sm btn-outline">View</button>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

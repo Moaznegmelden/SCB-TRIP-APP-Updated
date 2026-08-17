@@ -1,0 +1,16 @@
+:host { display:block; min-height:100vh; }
+
+/* Page 8: Employee trip catalog (now table/row based) */
+.page-header { padding-top: 28px; padding-bottom: 12px; }
+.page-header h1 { font-size: 26px; }
+
+.container > .card { padding: 22px; }
+.container > .card + .card { margin-top: 16px; }
+
+.container > .card > .card-title {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 12px;
+}

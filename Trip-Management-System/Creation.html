@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Trip - Suez Canal Bank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+ 
+</head>
+<body>
+
+  <header class="brand-header mb-4 shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="scb-logo-container">
+        <div class="scb-logo-waves">
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+        </div>
+        <div class="scb-logo-text">
+          Suez Canal<br>Bank
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid px-4">
+    <form th:action="@{/admin/trips/save}" th:object="${trip}" method="post">
+      
+      <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+        <div class="fw-bold text-scb text-uppercase small">Administration / Trips</div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+          <h3 class="fw-bold text-scb mb-1">Create trip</h3>
+          <p class="text-muted small mb-0">Configure the trip, departures, eligibility, capacity and approval rules before publication.</p>
+        </div>
+        <div>
+          <button type="submit" name="action" value="submit" class="btn btn-scb-primary">Submit for approval</button>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        
+        <div class="col-lg-12">
+          <div class="card border-light-subtle shadow-sm p-4">
+            <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Trip information</h5>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label for="title" class="form-label">Trip title *</label>
+                <input type="text" id="title" class="form-control" th:field="*{title}" placeholder="e.g. Steigenberger El Gouna" required>
+              </div>
+              <div class="col-md-4">
+                <label for="destination" class="form-label">Destination *</label>
+                <input type="text" id="destination" class="form-control" th:field="*{destination}" placeholder="e.g. El Gouna" required>
+              </div>
+              <div class="col-md-4">
+                <label for="duration" class="form-label">Duration *</label>
+                <input type="text" id="duration" class="form-control" th:field="*{duration}" placeholder="e.g. 5 days / 4 nights" required>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-3">
+                <label for="registrationOpens" class="form-label">Registration opens *</label>
+                <input type="datetime-local" id="registrationOpens" class="form-control" th:field="*{registrationOpens}" required>
+              </div>
+              <div class="col-md-3">
+                <label for="registrationCloses" class="form-label">Registration closes *</label>
+                <input type="datetime-local" id="registrationCloses" class="form-control" th:field="*{registrationCloses}" required>
+              </div>
+              
+          
+
+            <div class="departures-box">
+              <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                <h6 class="fw-bold text-scb text-uppercase m-0">Batches</h6>
+              </div>
+              
+              <div class="row g-3 align-items-end mb-3" th:each="dep, iterStat : *{departures}">
+                <div class="col-md-3">
+                  <label th:for="|startDate-${iterStat.index}|" class="form-label" th:text="'Start date (' + ${iterStat.count} + ') *'">Start date *</label>
+                  <input type="date" th:id="|startDate-${iterStat.index}|" class="form-control form-control-lg fs-6" th:field="*{departures[__${iterStat.index}__].startDate}" required>
+                </div>
+                <div class="col-md-3">
+                  <label th:for="|endDate-${iterStat.index}|" class="form-label" th:text="'End date (' + ${iterStat.count} + ') *'">End date *</label>
+                  <input type="date" th:id="|endDate-${iterStat.index}|" class="form-control form-control-lg fs-6" th:field="*{departures[__${iterStat.index}__].endDate}" required>
+                </div>
+            
+                <div class="col-md-2 text-end">
+                  <button type="submit" name="removeDeparture" th:value="${iterStat.index}" class="btn btn-link text-danger text-decoration-none fw-bold p-0 pb-2">Remove</button>
+                </div>
+              </div>
+
+              <button type="submit" name="addDeparture" class="btn btn-scb-outline border-dashed btn-md mt-2">+ Add Batch</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

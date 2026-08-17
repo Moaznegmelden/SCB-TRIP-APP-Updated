@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Trip - Suez Canal Bank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <header class="brand-header mb-4 shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="scb-logo-container">
+        <div class="scb-logo-waves">
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+        </div>
+        <div class="scb-logo-text">
+          Suez Canal<br>Bank
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid px-4">
+
+    <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+      <div class="fw-bold text-scb text-uppercase small">
+        <a th:href="@{/admin/trips/approvals}" class="text-decoration-none text-scb">Administration / Trip Approvals</a>
+        / Review
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h3 class="fw-bold text-scb mb-1" th:text="${trip.title}">Steigenberger El Gouna</h3>
+        <p class="text-muted small mb-0">
+          Submitted by <strong th:text="${trip.createdBy}">Ahmed Hassan</strong>
+          on <span th:text="${#temporals.format(trip.submittedAt, 'dd MMM yyyy HH:mm')}">28 Jul 2026 14:22</span>
+        </p>
+      </div>
+      <div class="d-flex gap-2">
+        <form th:action="@{/admin/trips/approvals/{id}/reject(id=${trip.id})}" method="post" class="d-inline">
+          <button type="submit" class="btn btn-outline-danger" 
+                  onclick="return confirm('Are you sure you want to reject this trip?')">
+            Reject
+          </button>
+        </form>
+        <form th:action="@{/admin/trips/approvals/{id}/approve(id=${trip.id})}" method="post" class="d-inline">
+          <button type="submit" class="btn btn-scb-primary"
+                  onclick="return confirm('Approve this trip and publish it?')">
+            Approve &amp; Publish
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Trip Information Card -->
+    <div class="card border-light-subtle shadow-sm p-4 mb-4">
+      <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Trip Information</h5>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Trip title</label>
+          <div class="fw-semibold" th:text="${trip.title}">Steigenberger El Gouna</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Destination</label>
+          <div class="fw-semibold" th:text="${trip.destination}">El Gouna</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Duration</label>
+          <div class="fw-semibold" th:text="${trip.duration}">5 days / 4 nights</div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label">Registration opens</label>
+          <div class="fw-semibold" th:text="${#temporals.format(trip.registrationOpens, 'dd MMM yyyy HH:mm')}">01 Aug 2026 09:00</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Registration closes</label>
+          <div class="fw-semibold" th:text="${#temporals.format(trip.registrationCloses, 'dd MMM yyyy HH:mm')}">15 Aug 2026 17:00</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Family Degree</label>
+          <div class="fw-semibold" th:text="${trip.familyDegree}">FIRST</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Companions Limit</label>
+          <div class="fw-semibold" th:text="${trip.numberOfCompanions}">3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Departures Card -->
+    <div class="card border-light-subtle shadow-sm p-4">
+      <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Departures Configuration</h5>
+
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Capacity</th>
+              <th>Bus Seats</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="dep, iterStat : ${trip.departures}">
+              <td th:text="${iterStat.count}">1</td>
+              <td th:text="${#temporals.format(dep.startDate, 'dd MMM yyyy')}">10 Sep 2026</td>
+              <td th:text="${#temporals.format(dep.endDate, 'dd MMM yyyy')}">14 Sep 2026</td>
+              <td th:text="${dep.capacity}">100</td>
+              <td th:text="${dep.busSeats}">70</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    
+    <div class="mt-4" th:if="${trip.status == 'REJECTED'}">
+      <div class="alert alert-danger">
+        <strong>Rejection reason:</strong>
+        <span th:text="${trip.rejectionReason}">Capacity too high for current season.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

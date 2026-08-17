@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Trip Approvals - Suez Canal Bank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <header class="brand-header mb-4 shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="scb-logo-container">
+        <div class="scb-logo-waves">
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+        </div>
+        <div class="scb-logo-text">
+          Suez Canal<br>Bank
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid px-4">
+    
+    <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+      <div class="fw-bold text-scb text-uppercase small">Administration / Trip Approvals</div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h3 class="fw-bold text-scb mb-1">Pending Trip Approvals</h3>
+        <p class="text-muted small mb-0">Review and approve or reject trips submitted</p>
+      </div>
+    </div>
+
+    <div class="card border-light-subtle shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">Trip Title</th>
+                <th>Destination</th>
+                <th>Duration</th>
+                <th>Registration Period</th>
+                <th>Batches</th>
+                <th>Submitted By</th>
+                <th>Submitted At</th>
+                <th class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="trip : ${pendingTrips}">
+                <td class="ps-4 fw-semibold" th:text="${trip.title}"></td>
+                <td th:text="${trip.destination}"></td>
+                <td th:text="${trip.duration}"></td>
+                <td>
+                  <span class="d-block small" th:text="${#temporals.format(trip.registrationOpens, 'dd MMM yyyy HH:mm')}"></span>
+                  <span class="text-muted small" th:text="'to ' + ${#temporals.format(trip.registrationCloses, 'dd MMM yyyy HH:mm')}"></span>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border" th:text="${#lists.size(trip.batches)} + ' batch(es)'"></span>
+                </td>
+                <td th:text="${trip.createdBy}"></td>
+                <td class="small text-muted" th:text="${#temporals.format(trip.submittedAt, 'dd MMM yyyy HH:mm')}"></td>
+                <td class="text-end pe-4">
+                  <a th:href="@{/admin/trips/approvals/{id}(id=${trip.id})}" class="btn btn-sm btn-scb-primary"></a>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(pendingTrips)}">
+                <td colspan="8" class="text-center text-muted py-5">
+                  No trips currently pending approval.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

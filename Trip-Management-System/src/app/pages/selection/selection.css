@@ -1,0 +1,27 @@
+:host { display:block; min-height:100vh; }
+
+/* Applicant selection / allocation preview. */
+.container-fluid.px-4 { padding-left:0 !important; padding-right:0 !important; }
+.container-fluid.px-4 > * { width:min(100%,var(--shell)); margin-left:auto; margin-right:auto; }
+.container-fluid.px-4 > .top-bar { width:min(100%,var(--shell)); }
+.container-fluid.px-4 > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+
+.option-card-box {
+  height:100%;
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+  transition:border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  cursor:pointer;
+}
+.option-card-box:hover { border-color:#B7CBE7; box-shadow:var(--shadow); }
+.option-card-box.active { border-color:var(--primary); background:#F4F8FE; box-shadow:0 0 0 2px rgba(0,71,184,.08); }
+.option-card-box .form-check-input { margin-top:3px !important; }
+.option-card-box p { line-height:1.55; }
+
+.container-fluid.px-4 .card { padding:22px; }
+.container-fluid.px-4 table { min-width:780px; }
+.container-fluid.px-4 .table-custom th { background:#F4F7FB; }
+
+@media (max-width:700px) { .container-fluid.px-4 > .d-flex { flex-direction:column; gap:12px; } }

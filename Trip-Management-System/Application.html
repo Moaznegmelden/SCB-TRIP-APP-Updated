@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Trip – Steigenberger El Gouna</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e5bb8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Suez Canal Bank
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Employee Services</a></li>
+      <li><a href="employee-dashboard.html" class="active">Trips</a></li>
+      <li><a href="employee-dashboard.html">My requests</a></li>
+      <li><a href="#">Tasks</a></li>
+    </ul>
+    <div class="user-badge">
+      <div class="avatar">AH</div>
+      Employee · Ahmed Hassan
+    </div>
+  </nav>
+
+  <div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+    <div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+        <a href="trip-details.html" style="color:var(--accent);text-decoration:none;">← Back to trip details</a>
+      </p>
+      <h1>Apply for Trip</h1>
+      <p>Steigenberger El Gouna · Configure companions, options and review the price.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <form id="applicationForm" onsubmit="return handleSubmit(event)">
+
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;">
+
+        <!-- Left: Form -->
+        <div>
+          <!-- Departure selection -->
+          <div class="card">
+            <div class="card-title">Departure Slot *</div>
+            <div class="form-row">
+              <div class="form-group" style="grid-column:1/-1;">
+                <label>Select departure <span class="req">*</span></label>
+                <select class="form-control" id="departure" required onchange="recalculate()">
+                  <option value="">Select departure…</option>
+                  <option value="1" data-base="2800">#1 · 26-Jul-2026 → 30-Jul-2026 (42 seats left)</option>
+                  <option value="2" data-base="2800">#2 · 02-Aug-2026 → 06-Aug-2026 (55 seats left)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Companions -->
+          <div class="card">
+            <div class="card-title">Companions</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">
+              Max 3 companions · Allowed family degrees: 1st &amp; 2nd degree only.
+            </p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Adult companions (12+ yrs)</label>
+                <input type="number" class="form-control" id="adults" min="0" max="3" value="0" onchange="recalculate(); updateCompanionFields()" />
+              </div>
+              <div class="form-group">
+                <label>Children (2–12 yrs)</label>
+                <input type="number" class="form-control" id="children" min="0" max="3" value="0" onchange="recalculate(); updateCompanionFields()" />
+              </div>
+              <div class="form-group">
+                <label>Infants (&lt; 2 yrs – free)</label>
+                <input type="number" class="form-control" id="infants" min="0" max="2" value="0" onchange="recalculate()" />
+              </div>
+            </div>
+
+            <div id="companionDetails" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- Options -->
+          <div class="card">
+            <div class="card-title">Options</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="busSeat" onchange="recalculate()" style="margin-right:8px;" />
+                  Include bus transportation (Cairo ↔ El Gouna)
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="extraActivity" onchange="recalculate()" style="margin-right:8px;" />
+                  Extra water activity (+450 EGP)
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="card">
+            <div class="card-title">Additional Notes (optional)</div>
+            <textarea class="form-control" id="notes" rows="3" placeholder="Any special requests or medical notes…"></textarea>
+          </div>
+        </div>
+
+        <!-- Right: Price Calculator (sticky) -->
+        <div>
+          <div class="calc-box" style="position:sticky;top:72px;">
+            <h4>💰 Price Calculator</h4>
+
+            <div class="calc-row">
+              <span>Employee (base)</span>
+              <span id="lineEmployee">2,800 EGP</span>
+            </div>
+            <div class="calc-row">
+              <span>Adult companions × <span id="lblAdults">0</span></span>
+              <span id="lineAdults">0 EGP</span>
+            </div>
+            <div class="calc-row">
+              <span>Children × <span id="lblChildren">0</span></span>
+              <span id="lineChildren">0 EGP</span>
+            </div>
+            <div class="calc-row">
+              <span>Infants × <span id="lblInfants">0</span></span>
+              <span>0 EGP</span>
+            </div>
+            <div class="calc-row">
+              <span>Bus seats × <span id="lblBus">0</span></span>
+              <span id="lineBus">0 EGP</span>
+            </div>
+            <div class="calc-row">
+              <span>Extra activity</span>
+              <span id="lineActivity">0 EGP</span>
+            </div>
+
+            <div class="calc-row total">
+              <span>Total</span>
+              <span id="lineTotal">2,800 EGP</span>
+            </div>
+
+            <p style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.5;">
+              Constraints: total companions ≤ 3 · infants free · bus charged per person (employee + adults + children).
+              Price is deducted from salary or paid at finance desk after approval.
+            </p>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">
+              Submit for approval
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // ---- Pricing variables (can be loaded from API later) ----
+    const PRICE = {
+      employee: 2800,
+      adult: 3200,
+      child: 1800,
+      infant: 0,
+      bus: 350,
+      activity: 450
+    };
+    const MAX_COMPANIONS = 3;
+
+    function format(n) {
+      return n.toLocaleString('en-EG') + ' EGP';
+    }
+
+    function recalculate() {
+      const adults   = Math.min(parseInt(document.getElementById('adults').value) || 0, MAX_COMPANIONS);
+      const children = Math.min(parseInt(document.getElementById('children').value) || 0, MAX_COMPANIONS);
+      const infants  = parseInt(document.getElementById('infants').value) || 0;
+      const bus      = document.getElementById('busSeat').checked;
+      const activity = document.getElementById('extraActivity').checked;
+
+      // Enforce total companions ≤ 3
+      let totalComp = adults + children;
+      if (totalComp > MAX_COMPANIONS) {
+        alert(`Maximum ${MAX_COMPANIONS} companions allowed (adults + children).`);
+        document.getElementById('adults').value = 0;
+        document.getElementById('children').value = 0;
+        return recalculate();
+      }
+
+      const busPersons = 1 + adults + children; // employee + adults + children
+      const busCost    = bus ? busPersons * PRICE.bus : 0;
+      const actCost    = activity ? PRICE.activity : 0;
+
+      const total = PRICE.employee
+                  + adults * PRICE.adult
+                  + children * PRICE.child
+                  + busCost
+                  + actCost;
+
+      // Update labels
+      document.getElementById('lblAdults').textContent   = adults;
+      document.getElementById('lblChildren').textContent = children;
+      document.getElementById('lblInfants').textContent  = infants;
+      document.getElementById('lblBus').textContent      = bus ? busPersons : 0;
+
+      document.getElementById('lineEmployee').textContent = format(PRICE.employee);
+      document.getElementById('lineAdults').textContent   = format(adults * PRICE.adult);
+      document.getElementById('lineChildren').textContent = format(children * PRICE.child);
+      document.getElementById('lineBus').textContent      = format(busCost);
+      document.getElementById('lineActivity').textContent = format(actCost);
+      document.getElementById('lineTotal').textContent    = format(total);
+    }
+
+    function updateCompanionFields() {
+      const adults   = parseInt(document.getElementById('adults').value) || 0;
+      const children = parseInt(document.getElementById('children').value) || 0;
+      const container = document.getElementById('companionDetails');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= adults; i++) {
+        container.innerHTML += `
+          <div class="form-row" style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;">
+            <div class="form-group">
+              <label>Adult ${i} – Full name *</label>
+              <input type="text" class="form-control" required placeholder="Full name" />
+            </div>
+            <div class="form-group">
+              <label>Relation *</label>
+              <select class="form-control" required>
+                <option value="">Select…</option>
+                <option>Spouse</option>
+                <option>Parent</option>
+                <option>Sibling</option>
+                <option>Child (adult)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>National ID *</label>
+              <input type="text" class="form-control" required placeholder="14 digits" />
+            </div>
+          </div>`;
+      }
+      for (let i = 1; i <= children; i++) {
+        container.innerHTML += `
+          <div class="form-row" style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:8px;">
+            <div class="form-group">
+              <label>Child ${i} – Full name *</label>
+              <input type="text" class="form-control" required placeholder="Full name" />
+            </div>
+            <div class="form-group">
+              <label>Date of birth *</label>
+              <input type="date" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label>National ID / Birth cert *</label>
+              <input type="text" class="form-control" required />
+            </div>
+          </div>`;
+      }
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      if (!document.getElementById('departure').value) {
+        alert('Please select a departure slot.');
+        return false;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const tripId = params.get('tripId') || '1';
+      const batchId = params.get('batchId') || '1';
+      const payload = {
+        transportType: 'BUS',
+        pickupPoint: 'Cairo',
+        roomsRequested: 1,
+        totalPrice: 2800,
+        participants: []
+      };
+
+      try {
+        const response = await fetch(`http://localhost:8080/api/applications?tripId=${tripId}&batchId=${batchId}&employeeId=1`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error('Submission failed');
+        alert('Application submitted successfully!\nIt has been sent to your manager for approval.');
+        window.location.href = 'myreq.html';
+      } catch (error) {
+        alert('Unable to submit application. Start the backend server and verify the database connection.');
+      }
+      return false;
+    }
+
+    // Init
+    recalculate();
+  </script>
+</body>
+</html>

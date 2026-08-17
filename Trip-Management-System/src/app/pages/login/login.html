@@ -1,0 +1,62 @@
+<div class="login-container">
+
+    <div class="top-bar">
+
+        <div class="logo-container">
+            <img src="/logo.png" alt="Suez Canal Bank Logo">
+        </div>
+
+        <div class="language-switch">
+
+            <button
+                type="button"
+                [class.active]="currentLanguage === 'en'"
+                (click)="changeLanguage('en')">
+
+                EN
+
+            </button>
+
+            <button
+                type="button"
+                [class.active]="currentLanguage === 'ar'"
+                (click)="changeLanguage('ar')">
+
+                AR
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <h1>{{ translations[currentLanguage].title }}</h1>
+
+    <input
+        type="text"
+        [(ngModel)]="username"
+        [placeholder]="translations[currentLanguage].email">
+
+    <input
+        type="password"
+        [(ngModel)]="password"
+        [placeholder]="translations[currentLanguage].password">
+
+    <button
+        type="button"
+        (click)="login()"
+        [disabled]="isLoading">
+
+        {{ isLoading ? 'Logging in...' : translations[currentLanguage].login }}
+
+    </button>
+
+    <div
+        *ngIf="errorMessage"
+        style="color: red; margin-top: 10px; text-align: center;">
+
+        {{ errorMessage }}
+
+    </div>
+
+</div>

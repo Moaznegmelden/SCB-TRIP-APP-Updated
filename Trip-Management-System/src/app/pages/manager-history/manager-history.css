@@ -1,0 +1,17 @@
+:host { display:block; min-height:100vh; }
+
+/* Manager worklist/history. */
+.page-header { padding-top:28px; }
+.stats-row { grid-template-columns:repeat(4,minmax(0,1fr)); }
+
+.container > .card { overflow:hidden; padding:22px; }
+#historyTabs { margin-bottom:14px; }
+#historyTable { min-width:1050px; }
+#historyTable .emp-name,
+#historyTable .trip-name { color:var(--primary-dark); font-weight:700; }
+#historyTable .emp-id { font-family:var(--mono); font-size:11px; }
+#historyTable td:last-child { white-space:nowrap; }
+#historyTable td:last-child .btn { min-width:68px; margin-right:4px; }
+
+@media (max-width:900px) { .stats-row { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px) { .stats-row { grid-template-columns:1fr; } }

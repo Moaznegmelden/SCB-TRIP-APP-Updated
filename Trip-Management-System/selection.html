@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selection Method - Suez Canal Bank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --scb-blue: #003399;
+      --scb-dark-blue: #002266;
+      --scb-light-blue: #e6ecf5;
+      --scb-bg: #f8f9fa;
+    }
+
+    body {
+      background-color: var(--scb-bg);
+      font-size: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .brand-header {
+      background-color: #ffffff;
+      padding: 12px 24px;
+      border-bottom: 1px solid #e0e4ec;
+    }
+
+    .scb-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .scb-logo-waves {
+      display: flex;
+      gap: 3px;
+    }
+
+    .scb-wave {
+      width: 14px;
+      height: 24px;
+      background-color: var(--scb-blue);
+      border-radius: 0 8px 0 8px;
+      transform: skewX(-15deg);
+    }
+
+    .scb-logo-text {
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 1.1;
+      color: #2b3674;
+      font-family: Arial, sans-serif;
+    }
+
+    .top-bar {
+      border-bottom: 2px solid var(--scb-blue);
+    }
+
+    .text-scb {
+      color: var(--scb-blue) !important;
+    }
+
+    .btn-scb-primary {
+      background-color: var(--scb-blue);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-scb-primary:hover {
+      background-color: var(--scb-dark-blue);
+      color: #fff;
+    }
+
+    .btn-scb-outline {
+      border-color: var(--scb-blue);
+      color: var(--scb-blue);
+      font-weight: 600;
+    }
+
+    .btn-scb-outline:hover {
+      background-color: var(--scb-light-blue);
+      color: var(--scb-blue);
+    }
+
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      background-color: var(--scb-blue);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-dropdown-btn {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 4px 12px 4px 4px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #6c757d;
+    }
+
+    /* Option Card Custom Styling */
+    .option-card-box {
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 100%;
+    }
+
+    .option-card-box:hover {
+      border-color: var(--scb-blue);
+      background-color: #fafbfc;
+    }
+
+    .option-card-box.active {
+      border-color: var(--scb-blue);
+      background-color: var(--scb-light-blue);
+    }
+
+    .table-custom th {
+      background-color: #f1f5f9;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="brand-header mb-4 shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="scb-logo-container">
+        <div class="scb-logo-waves">
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+          <div class="scb-wave"></div>
+        </div>
+        <div class="scb-logo-text">
+          Suez Canal<br>Bank
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="btn user-dropdown-btn d-flex align-items-center gap-2 dropdown-toggle border-0" type="button" id="hrUserMenu" data-bs-toggle="dropdown" aria-expanded="false">
+          <div class="avatar-circle">HU</div>
+          <div class="text-start d-none d-sm-block me-1">
+            <div class="fw-bold text-dark lh-1" style="font-size: 13px;">HR User</div>
+            <div class="text-muted" style="font-size: 11px;">Maker Authority</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid px-4">
+    <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+      <div class="fw-bold text-scb text-uppercase small">Administration / Trips / Selection</div>
+      <div class="small text-muted d-none d-md-block">
+        <a href="#" class="text-decoration-none text-muted ms-3">Employee Services</a>
+        <a href="#" class="text-decoration-none text-muted ms-3">Trips</a>
+        <a href="#" class="text-decoration-none text-muted ms-3">My requests</a>
+        <a href="#" class="text-decoration-none text-muted ms-3">Tasks</a>
+        <a href="#" class="text-decoration-none text-muted ms-3">Administration</a>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h3 class="fw-bold text-scb mb-1">Trip Selection & Applicants Pool</h3>
+        <p class="text-muted small mb-0">Select allocation methodology and preview selected applicants for <strong>Steigenberger El Gouna</strong>.</p>
+      </div>
+      <div>
+        <a href="announcement.html" class="btn btn-scb-primary shadow-sm">Go To Announcement </a>
+      </div>
+    </div>
+
+    <div class="card border-light-subtle shadow-sm p-4 mb-4">
+      <h5 class="fw-bold text-scb border-bottom pb-2 mb-3">1. Choose Allocation Logic</h5>
+      
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="option-card-box active d-flex align-items-start gap-3" onclick="selectCard(this)">
+            <input type="radio" name="selectionStrategy" class="form-check-input mt-1" checked>
+            <div>
+              <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 1: Random Selection (Lottery)</div>
+              <p class="text-muted small mb-2">Automated, unbiased random draw from all eligible applicants who registered before the deadline.</p>
+              <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 11px;">Recommended for oversubscribed trips</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="option-card-box d-flex align-items-start gap-3" onclick="selectCard(this)">
+            <input type="radio" name="selectionStrategy" class="form-check-input mt-1">
+            <div>
+              <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 2: First-Come, First-Served (FCFS)</div>
+              <p class="text-muted small mb-2">Seats are allocated strictly in order of submission timestamp until capacity (3 spots) is filled.</p>
+              <span class="badge bg-secondary-subtle text-secondary fw-bold" style="font-size: 11px;">Standard priority rule</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-light-subtle shadow-sm p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+        <h5 class="fw-bold text-scb m-0">2. All Applied Employees (6 Applicants)</h5>
+        <span class="badge bg-light text-dark border fw-bold" style="font-size: 12px;">Capacity Quota: 3 Confirmed / 3 Waitlisted</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-custom mb-0">
+          <thead>
+            <tr>
+              <th>App ID</th>
+              <th>Employee Name</th>
+              <th>Department</th>
+              <th>Submission Timestamp</th>
+              <th>Eligibility</th>
+              <th>Preview Allocation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="fw-bold text-muted">#APP-101</td>
+              <td><strong class="text-dark">Mariam Adel</strong></td>
+              <td>Digital Banking</td>
+              <td>20/07/2026 09:02:14</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-success text-white fw-bold">Selected (Confirmed)</span></td>
+            </tr>
+            <tr>
+              <td class="fw-bold text-muted">#APP-102</td>
+              <td><strong class="text-dark">Ahmed Hassan</strong></td>
+              <td>Branch Operations</td>
+              <td>20/07/2026 09:05:30</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-success text-white fw-bold">Selected (Confirmed)</span></td>
+            </tr>
+            <tr>
+              <td class="fw-bold text-muted">#APP-103</td>
+              <td><strong class="text-dark">Noha Khaled</strong></td>
+              <td>HR Operations</td>
+              <td>20/07/2026 09:12:45</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-success text-white fw-bold">Selected (Confirmed)</span></td>
+            </tr>
+            <tr>
+              <td class="fw-bold text-muted">#APP-104</td>
+              <td><strong class="text-dark">Omar Farouk</strong></td>
+              <td>Risk & Compliance</td>
+              <td>20/07/2026 09:30:10</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-warning-subtle text-warning-emphasis fw-bold">Waitlist</span></td>
+            </tr>
+            <tr>
+              <td class="fw-bold text-muted">#APP-105</td>
+              <td><strong class="text-dark">Salma Ibrahim</strong></td>
+              <td>Retail Banking</td>
+              <td>20/07/2026 10:15:22</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-warning-subtle text-warning-emphasis fw-bold">Waitlist</span></td>
+            </tr>
+            <tr>
+              <td class="fw-bold text-muted">#APP-106</td>
+              <td><strong class="text-dark">Tarek Mahmoud</strong></td>
+              <td>IT Infrastructure</td>
+              <td>20/07/2026 11:40:05</td>
+              <td><span class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span></td>
+              <td><span class="badge bg-warning-subtle text-warning-emphasis fw-bold">Waitlist</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function selectCard(cardElement) {
+      document.querySelectorAll('.option-card-box').forEach(el => el.classList.remove('active'));
+      cardElement.classList.add('active');
+      cardElement.querySelector('input[type="radio"]').checked = true;
+    }
+  </script>
+</body>
+</html>

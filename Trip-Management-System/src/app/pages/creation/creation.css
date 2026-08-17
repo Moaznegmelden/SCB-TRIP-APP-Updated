@@ -1,0 +1,32 @@
+:host { display:block; min-height:100vh; }
+
+/* HR trip setup — page 13 visual structure. */
+.container-fluid.px-4 { padding-left:0 !important; padding-right:0 !important; }
+.container-fluid.px-4 > form { display:block; }
+.container-fluid.px-4 > form > .top-bar,
+.container-fluid.px-4 > form > .d-flex,
+.container-fluid.px-4 > form > .row { width:min(100%,var(--shell)); margin-left:auto; margin-right:auto; }
+.container-fluid.px-4 > form > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+
+.container-fluid.px-4 > form > .d-flex h3 { color:var(--primary-dark); font-size:25px; }
+.container-fluid.px-4 > form > .row { margin-top:2px; }
+.container-fluid.px-4 > form > .row > .col-lg-12 { width:100%; padding-left:var(--gutter); padding-right:var(--gutter); }
+
+.container-fluid.px-4 .card { padding:22px; }
+.container-fluid.px-4 .card h5,
+.container-fluid.px-4 .card h6 { color:var(--primary-dark); }
+
+.departures-box {
+  margin-top:20px;
+  padding:18px;
+  background:#F8FAFD;
+  border:1px dashed #C8D5E5;
+  border-radius:12px;
+}
+.departures-box .form-row { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.departures-box .form-control-lg { min-height:42px; font-size:13px !important; }
+.departures-box .btn-link { min-height:auto; color:var(--danger) !important; }
+.departures-box > .btn { margin-top:4px; }
+
+@media (max-width:900px) { .departures-box .form-row { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px) { .departures-box .form-row { grid-template-columns:1fr; } }

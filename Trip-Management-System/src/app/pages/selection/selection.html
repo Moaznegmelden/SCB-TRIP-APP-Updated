@@ -1,0 +1,113 @@
+<header class="brand-header">
+<div class="scb-logo-container">
+  <div class="scb-logo-waves">
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+    <div class="scb-wave"></div>
+  </div>
+  <div class="scb-logo-text">Suez Canal Bank</div>
+</div>
+<div class="header-brand-line"></div>
+<div class="user-dropdown-container">
+  <button class="user-profile-btn" type="button">
+    <div class="avatar-circle">HU</div>
+    <div class="user-info">
+      <span class="user-name">HR User</span>
+      <span class="user-role">Maker Authority</span>
+    </div>
+  </button>
+</div>
+</header>
+
+<div class="container-fluid px-4">
+  <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+    <div class="fw-bold text-scb text-uppercase small">Administration / Trips / Selection</div>
+    <ul class="page-nav-links d-none d-md-flex">
+      <li><a href="#">Employee Services</a></li>
+      <li><a href="#">Trips</a></li>
+      <li><a href="#">My requests</a></li>
+      <li><a href="#">Tasks</a></li>
+      <li><a href="#" class="active">Administration</a></li>
+    </ul>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h3 class="fw-bold text-scb mb-1">Trip Selection &amp; Applicants Pool</h3>
+      <p class="text-muted small mb-0">Select allocation methodology and preview selected applicants for <strong>Steigenberger El Gouna</strong>.</p>
+    </div>
+    <div>
+      <a href="announcement.html" class="btn btn-primary shadow-sm">Go To Announcement</a>
+    </div>
+  </div>
+
+  <div class="card border-light-subtle shadow-sm p-4 mb-4">
+    <h5 class="fw-bold text-scb border-bottom pb-2 mb-3">1. Choose Allocation Logic</h5>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="option-card-box d-flex align-items-start gap-3"
+             [class.active]="selectedStrategy === 'lottery'"
+             (click)="selectStrategy('lottery')">
+          <input type="radio" name="selectionStrategy" class="form-check-input mt-1" [checked]="selectedStrategy === 'lottery'">
+          <div>
+            <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 1: Random Selection (Lottery)</div>
+            <p class="text-muted small mb-2">Automated, unbiased random draw from all eligible applicants who registered before the deadline.</p>
+            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 11px;">Recommended for oversubscribed trips</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="option-card-box d-flex align-items-start gap-3"
+             [class.active]="selectedStrategy === 'fcfs'"
+             (click)="selectStrategy('fcfs')">
+          <input type="radio" name="selectionStrategy" class="form-check-input mt-1" [checked]="selectedStrategy === 'fcfs'">
+          <div>
+            <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 2: First-Come, First-Served (FCFS)</div>
+            <p class="text-muted small mb-2">Seats are allocated strictly in order of submission timestamp until capacity (3 spots) is filled.</p>
+            <span class="badge bg-secondary-subtle text-secondary fw-bold" style="font-size: 11px;">Standard priority rule</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-light-subtle shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+      <h5 class="fw-bold text-scb m-0">2. All Applied Employees ({{ applicantCount }} Applicants)</h5>
+      <span class="badge bg-light text-dark border fw-bold" style="font-size: 12px;">Capacity Quota: {{ confirmedCount }} Confirmed / {{ waitlistCount }} Waitlisted</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle table-custom mb-0">
+        <thead>
+          <tr>
+            <th>App ID</th>
+            <th>Employee Name</th>
+            <th>Department</th>
+            <th>Submission Timestamp</th>
+            <th>Eligibility</th>
+            <th>Preview Allocation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let applicant of applicants">
+            <td class="fw-bold text-muted">{{ applicant.appId }}</td>
+            <td><strong class="text-dark">{{ applicant.name }}</strong></td>
+            <td>{{ applicant.department }}</td>
+            <td>{{ applicant.timestamp }}</td>
+            <td>
+              <span *ngIf="applicant.eligible" class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span>
+              <span *ngIf="!applicant.eligible" class="badge bg-danger-subtle text-danger fw-bold">✗ Not Eligible</span>
+            </td>
+            <td>
+              <span *ngIf="applicant.allocationStatus === 'confirmed'" class="badge bg-success text-white fw-bold">Selected (Confirmed)</span>
+              <span *ngIf="applicant.allocationStatus === 'waitlist'" class="badge bg-warning-subtle text-warning-emphasis fw-bold">Waitlist</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

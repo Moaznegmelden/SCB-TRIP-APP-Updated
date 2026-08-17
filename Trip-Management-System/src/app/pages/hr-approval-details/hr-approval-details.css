@@ -1,0 +1,25 @@
+:host { display:block; min-height:100vh; }
+
+/* HR trip review/detail. */
+.container-fluid.px-4 { padding-left:0 !important; padding-right:0 !important; }
+.container-fluid.px-4 > *:not(.top-bar) { width:min(100%,var(--shell)); margin-left:auto; margin-right:auto; }
+.container-fluid.px-4 > .top-bar { width:min(100%,var(--shell)); }
+.container-fluid.px-4 > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+
+.container-fluid.px-4 > .d-flex:first-of-type h3 { color:var(--primary-dark); font-size:24px; }
+.container-fluid.px-4 > .d-flex:first-of-type .btn { min-width:120px; }
+
+.reason-panel { margin-left:var(--gutter) !important; margin-right:var(--gutter) !important; }
+
+.container-fluid.px-4 > .card { padding:22px; }
+.container-fluid.px-4 > .card h5 { color:var(--primary-dark); }
+.container-fluid.px-4 > .card .fw-semibold { color:var(--text); font-size:13px; }
+.container-fluid.px-4 > .card + .card { margin-top:0; }
+.container-fluid.px-4 table { min-width:720px; }
+.container-fluid.px-4 .alert-danger { margin-left:var(--gutter); margin-right:var(--gutter); border-radius:12px; }
+
+@media (max-width:700px) {
+  .container-fluid.px-4 > .d-flex { flex-direction:column; }
+  .container-fluid.px-4 > .d-flex .d-flex { width:100%; }
+  .container-fluid.px-4 > .d-flex .btn { flex:1; }
+}
