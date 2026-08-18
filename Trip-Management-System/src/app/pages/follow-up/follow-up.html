@@ -1,86 +1,423 @@
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-  </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container" *ngIf="user">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">{{ user.initials }}</div>
-    <div class="user-info">
-      <span class="user-name">{{ user.role }} · {{ user.fullName }}</span>
-      <span class="user-role">Employee Portal</span>
+
+  <div class="scb-logo-container">
+
+    <div class="scb-logo-waves">
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
     </div>
-  </button>
-</div>
+
+    <div class="scb-logo-text">
+      Suez Canal Bank
+    </div>
+
+  </div>
+
+  <div class="header-brand-line"></div>
+
+  <div
+    class="user-dropdown-container"
+    *ngIf="user">
+
+    <button
+      class="user-profile-btn"
+      type="button">
+
+      <div class="avatar-circle">
+        {{ user.initials }}
+      </div>
+
+      <div class="user-info">
+
+        <span class="user-name">
+          {{ user.role }} · {{ user.fullName }}
+        </span>
+
+        <span class="user-role">
+          Employee Portal
+        </span>
+
+      </div>
+
+    </button>
+
+  </div>
+
 </header>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
 <div class="top-bar page-shell-nav">
-  <div class="breadcrumb">Portal / My requests</div>
-  <ul class="page-nav-links"><li><a routerLink="/employee/services">Employee Services</a></li>
-    <li><a routerLink="/employee-dashboard">Trips</a></li>
-    <li><a routerLink="/my-requests" class="active">My requests</a></li>
-    <li><a routerLink="/tasks">Tasks</a></li></ul>
+
+  <div class="breadcrumb">
+    Portal / My requests
+  </div>
+
+  <ul class="page-nav-links">
+
+    <li>
+      <a routerLink="/employee/services">
+        Employee Services
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/employee-dashboard">
+        Trips
+      </a>
+    </li>
+
+    <li>
+      <a
+        routerLink="/my-requests"
+        class="active">
+        My requests
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/tasks">
+        Tasks
+      </a>
+    </li>
+
+  </ul>
+
 </div>
 
-<div class="page-header container" style="max-width:900px;margin:0 auto;padding:28px 24px 12px;" *ngIf="request">
+
+<!-- =========================
+     LOADING
+========================= -->
+
+<div
+  class="container"
+  style="max-width:900px;margin:40px auto;text-align:center;"
+  *ngIf="loading && !request && !loadError">
+
+  <p>
+    Loading request...
+  </p>
+
+</div>
+
+
+<!-- =========================
+     ERROR
+========================= -->
+
+<div
+  class="container"
+  style="max-width:900px;margin:40px auto;text-align:center;"
+  *ngIf="!request && loadError">
+
+  <h2>
+    Unable to load request
+  </h2>
+
+  <p>
+    The requested application could not be found.
+  </p>
+
+  <a
+    routerLink="/my-requests"
+    class="btn btn-outline">
+
+    Back to My Requests
+
+  </a>
+
+</div>
+
+
+<!-- =========================
+     REQUEST HEADER
+========================= -->
+
+<div
+  class="page-header container"
+  style="max-width:900px;margin:0 auto;padding:28px 24px 12px;"
+  *ngIf="request">
+
   <div>
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
-      <a routerLink="/employee-dashboard" style="color:var(--accent);text-decoration:none;">← Back to dashboard</a>
+
+    <p
+      style="
+        font-size:13px;
+        color:var(--text-muted);
+        margin-bottom:6px;
+      ">
+
+      <a
+        routerLink="/employee-dashboard"
+        style="
+          color:var(--accent);
+          text-decoration:none;
+        ">
+
+        ← Back to dashboard
+
+      </a>
+
     </p>
-    <h1>Request Follow-up</h1>
-    <p>{{ request.tripTitle }} · Departure {{ request.departureDate | date:'dd-MMM-yyyy' }}</p>
+
+    <h1>
+      Request Follow-up
+    </h1>
+
+    <p>
+      {{ request.tripTitle }}
+    </p>
+
   </div>
 
-  <span class="badge" [ngClass]="statusBadgeClass" style="font-size:13px;padding:6px 14px;">
+
+  <span
+    class="badge"
+    [ngClass]="statusBadgeClass"
+    style="
+      font-size:13px;
+      padding:6px 14px;
+    ">
+
     {{ request.statusDisplay }}
+
   </span>
+
 </div>
 
-<div class="container" style="max-width:900px;" *ngIf="request">
+
+<!-- =========================
+     REQUEST CONTENT
+========================= -->
+
+<div
+  class="container"
+  style="max-width:900px;"
+  *ngIf="request">
+
+
+  <!-- =========================
+       REQUEST SUMMARY
+  ========================= -->
 
   <div class="card">
-    <div class="card-title">Request Summary</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Request ID</label>
-        <div style="font-weight:600;">{{ request.requestId }}</div>
-      </div>
-      <div class="form-group">
-        <label>Submitted on</label>
-        <div style="font-weight:600;">{{ request.submittedAt | date:'dd-MMM-yyyy hh:mm a' }}</div>
-      </div>
-      <div class="form-group">
-        <label>Companions</label>
-        <div style="font-weight:600;">{{ request.companionCount }} adults</div>
-      </div>
-      <div class="form-group">
-        <label>Total amount</label>
-        <div style="font-weight:600;color:var(--primary);">{{ request.totalAmount | number:'1.0-0' }} EGP</div>
-      </div>
+
+    <div class="card-title">
+      Request Summary
     </div>
+
+
+    <div class="form-row">
+
+
+      <!-- REQUEST ID -->
+
+      <div class="form-group">
+
+        <label>
+          Request ID
+        </label>
+
+        <div style="font-weight:600;">
+
+          {{ request.requestId }}
+
+        </div>
+
+      </div>
+
+
+      <!-- SUBMITTED ON -->
+
+      <div class="form-group">
+
+        <label>
+          Submitted on
+        </label>
+
+        <div style="font-weight:600;">
+
+          <span *ngIf="request.submittedAt">
+            {{ request.submittedAt | date:'dd-MMM-yyyy hh:mm a' }}
+          </span>
+
+          <span *ngIf="!request.submittedAt">
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- COMPANIONS -->
+
+      <div class="form-group">
+
+        <label>
+          Companions
+        </label>
+
+        <div style="font-weight:600;">
+
+          {{ request.companionCount }} adults
+
+        </div>
+
+      </div>
+
+
+      <!-- TOTAL AMOUNT -->
+
+      <div class="form-group">
+
+        <label>
+          Total amount
+        </label>
+
+        <div
+          style="
+            font-weight:600;
+            color:var(--primary);
+          ">
+
+          {{ request.totalAmount | number:'1.0-0' }}
+          EGP
+
+        </div>
+
+      </div>
+
+
+    </div>
+
   </div>
 
-  <div class="card">
-    <div class="card-title">Approval Process Timeline</div>
+
+  <!-- =========================
+       APPROVAL TIMELINE
+  ========================= -->
+
+  <div class="card timeline-card">
+
+    <div class="card-title">
+      Approval Process Timeline
+    </div>
+
 
     <div class="timeline">
-      <div class="timeline-item" [ngClass]="timelineItemClass(step)"
-           *ngFor="let step of request.timelineSteps; let i = index">
 
-        <div class="dot">{{ dotLabel(step, i) }}</div>
-        <div class="tl-title">{{ step.title }}</div>
-        <div class="tl-meta" [innerHTML]="step.metaDescription"></div>
+
+      <div
+        class="timeline-item"
+        [ngClass]="timelineItemClass(step)"
+        *ngFor="
+          let step of request.timelineSteps;
+          let i = index
+        ">
+
+
+        <!-- LEFT SIDE -->
+
+        <div class="timeline-left">
+
+
+          <!-- DOT -->
+
+          <div class="dot">
+
+            {{ dotLabel(step, i) }}
+
+          </div>
+
+
+          <!-- CONNECTING LINE -->
+
+          <div
+            class="timeline-line"
+            *ngIf="
+              i < request.timelineSteps.length - 1
+            ">
+
+          </div>
+
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="timeline-content">
+
+
+          <div class="tl-title">
+
+            {{ step.title }}
+
+          </div>
+
+
+          <div class="tl-meta">
+
+            {{ step.metaDescription }}
+
+          </div>
+
+
+        </div>
+
+
       </div>
+
+
     </div>
+
   </div>
 
-  <div style="display:flex;gap:12px;margin-top:8px;" *ngIf="request.status === 'PENDING'">
-    <button type="button" class="btn btn-ghost" (click)="cancelRequest()">Cancel request</button>
-    <button type="button" class="btn btn-outline" (click)="sendReminder()">Send reminder</button>
+
+  <!-- =========================
+       ACTIONS
+  ========================= -->
+
+  <div
+    style="
+      display:flex;
+      gap:12px;
+      margin-top:8px;
+    "
+    *ngIf="request.status === 'PENDING'">
+
+
+    <button
+      type="button"
+      class="btn btn-ghost"
+      (click)="cancelRequest()">
+
+      Cancel request
+
+    </button>
+
+
+    <button
+      type="button"
+      class="btn btn-outline"
+      (click)="sendReminder()">
+
+      Send reminder
+
+    </button>
+
+
   </div>
+
 
 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +16,25 @@ interface ChildCompanion {
   nationalId: string;
 }
 
+interface Batch {
+  batchId: number;
+  startDate: string;
+  endDate: string;
+  numberOfRooms: number;
+  isActive: boolean;
+}
+
+interface TripDetails {
+  tripId: number;
+  title: string;
+  destination: string;
+  durationDays: number;
+  registrationOpen: string;
+  registrationClose: string;
+  statusName: string;
+  batches: Batch[];
+}
+
 @Component({
   selector: 'app-application',
   standalone: true,
@@ -23,7 +42,7 @@ interface ChildCompanion {
   templateUrl: './application.html',
   styleUrl: './application.css'   // ← add this
 })
-export class Application {
+export class Application implements OnInit {
 
   // ---- Pricing variables (can be loaded from API later) ----
   readonly PRICE = {
@@ -50,6 +69,14 @@ export class Application {
   childCompanions: ChildCompanion[] = [];
 
   submitting = false;
+
+  trip: TripDetails | null = null;
+
+selectedBatchId: number | null = null;
+
+loadingTrip = false;
+
+loadError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -130,58 +157,157 @@ export class Application {
     }
   }
 
+
+  ngOnInit(): void {
+
+  const tripId = this.route.snapshot.queryParamMap.get('tripId');
+
+  if (!tripId) {
+    alert('Trip ID is missing.');
+    return;
+  }
+
+  this.loadTrip(Number(tripId));
+}
+
+
+private loadTrip(tripId: number): void {
+
+  this.loadingTrip = true;
+  this.loadError = false;
+
+  this.http
+    .get<TripDetails>(`/api/trips/${tripId}`)
+    .subscribe({
+
+      next: (trip) => {
+
+        console.log('🔥 APPLICATION TRIP:', trip);
+
+        this.trip = trip;
+
+        this.loadingTrip = false;
+
+        if (trip.batches && trip.batches.length === 1) {
+          this.selectedBatchId = trip.batches[0].batchId;
+        }
+      },
+
+      error: (error) => {
+
+        console.error('🔥 APPLICATION TRIP ERROR:', error);
+
+        this.loadingTrip = false;
+        this.loadError = true;
+      }
+
+    });
+}
+
+formatDate(date: string): string {
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return date;
+  }
+
+  return parsedDate.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+
+
   // ---- Submit (was async handleSubmit(e)) ----
   onSubmit(): void {
-    if (!this.departure) {
-      alert('Please select a departure slot.');
-      return;
-    }
 
-    const tripId = this.route.snapshot.queryParamMap.get('tripId') || '1';
-    const batchId = this.route.snapshot.queryParamMap.get('batchId') || '1';
-    const employeeId = '1';
-
-    const payload = {
-      transportType: this.busSeat ? 'BUS' : 'NONE',
-      pickupPoint: 'Cairo',
-      roomsRequested: 1,
-      totalPrice: this.total,
-      participants: [
-        ...this.adultCompanions.map(c => ({
-          type: 'ADULT',
-          fullName: c.name,
-          relation: c.relation,
-          nationalId: c.nationalId
-        })),
-        ...this.childCompanions.map(c => ({
-          type: 'CHILD',
-          fullName: c.name,
-          dateOfBirth: c.dob,
-          nationalId: c.nationalId
-        }))
-      ],
-      infants: this.infants,
-      extraActivity: this.extraActivity,
-      notes: this.notes
-    };
-
-    this.submitting = true;
-
-    this.http
-      .post(
-        `http://localhost:8080/api/applications?tripId=${tripId}&batchId=${batchId}&employeeId=${employeeId}`,
-        payload
-      )
-      .subscribe({
-        next: () => {
-          this.submitting = false;
-          alert('Application submitted successfully!\nIt has been sent to your manager for approval.');
-          this.router.navigate(['/myreq']);
-        },
-        error: () => {
-          this.submitting = false;
-          alert('Unable to submit application. Start the backend server and verify the database connection.');
-        }
-      });
+  if (!this.trip) {
+    alert('Trip information is not loaded.');
+    return;
   }
+
+  if (!this.selectedBatchId) {
+    alert('Please select a departure slot.');
+    return;
+  }
+
+  const employeeId = 1015;
+
+  const payload = {
+
+   transportType: this.busSeat
+  ? 'TRIP_BUS'
+  : 'PRIVATE_CAR',
+
+    pickupPoint: 'Cairo',
+
+    roomsRequested: 1,
+
+    totalPrice: this.total,
+
+    participants: [
+
+      ...this.adultCompanions.map(c => ({
+        fullName: c.name,
+        relationship: c.relation,
+        dateOfBirth: null
+      })),
+
+      ...this.childCompanions.map(c => ({
+        fullName: c.name,
+        relationship: 'CHILD',
+        dateOfBirth: c.dob
+      }))
+
+    ]
+
+  };
+
+  console.log('🔥 APPLICATION REQUEST:', {
+    tripId: this.trip.tripId,
+    batchId: this.selectedBatchId,
+    employeeId,
+    payload
+  });
+
+  this.submitting = true;
+
+  this.http
+    .post(
+      `/api/applications?tripId=${this.trip.tripId}&batchId=${this.selectedBatchId}&employeeId=${employeeId}`,
+      payload
+    )
+    .subscribe({
+
+      next: (response) => {
+
+        console.log('🔥 APPLICATION RESPONSE:', response);
+
+        this.submitting = false;
+
+        alert(
+          'Application submitted successfully!\n' +
+          'It has been sent to your manager for approval.'
+        );
+
+        this.router.navigate(['/my-requests']);
+      },
+
+      error: (error) => {
+
+        console.error('🔥 APPLICATION ERROR:', error);
+
+        this.submitting = false;
+
+        const message =
+          error?.error?.message ||
+          'Unable to submit application.';
+
+        alert(message);
+      }
+
+    });
+   } 
 }

@@ -75,10 +75,12 @@
               </span>
             </td>
             <td style="white-space:nowrap;">
-              <a [routerLink]="['/trip-details']" [queryParams]="{ id: trip.tripId }"
-                 class="btn btn-sm btn-outline" style="margin-right:6px;">View details</a>
-              <a [routerLink]="['/application']" [queryParams]="{ tripId: trip.tripId, batchId: 1 }"
-                 class="btn btn-sm btn-primary">Apply to trip</a>
+              <a
+  [routerLink]="['/application']"
+  [queryParams]="{ tripId: trip.tripId }"
+  class="btn btn-sm btn-primary">
+  Apply to trip
+</a>
             </td>
           </tr>
         </tbody>

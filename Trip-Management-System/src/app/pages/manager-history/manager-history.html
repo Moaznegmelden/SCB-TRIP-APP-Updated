@@ -1,109 +1,1161 @@
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-  </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">MS</div>
-    <div class="user-info">
-      <span class="user-name">Manager · Mohamed Salah</span>
-      <span class="user-role">Manager</span>
+
+  <div class="scb-logo-container">
+
+    <div class="scb-logo-waves">
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
     </div>
-  </button>
-</div>
+
+    <div class="scb-logo-text">
+      Suez Canal Bank
+    </div>
+
+  </div>
+
+  <div class="header-brand-line"></div>
+
+  <div class="user-dropdown-container">
+
+    <button
+      class="user-profile-btn"
+      type="button">
+
+      <div class="avatar-circle">
+        MS
+      </div>
+
+      <div class="user-info">
+
+        <span class="user-name">
+          Manager · Mohamed Salah
+        </span>
+
+        <span class="user-role">
+          Manager
+        </span>
+
+      </div>
+
+    </button>
+
+  </div>
+
 </header>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
 <div class="top-bar page-shell-nav">
-  <div class="breadcrumb">Portal / My requests</div>
-  <ul class="page-nav-links"><li><a href="#">Employee Services</a></li>
-    <li><a routerLink="/employee-dashboard">Trips</a></li>
-    <li><a routerLink="/my-requests">My requests</a></li>
-    <li><a href="#">Tasks</a></li>
-    <li><a routerLink="/manager-history" class="active">History</a></li>
-    <li><a href="#">Administration</a></li></ul>
+
+  <div class="breadcrumb">
+    Portal / Approval History
+  </div>
+
+  <ul class="page-nav-links">
+
+    <li>
+      <a href="#">
+        Employee Services
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/employee-dashboard">
+        Trips
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/my-requests">
+        My requests
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        Tasks
+      </a>
+    </li>
+
+    <li>
+      <a
+        routerLink="/manager-history"
+        class="active">
+        History
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        Administration
+      </a>
+    </li>
+
+  </ul>
+
 </div>
 
-<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<div
+  class="page-header container"
+  style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+
   <div>
-    <h1>Approval History</h1>
-    <p>Review and action employee trip requests under your authority.</p>
+
+    <h1>
+      Approval History
+    </h1>
+
+    <p>
+      Review and action employee trip requests under your authority.
+    </p>
+
   </div>
+
 </div>
 
-<div class="container">
 
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">Pending your action</div>
-      <div class="stat-value" style="color:var(--pending)">{{ statPendingAction }}</div>
+<!-- =========================
+     MAIN CONTAINER
+========================= -->
+
+<div
+  class="container"
+  style="max-width:1200px;">
+
+
+  <!-- =========================
+       LOADING
+  ========================= -->
+
+  <div
+  *ngIf="loading && requests.length === 0 && !loadError"
+  class="card"
+  style="text-align:center;padding:40px;">
+
+  <p>
+    Loading employee requests...
+  </p>
+
+</div>
+
+
+  <!-- =========================<!-- =========================
+     HEADER
+========================= -->
+
+<header class="brand-header">
+
+  <div class="scb-logo-container">
+
+    <div class="scb-logo-waves">
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Approved (this month)</div>
-      <div class="stat-value" style="color:var(--success)">{{ statApprovedThisMonth }}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Rejected</div>
-      <div class="stat-value" style="color:var(--danger)">{{ statRejected }}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Expired</div>
-      <div class="stat-value" style="color:var(--text-muted)">{{ statExpired }}</div>
+
+    <div class="scb-logo-text">
+      Suez Canal Bank
     </div>
   </div>
 
-  <div class="card">
-    <div class="tabs" id="historyTabs">
-      <button class="tab" [class.active]="activeTab === 'pending'" (click)="switchTab('pending')">
-        Pending <span style="background:var(--pending-bg);color:var(--pending);padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;">{{ pendingCount }}</span>
-      </button>
-      <button class="tab" [class.active]="activeTab === 'approved'" (click)="switchTab('approved')">Approved</button>
-      <button class="tab" [class.active]="activeTab === 'rejected'" (click)="switchTab('rejected')">Rejected</button>
-      <button class="tab" [class.active]="activeTab === 'expired'" (click)="switchTab('expired')">Expired</button>
+  <div class="header-brand-line"></div>
+
+  <div class="user-dropdown-container">
+
+    <button
+      class="user-profile-btn"
+      type="button">
+
+      <div class="avatar-circle">
+        MS
+      </div>
+
+      <div class="user-info">
+
+        <span class="user-name">
+          Manager · Mohamed Salah
+        </span>
+
+        <span class="user-role">
+          Manager
+        </span>
+
+      </div>
+
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<div class="top-bar page-shell-nav">
+
+  <div class="breadcrumb">
+    Portal / Approval History
+  </div>
+
+  <ul class="page-nav-links">
+
+    <li>
+      <a href="#">
+        Employee Services
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/employee-dashboard">
+        Trips
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/my-requests">
+        My requests
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        Tasks
+      </a>
+    </li>
+
+    <li>
+      <a
+        routerLink="/manager-history"
+        class="active">
+        History
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        Administration
+      </a>
+    </li>
+
+  </ul>
+
+</div>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<div
+  class="page-header container"
+  style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+
+  <div>
+
+    <h1>
+      Approval History
+    </h1>
+
+    <p>
+      Review and action employee trip requests under your authority.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTAINER
+========================= -->
+
+<div
+  class="container"
+  style="max-width:1200px;">
+
+
+  <!-- =========================
+       LOADING
+       يظهر فقط لو مفيش بيانات
+  ========================= -->
+
+  <div
+    *ngIf="loading && requests.length === 0 && !loadError"
+    class="card"
+    style="text-align:center;padding:40px;">
+
+    <p>
+      Loading employee requests...
+    </p>
+
+  </div>
+
+
+  <!-- =========================
+       ERROR
+  ========================= -->
+
+  <div
+    *ngIf="loadError && requests.length === 0"
+    class="card"
+    style="text-align:center;padding:40px;">
+
+    <h3>
+      Unable to load requests
+    </h3>
+
+    <p>
+      There was a problem loading the employee requests.
+    </p>
+
+    <button
+      type="button"
+      class="btn btn-outline"
+      (click)="loadRequests()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       PAGE CONTENT
+       يعتمد على وجود requests
+  ========================= -->
+
+  <ng-container
+    *ngIf="requests.length > 0 && !loadError">
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <div class="stats-row">
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Pending your action
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--pending);">
+
+          {{ statPendingAction }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Approved (this month)
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--success);">
+
+          {{ statApprovedThisMonth }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Rejected
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--danger);">
+
+          {{ statRejected }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Expired
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--text-muted);">
+
+          {{ statExpired }}
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="table-wrap">
-      <table id="historyTable">
-        <thead>
-          <tr>
-            <th>Request ID</th>
-            <th>Employee Name</th>
-            <th>Employee ID</th>
-            <th>Trip Name</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Submission Date</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let req of filteredRequests">
-            <td><strong>{{ req.requestId }}</strong></td>
-            <td class="emp-name">{{ req.empName }}</td>
-            <td class="emp-id">{{ req.empId }}</td>
-            <td class="trip-name">{{ req.tripName }}</td>
-            <td>{{ req.startDate }}</td>
-            <td>{{ req.endDate }}</td>
-            <td>{{ req.submissionDate }}</td>
-            <td><span class="badge" [ngClass]="'badge-' + req.status">{{ statusLabel(req.status) }}</span></td>
-            <td style="white-space:nowrap;">
-              <ng-container *ngIf="req.status === 'pending'; else viewBtn">
-                <button class="btn btn-sm btn-success" (click)="actionRow(req, 'approved')">Approve</button>
-                <button class="btn btn-sm btn-danger" (click)="actionRow(req, 'rejected')">Reject</button>
-              </ng-container>
-              <ng-template #viewBtn>
-                <button class="btn btn-sm btn-outline">View</button>
-              </ng-template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- =========================
+         REQUEST TABLE CARD
+    ========================= -->
+
+    <div class="card">
+
+
+      <!-- =========================
+           TABS
+      ========================= -->
+
+      <div
+        class="tabs"
+        id="historyTabs">
+
+
+        <!-- PENDING -->
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'pending'"
+          (click)="switchTab('pending')">
+
+          Pending
+
+          <span
+            style="
+              background:var(--pending-bg);
+              color:var(--pending);
+              padding:2px 8px;
+              border-radius:10px;
+              font-size:11px;
+              margin-left:5px;
+            ">
+
+            {{ pendingCount }}
+
+          </span>
+
+        </button>
+
+
+        <!-- APPROVED -->
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'approved'"
+          (click)="switchTab('approved')">
+
+          Approved
+
+        </button>
+
+
+        <!-- REJECTED -->
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'rejected'"
+          (click)="switchTab('rejected')">
+
+          Rejected
+
+        </button>
+
+
+        <!-- EXPIRED -->
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'expired'"
+          (click)="switchTab('expired')">
+
+          Expired
+
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           EMPTY STATE
+      ========================= -->
+
+      <div
+        *ngIf="filteredRequests.length === 0"
+        style="
+          text-align:center;
+          padding:45px 20px;
+          color:var(--text-muted);
+        ">
+
+        <h3 style="margin-bottom:8px;">
+
+          No {{ statusLabel(activeTab) }} requests
+
+        </h3>
+
+        <p style="margin:0;">
+
+          There are currently no requests in this category.
+
+        </p>
+
+      </div>
+
+
+      <!-- =========================
+           TABLE
+      ========================= -->
+
+      <div
+        class="table-wrap"
+        *ngIf="filteredRequests.length > 0">
+
+        <table id="historyTable">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Request ID
+              </th>
+
+              <th>
+                Employee Name
+              </th>
+
+              <th>
+                Employee ID
+              </th>
+
+              <th>
+                Trip Name
+              </th>
+
+              <th>
+                Start Date
+              </th>
+
+              <th>
+                End Date
+              </th>
+
+              <th>
+                Submission Date
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let req of filteredRequests">
+
+
+              <!-- REQUEST ID -->
+
+              <td>
+
+                <strong>
+                  {{ req.requestId }}
+                </strong>
+
+              </td>
+
+
+              <!-- EMPLOYEE NAME -->
+
+              <td class="emp-name">
+
+                {{ req.empName }}
+
+              </td>
+
+
+              <!-- EMPLOYEE ID -->
+
+              <td class="emp-id">
+
+                {{ req.empId }}
+
+              </td>
+
+
+              <!-- TRIP -->
+
+              <td class="trip-name">
+
+                {{ req.tripName }}
+
+              </td>
+
+
+              <!-- START DATE -->
+
+              <td>
+
+                {{ req.startDate }}
+
+              </td>
+
+
+              <!-- END DATE -->
+
+              <td>
+
+                {{ req.endDate }}
+
+              </td>
+
+
+              <!-- SUBMISSION DATE -->
+
+              <td>
+
+                {{ req.submissionDate }}
+
+              </td>
+
+
+              <!-- STATUS -->
+
+              <td>
+
+                <span
+                  class="badge"
+                  [ngClass]="'badge-' + req.status">
+
+                  {{ statusLabel(req.status) }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTION -->
+
+              <td
+                style="white-space:nowrap;">
+
+
+                <!-- PENDING ACTIONS -->
+
+                <ng-container
+                  *ngIf="
+                    req.status === 'pending';
+                    else viewButton
+                  ">
+
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success"
+                    (click)="actionRow(req, 'approved')">
+
+                    Approve
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    style="margin-left:6px;"
+                    (click)="actionRow(req, 'rejected')">
+
+                    Reject
+
+                  </button>
+
+
+                </ng-container>
+
+
+                <!-- VIEW BUTTON -->
+
+                <ng-template #viewButton>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline">
+
+                    View
+
+                  </button>
+
+                </ng-template>
+
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
+
+  </ng-container>
+
+
+</div>
+       ERROR
+  ========================= -->
+
+  <div
+    *ngIf="!loading && loadError"
+    class="card"
+    style="text-align:center;padding:40px;">
+
+    <h3>
+      Unable to load requests
+    </h3>
+
+    <p>
+      There was a problem loading the employee requests.
+    </p>
+
+    <button
+      type="button"
+      class="btn btn-outline"
+      (click)="loadRequests()">
+
+      Try Again
+
+    </button>
+
   </div>
+
+
+  <!-- =========================
+       PAGE CONTENT
+  ========================= -->
+
+  <ng-container *ngIf="!loadError">
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <div class="stats-row">
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Pending your action
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--pending);">
+
+          {{ statPendingAction }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Approved (this month)
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--success);">
+
+          {{ statApprovedThisMonth }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Rejected
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--danger);">
+
+          {{ statRejected }}
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Expired
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--text-muted);">
+
+          {{ statExpired }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         REQUEST TABLE CARD
+    ========================= -->
+
+    <div class="card">
+
+
+      <!-- =========================
+           TABS
+      ========================= -->
+
+      <div
+        class="tabs"
+        id="historyTabs">
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'pending'"
+          (click)="switchTab('pending')">
+
+          Pending
+
+          <span
+            style="
+              background:var(--pending-bg);
+              color:var(--pending);
+              padding:2px 8px;
+              border-radius:10px;
+              font-size:11px;
+              margin-left:5px;
+            ">
+
+            {{ pendingCount }}
+
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'approved'"
+          (click)="switchTab('approved')">
+
+          Approved
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'rejected'"
+          (click)="switchTab('rejected')">
+
+          Rejected
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'expired'"
+          (click)="switchTab('expired')">
+
+          Expired
+
+        </button>
+
+      </div>
+
+
+      <!-- =========================
+           EMPTY STATE
+      ========================= -->
+
+      <div
+        *ngIf="filteredRequests.length === 0"
+        style="
+          text-align:center;
+          padding:45px 20px;
+          color:var(--text-muted);
+        ">
+
+        <h3 style="margin-bottom:8px;">
+          No {{ statusLabel(activeTab) }} requests
+        </h3>
+
+        <p style="margin:0;">
+          There are currently no requests in this category.
+        </p>
+
+      </div>
+
+
+      <!-- =========================
+           TABLE
+      ========================= -->
+
+      <div
+        class="table-wrap"
+        *ngIf="filteredRequests.length > 0">
+
+        <table id="historyTable">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Request ID
+              </th>
+
+              <th>
+                Employee Name
+              </th>
+
+              <th>
+                Employee ID
+              </th>
+
+              <th>
+                Trip Name
+              </th>
+
+              <th>
+                Start Date
+              </th>
+
+              <th>
+                End Date
+              </th>
+
+              <th>
+                Submission Date
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let req of filteredRequests">
+
+
+              <!-- REQUEST ID -->
+
+              <td>
+
+                <strong>
+                  {{ req.requestId }}
+                </strong>
+
+              </td>
+
+
+              <!-- EMPLOYEE NAME -->
+
+              <td class="emp-name">
+
+                {{ req.empName }}
+
+              </td>
+
+
+              <!-- EMPLOYEE ID -->
+
+              <td class="emp-id">
+
+                {{ req.empId }}
+
+              </td>
+
+
+              <!-- TRIP -->
+
+              <td class="trip-name">
+
+                {{ req.tripName }}
+
+              </td>
+
+
+              <!-- START DATE -->
+
+              <td>
+
+                {{ req.startDate }}
+
+              </td>
+
+
+              <!-- END DATE -->
+
+              <td>
+
+                {{ req.endDate }}
+
+              </td>
+
+
+              <!-- SUBMISSION DATE -->
+
+              <td>
+
+                {{ req.submissionDate }}
+
+              </td>
+
+
+              <!-- STATUS -->
+
+              <td>
+
+                <span
+                  class="badge"
+                  [ngClass]="'badge-' + req.status">
+
+                  {{ statusLabel(req.status) }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTION -->
+
+              <td
+                style="white-space:nowrap;">
+
+
+                <!-- PENDING -->
+
+                <ng-container
+                  *ngIf="req.status === 'pending'; else viewButton">
+
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success"
+                    (click)="actionRow(req, 'approved')">
+
+                    Approve
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    style="margin-left:6px;"
+                    (click)="actionRow(req, 'rejected')">
+
+                    Reject
+
+                  </button>
+
+
+                </ng-container>
+
+
+                <!-- NON-PENDING -->
+
+                <ng-template #viewButton>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline">
+
+                    View
+
+                  </button>
+
+                </ng-template>
+
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </ng-container>
 
 </div>

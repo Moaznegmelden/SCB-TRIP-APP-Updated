@@ -19,7 +19,7 @@
 </div>
 </header>
 
-<div class="container-fluid px-4" *ngIf="trip">
+<div class="approval-page" *ngIf="trip">
 
   <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
     <div class="fw-bold text-scb text-uppercase small">
@@ -36,15 +36,102 @@
         on <span>{{ trip.submittedAt | date:'dd MMM yyyy HH:mm' }}</span>
       </p>
     </div>
-    <div class="d-flex gap-2">
-      <button type="button" class="btn btn-outline-danger" (click)="toggleReason(true)">
-        Reject
-      </button>
-      <button type="button" class="btn btn-scb-primary" (click)="approve()">
-        Approve &amp; Publish
-      </button>
-    </div>
+      <div class="d-flex gap-2">
+
+  <button
+  type="button"
+  class="btn btn-outline-secondary"
+  (click)="toggleReturnReason(true)">
+  Return
+</button>
+
+  <button
+    type="button"
+    class="btn btn-outline-danger"
+    (click)="toggleReason(true)">
+    Reject
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-scb-primary"
+    (click)="approve()">
+    Approve &amp; Publish
+  </button>
+
+</div>
+
+</div>
+
+<div class="return-panel" [class.show]="showReturnReason">
+
+  <label>
+    Reason for return <span class="req">*</span>
+  </label>
+
+  <textarea
+    class="form-control"
+    rows="3"
+    [(ngModel)]="returnReasonInput"
+    name="returnReasonInput"
+    placeholder="Please enter the reason for returning this trip...">
+  </textarea>
+
+  <div class="reason-actions">
+
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm"
+      (click)="toggleReturnReason(false)">
+      Cancel
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-warning btn-sm"
+      (click)="returnTrip()">
+      Confirm return
+    </button>
+
   </div>
+
+</div>
+
+<div
+  class="reason-panel"
+  [class.show]="showReturnReason">
+
+  <label>
+    Reason for return <span class="req">*</span>
+  </label>
+
+  <textarea
+    class="form-control"
+    rows="3"
+    [(ngModel)]="returnReasonInput"
+    name="returnReasonInput"
+    placeholder="Please enter the reason for returning this trip...">
+  </textarea>
+
+  <div class="reason-actions">
+
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm"
+      (click)="toggleReturnReason(false)">
+      Cancel
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-warning btn-sm"
+      (click)="returnTrip()">
+      Confirm return
+    </button>
+
+  </div>
+
+</div>
 
   <div class="reason-panel" [class.show]="showRejectReason">
     <label>Reason for rejection <span class="req">*</span></label>
