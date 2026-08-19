@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 interface Departure {
   startDate: string;
   endDate: string;
+  numberOfRooms: number;
 }
 
 @Component({
@@ -17,50 +18,78 @@ interface Departure {
 })
 export class Creation {
 
-  // ---- Trip fields (was th:field="*{title}" etc.) ----
   title = '';
   destination = '';
   duration = '';
   registrationOpens = '';
   registrationCloses = '';
 
-  // ---- Departures / batches (was th:each="dep, iterStat : *{departures}") ----
-  // Starts with one empty row, mirroring a fresh Thymeleaf-backed form.
   departures: Departure[] = [
-    { startDate: '', endDate: '' }
+    { startDate: '', endDate: '', numberOfRooms: 0 }
   ];
 
   submitting = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // ---- Was the "addDeparture" named submit button (server round-trip) ----
   addDeparture(): void {
-    this.departures.push({ startDate: '', endDate: '' });
+    this.departures.push({ startDate: '', endDate: '', numberOfRooms: 0 });
   }
 
-  // ---- Was the "removeDeparture" named submit button (server round-trip) ----
   removeDeparture(index: number): void {
     this.departures.splice(index, 1);
   }
 
-  // ---- Was th:action="@{/admin/trips/save}" th:object="${trip}" method="post" ----
   onSubmit(): void {
-    const payload = {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const createdById = currentUser.employeeId;
+
+    const tripPayload = {
       title: this.title,
       destination: this.destination,
-      duration: this.duration,
-      registrationOpens: this.registrationOpens,
-      registrationCloses: this.registrationCloses,
-      departures: this.departures
+      durationDays: Number(this.duration),
+      registrationOpen: this.registrationOpens,
+      registrationClose: this.registrationCloses
     };
+
+    console.log('PAYLOAD:', tripPayload);
 
     this.submitting = true;
 
-    this.http.post('/admin/trips/save', payload).subscribe({
-      next: () => {
-        this.submitting = false;
-        this.router.navigate(['/admin/trips']);
+    this.http.post<any>(
+      `http://localhost:8080/api/trips?createdById=${createdById}`,
+      tripPayload
+    ).subscribe({
+      next: (trip) => {
+        const tripId = trip.tripId;
+
+        const batchRequests = this.departures.map(dep =>
+          this.http.post(
+            `http://localhost:8080/api/trips/${tripId}/batches?createdById=${createdById}`,
+            {
+              startDate: dep.startDate,
+              endDate: dep.endDate,
+              numberOfRooms: dep.numberOfRooms
+            }
+          ).toPromise()
+        );
+
+        Promise.all(batchRequests)
+          .then(() => this.http.post(`http://localhost:8080/api/trips/${tripId}/submit`, {}).toPromise())
+          .then(() => {
+            this.submitting = false;
+            alert('Trip created and submitted for approval!');
+            this.title = '';
+            this.destination = '';
+            this.duration = '';
+            this.registrationOpens = '';
+            this.registrationCloses = '';
+            this.departures = [{ startDate: '', endDate: '', numberOfRooms: 0 }];
+          })
+          .catch(() => {
+            this.submitting = false;
+            alert('Trip created, but saving batches or submitting failed.');
+          });
       },
       error: () => {
         this.submitting = false;
