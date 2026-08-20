@@ -1,0 +1,204 @@
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="brand-header">
+
+  <!-- =========================
+       SCB LOGO
+  ========================== -->
+
+  <div class="scb-logo-container">
+
+    <div class="scb-logo-waves">
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
+      <div class="scb-wave"></div>
+    </div>
+
+    <div class="scb-logo-text">
+      Suez Canal Bank
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       BLUE LINE
+  ========================== -->
+
+  <div class="header-brand-line"></div>
+
+
+  <!-- =========================
+       CURRENT USER
+  ========================== -->
+
+  <div
+    class="user-dropdown-container"
+    *ngIf="currentUser">
+
+    <button
+      class="user-profile-btn"
+      type="button">
+
+      <div class="avatar-circle">
+        {{ initials }}
+      </div>
+
+      <div class="user-info">
+
+        <span class="user-name">
+          {{ roleLabel }} · {{ displayName }}
+        </span>
+
+        <span class="user-role">
+          {{ roleLabel }}
+        </span>
+
+      </div>
+
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<div class="top-bar page-shell-nav">
+
+  <!-- =========================
+       BREADCRUMB
+  ========================== -->
+
+  <div class="breadcrumb">
+    Portal
+  </div>
+
+
+  <!-- =========================
+       NAVIGATION LINKS
+  ========================== -->
+
+  <ul class="page-nav-links">
+
+    <!-- =========================
+         COMMON TO EVERYONE
+         Trips
+    ========================== -->
+
+    <li>
+      <a
+        routerLink="/employee-dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        Trips
+
+      </a>
+    </li>
+
+
+    <!-- =========================
+         COMMON TO EVERYONE
+         My Requests
+    ========================== -->
+
+    <li>
+      <a
+        routerLink="/my-requests"
+        routerLinkActive="active">
+
+        My requests
+
+      </a>
+    </li>
+
+
+    <!-- =========================
+         COMMON TO EVERYONE
+         History
+    ========================== -->
+
+    <li>
+      <a
+        routerLink="/manager-history"
+        routerLinkActive="active">
+
+        History
+
+      </a>
+    </li>
+
+
+    <!-- =========================
+         HR ADMIN ONLY
+         Create Trips
+    ========================== -->
+
+    <li *ngIf="canCreateTrips()">
+
+      <a
+        routerLink="/admin/trips/create"
+        routerLinkActive="active">
+
+        Create Trips
+
+      </a>
+
+    </li>
+
+
+    <!-- =========================
+         TASKS
+         HR ADMIN
+         HR MANAGER
+         LINE MANAGER
+    ========================== -->
+
+    <li *ngIf="hasTasks()">
+
+      <!-- HR ADMIN -->
+
+      <a
+        *ngIf="isHrAdmin()"
+        routerLink="/admin/trips/selection"
+        routerLinkActive="active">
+
+        Tasks
+
+      </a>
+
+
+      <!-- HR MANAGER -->
+
+      <a
+        *ngIf="isHrManager()"
+        routerLink="/admin/trips/approvals"
+        routerLinkActive="active">
+
+        Tasks
+
+      </a>
+
+
+      <!-- LINE MANAGER -->
+
+      <a
+        *ngIf="isLineManager()"
+        routerLink="/manager-history"
+        routerLinkActive="active">
+
+        Tasks
+
+      </a>
+
+    </li>
+
+  </ul>
+
+</div>

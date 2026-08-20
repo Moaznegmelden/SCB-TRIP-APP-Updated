@@ -4,6 +4,8 @@ import com.scb.tripsystem.entity.Status;
 import com.scb.tripsystem.repository.StatusRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StatusService {
 
@@ -15,6 +17,11 @@ public class StatusService {
 
     public Status getByName(String name) {
         return statusRepository.findByStatusName(name)
-                .orElseThrow(() -> new RuntimeException("Status not found: " + name));
+                .orElseThrow(() ->
+                        new RuntimeException("Status not found: " + name));
+    }
+
+    public List<Status> getAllStatuses() {
+        return statusRepository.findAll();
     }
 }

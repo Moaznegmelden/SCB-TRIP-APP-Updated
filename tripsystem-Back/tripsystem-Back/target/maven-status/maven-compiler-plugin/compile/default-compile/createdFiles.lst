@@ -1,4 +1,5 @@
 com\scb\tripsystem\entity\Employee.class
+com\scb\tripsystem\security\JwtService.class
 com\scb\tripsystem\entity\Role.class
 com\scb\tripsystem\dto\ApplicationCreateRequest.class
 com\scb\tripsystem\repository\DepartmentRepository.class
@@ -40,6 +41,7 @@ com\scb\tripsystem\dto\SelectionRequest.class
 com\scb\tripsystem\security\CustomUserDetailsService.class
 com\scb\tripsystem\entity\Application.class
 com\scb\tripsystem\service\ApplicationService.class
+com\scb\tripsystem\controller\SwaggerController.class
 com\scb\tripsystem\entity\ApplicationParticipant.class
 com\scb\tripsystem\repository\EmployeeRepository.class
 com\scb\tripsystem\controller\ApplicationController.class

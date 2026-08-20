@@ -3,217 +3,553 @@ package com.scb.tripsystem.controller;
 import com.scb.tripsystem.dto.*;
 import com.scb.tripsystem.entity.*;
 import com.scb.tripsystem.service.ApplicationService;
+import com.scb.tripsystem.service.CurrentUserService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RestController
 @RequestMapping("/api/applications")
 public class ApplicationController {
 
     private final ApplicationService applicationService;
+    private final CurrentUserService currentUserService;
 
-    public ApplicationController(ApplicationService applicationService) {
+    public ApplicationController(
+            ApplicationService applicationService,
+            CurrentUserService currentUserService) {
+
         this.applicationService = applicationService;
+        this.currentUserService = currentUserService;
     }
 
 
+    // =========================================================
+    // EMPLOYEE - APPLY FOR TRIP
+    // =========================================================
 
     @PostMapping
     public ResponseEntity<ApplicationResponse> applyForTrip(
+
             @RequestParam Long tripId,
+
             @RequestParam Long batchId,
-            @RequestParam Long employeeId,
+
             @RequestBody ApplicationCreateRequest request) {
 
-        Employee employee = new Employee();
-        employee.setEmployeeId(employeeId);
+        // Get employee from JWT
+        Employee employee =
+                currentUserService.getCurrentEmployee();
 
         List<ApplicationParticipant> participants = null;
+
         if (request.getParticipants() != null) {
-            participants = request.getParticipants().stream().map(p -> {
-                ApplicationParticipant ap = new ApplicationParticipant();
-                ap.setFullName(p.getFullName());
-                ap.setRelationship(p.getRelationship());
-                ap.setDateOfBirth(p.getDateOfBirth());
-                return ap;
-            }).collect(Collectors.toList());
+
+            participants =
+                    request.getParticipants()
+                            .stream()
+                            .map(p -> {
+
+                                ApplicationParticipant ap =
+                                        new ApplicationParticipant();
+
+                                ap.setFullName(
+                                        p.getFullName()
+                                );
+
+                                ap.setRelationship(
+                                        p.getRelationship()
+                                );
+
+                                ap.setDateOfBirth(
+                                        p.getDateOfBirth()
+                                );
+
+                                return ap;
+                            })
+                            .collect(Collectors.toList());
         }
 
-        Application saved = applicationService.applyForTrip(
-                tripId,
-                batchId,
-                employee,
-                request.getTransportType(),
-                request.getPickupPoint(),
-                request.getRoomsRequested(),
-                request.getTotalPrice(),
-                participants
-        );
+        Application saved =
+                applicationService.applyForTrip(
 
-        return ResponseEntity.ok(toApplicationResponse(saved));
+                        tripId,
+
+                        batchId,
+
+                        employee,
+
+                        request.getTransportType(),
+
+                        request.getPickupPoint(),
+
+                        request.getRoomsRequested(),
+
+                        request.getTotalPrice(),
+
+                        participants
+                );
+
+        return ResponseEntity.ok(
+                toApplicationResponse(saved)
+        );
     }
+
+
+    // =========================================================
+    // EMPLOYEE - MY APPLICATIONS
+    // =========================================================
 
     @GetMapping("/my")
-    public ResponseEntity<List<ApplicationResponse>> getMyApplications(@RequestParam Long employeeId) {
-        Employee employee = new Employee();
-        employee.setEmployeeId(employeeId);
+    public ResponseEntity<List<ApplicationResponse>>
+    getMyApplications() {
 
-        List<ApplicationResponse> list = applicationService.getMyApplications(employee)
-                .stream()
-                .map(this::toApplicationResponse)
-                .collect(Collectors.toList());
+        Employee employee =
+                currentUserService.getCurrentEmployee();
+
+        List<ApplicationResponse> list =
+                applicationService
+                        .getMyApplications(employee)
+                        .stream()
+                        .map(this::toApplicationResponse)
+                        .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
+
+
+    // =========================================================
+    // APPLICATION HISTORY
+    // =========================================================
 
     @GetMapping("/{applicationId}/history")
-    public ResponseEntity<List<ApprovalHistoryResponse>> getHistory(@PathVariable Long applicationId) {
-        List<ApprovalHistoryResponse> list = applicationService.getApplicationHistory(applicationId)
-                .stream()
-                .map(this::toHistoryResponse)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<ApprovalHistoryResponse>>
+    getHistory(
+            @PathVariable Long applicationId) {
+
+        List<ApprovalHistoryResponse> list =
+                applicationService
+                        .getApplicationHistory(applicationId)
+                        .stream()
+                        .map(this::toHistoryResponse)
+                        .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
 
-    // -------------------------------------------------------
+
+    // =========================================================
     // LINE MANAGER
-    // -------------------------------------------------------
+    // =========================================================
 
-    @GetMapping("/manager/{managerId}")
-    public ResponseEntity<List<ApplicationResponse>> getApplicationsForManager(@PathVariable Long managerId) {
-        List<ApplicationResponse> list = applicationService.getApplicationsForManager(managerId)
-                .stream()
-                .map(this::toApplicationResponse)
-                .collect(Collectors.toList());
+    @GetMapping("/manager")
+    public ResponseEntity<List<ApplicationResponse>>
+    getApplicationsForCurrentManager() {
+
+        Employee manager =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                manager,
+                "LINE_MANAGER"
+        );
+
+        List<ApplicationResponse> list =
+                applicationService
+                        .getApplicationsForManager(
+                                manager.getEmployeeId()
+                        )
+                        .stream()
+                        .map(this::toApplicationResponse)
+                        .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/manager/{managerId}/pending")
-    public ResponseEntity<List<ApplicationResponse>> getPendingForManager(@PathVariable Long managerId) {
-        List<ApplicationResponse> list = applicationService.getPendingApplicationsForManager(managerId)
-                .stream()
-                .map(this::toApplicationResponse)
-                .collect(Collectors.toList());
+
+    // =========================================================
+    // LINE MANAGER - PENDING
+    // =========================================================
+
+    @GetMapping("/manager/pending")
+    public ResponseEntity<List<ApplicationResponse>>
+    getPendingForCurrentManager() {
+
+        Employee manager =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                manager,
+                "LINE_MANAGER"
+        );
+
+        List<ApplicationResponse> list =
+                applicationService
+                        .getPendingApplicationsForManager(
+                                manager.getEmployeeId()
+                        )
+                        .stream()
+                        .map(this::toApplicationResponse)
+                        .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
+
+
+    // =========================================================
+    // LINE MANAGER - APPROVE
+    // =========================================================
 
     @PostMapping("/{applicationId}/approve")
-    public ResponseEntity<ApplicationResponse> approveByManager(
+    public ResponseEntity<ApplicationResponse>
+    approveByManager(
+
             @PathVariable Long applicationId,
-            @RequestParam Long managerId,
-            @RequestBody(required = false) ManagerDecisionRequest request) {
 
-        Employee manager = new Employee();
-        manager.setEmployeeId(managerId);
+            @RequestBody(
+                    required = false
+            )
+            ManagerDecisionRequest request) {
 
-        String comments = request != null ? request.getComments() : "";
-        Application updated = applicationService.approveByManager(applicationId, manager, comments);
-        return ResponseEntity.ok(toApplicationResponse(updated));
+        Employee manager =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                manager,
+                "LINE_MANAGER"
+        );
+
+        String comments =
+                request != null
+                        ? request.getComments()
+                        : "";
+
+        Application updated =
+                applicationService.approveByManager(
+
+                        applicationId,
+
+                        manager,
+
+                        comments
+                );
+
+        return ResponseEntity.ok(
+                toApplicationResponse(updated)
+        );
     }
+
+
+    // =========================================================
+    // LINE MANAGER - REJECT
+    // =========================================================
 
     @PostMapping("/{applicationId}/reject")
-    public ResponseEntity<ApplicationResponse> rejectByManager(
+    public ResponseEntity<ApplicationResponse>
+    rejectByManager(
+
             @PathVariable Long applicationId,
-            @RequestParam Long managerId,
-            @RequestBody(required = false) ManagerDecisionRequest request) {
 
-        Employee manager = new Employee();
-        manager.setEmployeeId(managerId);
+            @RequestBody(
+                    required = false
+            )
+            ManagerDecisionRequest request) {
 
-        String comments = request != null ? request.getComments() : "";
-        Application updated = applicationService.rejectByManager(applicationId, manager, comments);
-        return ResponseEntity.ok(toApplicationResponse(updated));
+        Employee manager =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                manager,
+                "LINE_MANAGER"
+        );
+
+        String comments =
+                request != null
+                        ? request.getComments()
+                        : "";
+
+        Application updated =
+                applicationService.rejectByManager(
+
+                        applicationId,
+
+                        manager,
+
+                        comments
+                );
+
+        return ResponseEntity.ok(
+                toApplicationResponse(updated)
+        );
     }
 
 
+    // =========================================================
+    // HR ADMIN - READY FOR SELECTION
+    // =========================================================
 
-    @GetMapping("/trip/{tripId}/ready-for-selection")
-    public ResponseEntity<List<ApplicationResponse>> getReadyForSelection(@PathVariable Long tripId) {
-        List<ApplicationResponse> list = applicationService.getApplicationsReadyForSelection(tripId)
-                .stream()
-                .map(this::toApplicationResponse)
-                .collect(Collectors.toList());
+    @GetMapping(
+            "/trip/{tripId}/ready-for-selection"
+    )
+    public ResponseEntity<List<ApplicationResponse>>
+    getReadyForSelection(
+            @PathVariable Long tripId) {
+
+        Employee hrAdmin =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                hrAdmin,
+                "HR_ADMIN"
+        );
+
+        List<ApplicationResponse> list =
+                applicationService
+                        .getApplicationsReadyForSelection(
+                                tripId
+                        )
+                        .stream()
+                        .map(this::toApplicationResponse)
+                        .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/trip/{tripId}/select")
-    public ResponseEntity<String> performSelection(
+
+    // =========================================================
+    // HR ADMIN - SELECTION
+    // =========================================================
+
+    @PostMapping(
+            "/trip/{tripId}/select"
+    )
+    public ResponseEntity<String>
+    performSelection(
+
             @PathVariable Long tripId,
-            @RequestParam Long hrUserId,
+
             @RequestBody SelectionRequest request) {
 
-        Employee hrUser = new Employee();
-        hrUser.setEmployeeId(hrUserId);
+        Employee hrAdmin =
+                currentUserService.getCurrentEmployee();
 
-        applicationService.performSelection(tripId, request.getMethod(), hrUser);
-        return ResponseEntity.ok("Selection started with method: " + request.getMethod());
+        currentUserService.requireRole(
+                hrAdmin,
+                "HR_ADMIN"
+        );
+
+        applicationService.performSelection(
+
+                tripId,
+
+                request.getMethod(),
+
+                hrAdmin
+        );
+
+        return ResponseEntity.ok(
+                "Selection started with method: "
+                        + request.getMethod()
+        );
     }
 
+
+    // =========================================================
+    // GET APPLICATION
+    // =========================================================
 
     @GetMapping("/{applicationId}")
-    public ResponseEntity<ApplicationResponse> getApplication(@PathVariable Long applicationId) {
-        Application app = applicationService.getApplicationById(applicationId);
-        return ResponseEntity.ok(toApplicationResponse(app));
+    public ResponseEntity<ApplicationResponse>
+    getApplication(
+            @PathVariable Long applicationId) {
+
+        Application app =
+                applicationService
+                        .getApplicationById(
+                                applicationId
+                        );
+
+        return ResponseEntity.ok(
+                toApplicationResponse(app)
+        );
     }
 
 
+    // =========================================================
+    // RESPONSE MAPPING
+    // =========================================================
 
-    private ApplicationResponse toApplicationResponse(Application app) {
-        ApplicationResponse dto = new ApplicationResponse();
-        dto.setApplicationId(app.getApplicationId());
-        dto.setTransportType(app.getTransportType());
-        dto.setPickupPoint(app.getPickupPoint());
-        dto.setRoomsRequested(app.getRoomsRequested());
-        dto.setTotalPrice(app.getTotalPrice());
-        dto.setSelectionMethod(app.getSelectionMethod());
-        dto.setSelectedAt(app.getSelectedAt());
+    private ApplicationResponse toApplicationResponse(
+            Application app) {
+
+        ApplicationResponse dto =
+                new ApplicationResponse();
+
+        dto.setApplicationId(
+                app.getApplicationId()
+        );
+
+        dto.setTransportType(
+                app.getTransportType()
+        );
+
+        dto.setPickupPoint(
+                app.getPickupPoint()
+        );
+
+        dto.setRoomsRequested(
+                app.getRoomsRequested()
+        );
+
+        dto.setTotalPrice(
+                app.getTotalPrice()
+        );
+
+        dto.setSelectionMethod(
+                app.getSelectionMethod()
+        );
+
+        dto.setSelectedAt(
+                app.getSelectedAt()
+        );
+
 
         if (app.getStatus() != null) {
-            dto.setStatusName(app.getStatus().getStatusName());
+
+            dto.setStatusName(
+                    app.getStatus().getStatusName()
+            );
         }
+
+
         if (app.getEmployee() != null) {
-            dto.setEmployeeId(app.getEmployee().getEmployeeId());
-            dto.setEmployeeName(app.getEmployee().getFullName());
-            dto.setEmployeeNumber(app.getEmployee().getEmployeeNumber());
+
+            dto.setEmployeeId(
+                    app.getEmployee().getEmployeeId()
+            );
+
+            dto.setEmployeeName(
+                    app.getEmployee().getFullName()
+            );
+
+            dto.setEmployeeNumber(
+                    app.getEmployee().getEmployeeNumber()
+            );
         }
+
+
         if (app.getTrip() != null) {
-            dto.setTripId(app.getTrip().getTripId());
-            dto.setTripTitle(app.getTrip().getTitle());
-            dto.setDestination(app.getTrip().getDestination());
+
+            dto.setTripId(
+                    app.getTrip().getTripId()
+            );
+
+            dto.setTripTitle(
+                    app.getTrip().getTitle()
+            );
+
+            dto.setDestination(
+                    app.getTrip().getDestination()
+            );
         }
+
+
         if (app.getBatch() != null) {
-            dto.setBatchId(app.getBatch().getBatchId());
+
+            dto.setBatchId(
+                    app.getBatch().getBatchId()
+            );
         }
+
+
         if (app.getParticipants() != null) {
-            dto.setParticipants(app.getParticipants().stream()
-                    .map(this::toParticipantResponse)
-                    .collect(Collectors.toList()));
+
+            dto.setParticipants(
+                    app.getParticipants()
+                            .stream()
+                            .map(
+                                    this::toParticipantResponse
+                            )
+                            .collect(
+                                    Collectors.toList()
+                            )
+            );
         }
+
         return dto;
     }
 
-    private ParticipantResponse toParticipantResponse(ApplicationParticipant p) {
-        ParticipantResponse dto = new ParticipantResponse();
-        dto.setParticipantId(p.getParticipantId());
-        dto.setFullName(p.getFullName());
-        dto.setRelationship(p.getRelationship());
-        dto.setDateOfBirth(p.getDateOfBirth());
+
+    // =========================================================
+    // PARTICIPANT MAPPING
+    // =========================================================
+
+    private ParticipantResponse toParticipantResponse(
+            ApplicationParticipant p) {
+
+        ParticipantResponse dto =
+                new ParticipantResponse();
+
+        dto.setParticipantId(
+                p.getParticipantId()
+        );
+
+        dto.setFullName(
+                p.getFullName()
+        );
+
+        dto.setRelationship(
+                p.getRelationship()
+        );
+
+        dto.setDateOfBirth(
+                p.getDateOfBirth()
+        );
+
         return dto;
     }
 
-    private ApprovalHistoryResponse toHistoryResponse(ApprovalHistory h) {
-        ApprovalHistoryResponse dto = new ApprovalHistoryResponse();
-        dto.setHistoryId(h.getHistoryId());
-        dto.setRoleAtAction(h.getRoleAtAction());
-        dto.setAction(h.getAction());
-        dto.setComments(h.getComments());
-        dto.setActionAt(h.getActionAt());
+
+    // =========================================================
+    // HISTORY MAPPING
+    // =========================================================
+
+    private ApprovalHistoryResponse toHistoryResponse(
+            ApprovalHistory h) {
+
+        ApprovalHistoryResponse dto =
+                new ApprovalHistoryResponse();
+
+        dto.setHistoryId(
+                h.getHistoryId()
+        );
+
+        dto.setRoleAtAction(
+                h.getRoleAtAction()
+        );
+
+        dto.setAction(
+                h.getAction()
+        );
+
+        dto.setComments(
+                h.getComments()
+        );
+
+        dto.setActionAt(
+                h.getActionAt()
+        );
+
         if (h.getActionBy() != null) {
-            dto.setActionByName(h.getActionBy().getFullName());
+
+            dto.setActionByName(
+                    h.getActionBy().getFullName()
+            );
         }
+
         return dto;
     }
 }

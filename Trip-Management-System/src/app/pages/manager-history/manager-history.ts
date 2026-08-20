@@ -4,62 +4,88 @@ import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-type HistoryStatus = 'pending' | 'approved' | 'rejected' | 'expired';
+type HistoryStatus =
+  'pending'
+  | 'approved'
+  | 'rejected'
+  | 'expired';
 
 interface ApplicationApi {
   applicationId?: number;
   batchId?: number;
+
   destination?: string;
+
   employeeId?: number;
   employeeName?: string;
   employeeNumber?: string;
+
   participants?: unknown[];
+
   pickupPoint?: string;
   roomsRequested?: number;
+
   selectedAt?: string | null;
   selectionMethod?: string | null;
+
   statusName?: string;
+
   totalPrice?: number;
   transportType?: string;
+
   tripId?: number;
   tripTitle?: string;
 }
 
 interface HistoryRequest {
+
   applicationId: number;
+
   requestId: string;
+
   empName: string;
+
   empId: string;
+
   tripName: string;
+
   startDate: string;
+
   endDate: string;
+
   submissionDate: string;
+
   status: HistoryStatus;
+
   destination: string;
+
   companions: number;
+
   totalPrice: number;
 }
 
 @Component({
   selector: 'app-manager-history',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [
+    CommonModule,
+    RouterLink
+  ],
   templateUrl: './manager-history.html'
 })
 export class ManagerHistory implements OnInit {
 
-  // =========================
-  // MANAGER
-  // =========================
+  // =========================================================
+  // CURRENT USER
+  // =========================================================
 
-  private readonly MANAGER_ID = 1017;
+  currentUser: any = null;
 
-  private readonly API_URL =
-  `http://localhost:8080/api/applications/manager/${this.MANAGER_ID}`;
+  managerId: number | null = null;
 
-  // =========================
+  // =========================================================
   // PAGE STATE
-  // =========================
+  // =========================================================
 
   requests: HistoryRequest[] = [];
 
@@ -67,90 +93,232 @@ export class ManagerHistory implements OnInit {
 
   loadError = false;
 
-  // =========================
+  // =========================================================
   // STATISTICS
-  // =========================
+  // =========================================================
 
   statPendingAction = 0;
+
   statApprovedThisMonth = 0;
+
   statRejected = 0;
+
   statExpired = 0;
 
-  // =========================
+  // =========================================================
   // TABS
-  // =========================
+  // =========================================================
 
   activeTab: HistoryStatus = 'pending';
+
 
   constructor(
     private http: HttpClient
   ) {}
 
-  // =========================
+
+  // =========================================================
   // INIT
-  // =========================
+  // =========================================================
 
   ngOnInit(): void {
-    this.loadRequests();
+
+    this.loadCurrentUser();
+
   }
 
-  // =========================
-  // LOAD MANAGER REQUESTS
-  // =========================
 
- loadRequests(): void {
+  // =========================================================
+  // LOAD CURRENT USER
+  // =========================================================
 
-  this.loading = true;
-  this.loadError = false;
+  private loadCurrentUser(): void {
 
-  this.http
-    .get<ApplicationApi[]>(this.API_URL)
-    .pipe(
-      finalize(() => {
-        this.loading = false;
-      })
-    )
-    .subscribe({
+    const currentUserJson =
+      localStorage.getItem('currentUser');
 
-     next: (applications) => {
+    if (!currentUserJson) {
 
-  console.log(
-    '🔥 MANAGER APPLICATIONS:',
-    applications
-  );
+      console.error(
+        '🔥 MANAGER HISTORY: currentUser not found'
+      );
 
-  this.requests = applications.map(app =>
-    this.mapApplication(app)
-  );
+      this.loadError = true;
+      this.loading = false;
 
-  this.updateStatistics();
+      return;
+    }
 
-  this.loading = false;
+    try {
 
-  console.log(
-    '🔥 MANAGER REQUESTS:',
-    this.requests
-  );
-},
+      this.currentUser =
+        JSON.parse(currentUserJson);
 
-      error: (error) => {
+      console.log(
+        '🔥 MANAGER HISTORY USER:',
+        this.currentUser
+      );
 
-        console.error(
-          '🔥 MANAGER APPLICATIONS ERROR:',
-          error
-        );
+      const employeeNumber =
+        this.currentUser?.employeeNumber;
 
-        this.requests = [];
-        this.loadError = true;
+      /*
+       * IMPORTANT:
+       *
+       * Your backend employeeId is numeric.
+       *
+       * If currentUser contains employeeId,
+       * use it directly.
+       */
+
+      if (this.currentUser?.employeeId) {
+
+        this.managerId =
+          Number(this.currentUser.employeeId);
 
       }
 
-    });
-}
+      /*
+       * If employeeId is not available,
+       * we cannot safely guess it.
+       */
 
-  // =========================
+      if (!this.managerId) {
+
+        console.error(
+          '🔥 MANAGER HISTORY: employeeId not found in currentUser'
+        );
+
+        this.loadError = true;
+        this.loading = false;
+
+        return;
+      }
+
+      /*
+       * Check role before calling manager API.
+       */
+
+      const role =
+        String(this.currentUser?.role || '')
+          .toUpperCase();
+
+      console.log(
+        '🔥 MANAGER HISTORY ROLE:',
+        role
+      );
+
+      if (
+        role !== 'MANAGER' &&
+        role !== 'LINE_MANAGER'
+      ) {
+
+        console.error(
+          '🔥 USER IS NOT A MANAGER:',
+          role
+        );
+
+        this.loadError = true;
+        this.loading = false;
+
+        return;
+      }
+
+      this.loadRequests();
+
+    } catch (error) {
+
+      console.error(
+        '🔥 MANAGER HISTORY USER ERROR:',
+        error
+      );
+
+      this.loadError = true;
+      this.loading = false;
+
+    }
+  }
+
+
+  // =========================================================
+  // LOAD APPROVAL HISTORY
+  // =========================================================
+
+  loadRequests(): void {
+
+    if (!this.managerId) {
+
+      console.error(
+        '🔥 MANAGER ID IS MISSING'
+      );
+
+      return;
+    }
+
+    this.loading = true;
+
+    this.loadError = false;
+
+    const apiUrl =
+      `/api/applications/manager/${this.managerId}`;
+
+    console.log(
+      '🔥 MANAGER APPROVAL HISTORY API:',
+      apiUrl
+    );
+
+    this.http
+      .get<ApplicationApi[]>(apiUrl)
+      .pipe(
+        finalize(() => {
+
+          this.loading = false;
+
+        })
+      )
+      .subscribe({
+
+        next: (applications) => {
+
+          console.log(
+            '🔥 MANAGER APPLICATIONS:',
+            applications
+          );
+
+          this.requests =
+            applications.map(app =>
+              this.mapApplication(app)
+            );
+
+          this.updateStatistics();
+
+          console.log(
+            '🔥 MANAGER APPROVAL HISTORY:',
+            this.requests
+          );
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            '🔥 MANAGER APPLICATIONS ERROR:',
+            error
+          );
+
+          this.requests = [];
+
+          this.loadError = true;
+
+        }
+
+      });
+  }
+
+
+  // =========================================================
   // MAP API RESPONSE
-  // =========================
+  // =========================================================
 
   private mapApplication(
     app: ApplicationApi
@@ -165,13 +333,16 @@ export class ManagerHistory implements OnInit {
         `REQ-${app.applicationId ?? 0}`,
 
       empName:
-        app.employeeName ?? 'Unknown Employee',
+        app.employeeName ??
+        'Unknown Employee',
 
       empId:
-        app.employeeNumber ?? 'N/A',
+        app.employeeNumber ??
+        'N/A',
 
       tripName:
-        app.tripTitle ?? 'Trip',
+        app.tripTitle ??
+        'Trip',
 
       startDate:
         'N/A',
@@ -186,52 +357,72 @@ export class ManagerHistory implements OnInit {
         this.mapStatus(app.statusName),
 
       destination:
-        app.destination ?? 'N/A',
+        app.destination ??
+        'N/A',
 
       companions:
-        app.participants?.length ?? 0,
+        app.participants?.length ??
+        0,
 
       totalPrice:
-        app.totalPrice ?? 0
+        app.totalPrice ??
+        0
     };
   }
 
-  // =========================
+
+  // =========================================================
   // MAP STATUS
-  // =========================
+  // =========================================================
 
   private mapStatus(
-  statusName?: string
-): HistoryStatus {
+    statusName?: string
+  ): HistoryStatus {
 
-  const status =
-    (statusName ?? '').toUpperCase();
+    const status =
+      (statusName ?? '')
+        .toUpperCase();
 
-  if (
-    status === 'PENDING_MANAGER' ||
-    status.includes('PENDING')
-  ) {
+    if (
+      status === 'PENDING_MANAGER' ||
+      status.includes('PENDING')
+    ) {
+
+      return 'pending';
+
+    }
+
+    if (
+      status.includes('APPROV')
+    ) {
+
+      return 'approved';
+
+    }
+
+    if (
+      status.includes('REJECT')
+    ) {
+
+      return 'rejected';
+
+    }
+
+    if (
+      status.includes('EXPIRED')
+    ) {
+
+      return 'expired';
+
+    }
+
     return 'pending';
   }
 
-  if (status.includes('APPROV')) {
-    return 'approved';
-  }
 
-  if (status.includes('REJECT')) {
-    return 'rejected';
-  }
-
-  if (status.includes('EXPIRED')) {
-    return 'expired';
-  }
-
-  return 'pending';
-}
-
-  // =========================
+  // =========================================================
   // STATISTICS
-  // =========================
+  // =========================================================
 
   private updateStatistics(): void {
 
@@ -256,64 +447,99 @@ export class ManagerHistory implements OnInit {
       ).length;
   }
 
-  // =========================
-  // TABS
-  // =========================
 
-  switchTab(tab: HistoryStatus): void {
+  // =========================================================
+  // TABS
+  // =========================================================
+
+  switchTab(
+    tab: HistoryStatus
+  ): void {
 
     this.activeTab = tab;
   }
 
+
   get filteredRequests(): HistoryRequest[] {
 
     return this.requests.filter(
-      r => r.status === this.activeTab
+      r =>
+        r.status === this.activeTab
     );
   }
+
 
   get pendingCount(): number {
 
     return this.requests.filter(
-      r => r.status === 'pending'
+      r =>
+        r.status === 'pending'
     ).length;
   }
 
-  // =========================
+
+  // =========================================================
   // STATUS LABEL
-  // =========================
+  // =========================================================
 
   statusLabel(
     status: HistoryStatus
   ): string {
 
-    return status.charAt(0).toUpperCase()
-      + status.slice(1);
+    return (
+      status.charAt(0).toUpperCase() +
+      status.slice(1)
+    );
   }
 
-  // =========================
+
+  // =========================================================
   // APPROVE / REJECT
-  // =========================
+  // =========================================================
 
   actionRow(
     req: HistoryRequest,
     newStatus: 'approved' | 'rejected'
   ): void {
 
+    if (!this.managerId) {
+
+      alert(
+        'Manager information is missing.'
+      );
+
+      return;
+    }
+
     const action =
       newStatus === 'approved'
         ? 'Approve'
         : 'Reject';
 
-    if (!confirm(`${action} this request?`)) {
+    if (
+      !confirm(
+        `${action} this request?`
+      )
+    ) {
+
       return;
     }
 
+    const endpoint =
+      newStatus === 'approved'
+        ? 'approve'
+        : 'reject';
+
     const url =
-      `http://localhost:8080/api/applications/` +
+      `/api/applications/` +
       `${req.applicationId}/` +
-      `${newStatus === 'approved' ? 'approve' : 'reject'}` +
-      `?managerId=${this.MANAGER_ID}`;
+      `${endpoint}` +
+      `?managerId=${this.managerId}`;
+
+    console.log(
+      '🔥 MANAGER DECISION API:',
+      url
+    );
 
     this.http
       .post<ApplicationApi>(
@@ -329,7 +555,8 @@ export class ManagerHistory implements OnInit {
             response
           );
 
-          req.status = newStatus;
+          req.status =
+            newStatus;
 
           this.updateStatistics();
 
@@ -337,9 +564,14 @@ export class ManagerHistory implements OnInit {
             `Request ${req.requestId} ${newStatus}.`
           );
 
-          // Reload from backend so the table
-          // always reflects the real database state.
+          /*
+           * Reload from backend.
+           * This keeps the UI synchronized
+           * with the database.
+           */
+
           this.loadRequests();
+
         },
 
         error: (error) => {
@@ -352,6 +584,7 @@ export class ManagerHistory implements OnInit {
           alert(
             `Unable to ${newStatus} this request.`
           );
+
         }
 
       });

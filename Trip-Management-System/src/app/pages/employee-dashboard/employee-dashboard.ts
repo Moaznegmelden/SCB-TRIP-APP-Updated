@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Header } from '../../header/header';
 
 interface Trip {
   tripId: string;
@@ -27,19 +28,23 @@ interface Trip {
 @Component({
   selector: 'app-employee-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+
+  imports: [
+    CommonModule,
+    RouterLink,
+    Header
+  ],
+
   templateUrl: './employee-dashboard.html',
   styleUrl: './employee-dashboard.css'
 })
 export class EmployeeDashboard implements OnInit {
 
-    isHrOrManager = true;
-
   // =========================================================
   // DEMO MODE
   // =========================================================
 
-  usingDemoData = true;
+  usingDemoData = false;
 
   loadError = false;
 
@@ -66,9 +71,9 @@ export class EmployeeDashboard implements OnInit {
 
 
   constructor(
-  private http: HttpClient,
-  private cdr: ChangeDetectorRef
-) {}
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
 
 
   // =========================================================
@@ -76,72 +81,73 @@ export class EmployeeDashboard implements OnInit {
   // =========================================================
 
   ngOnInit(): void {
-  this.loadTrips();
+    this.loadTrips();
   }
 
 
   // =========================================================
-  // DEMO TRIP DATA
+  // LOAD ACTIVE TRIPS FROM BACKEND
   // =========================================================
 
-private loadTrips(): void {
+  private loadTrips(): void {
 
-  this.loadError = false;
-  this.trips = null;
+    this.loadError = false;
+    this.trips = null;
 
-  this.http
-    .get<any[]>('/api/trips/active')
-    .subscribe({
+    this.http
+      .get<any[]>('/api/trips/active')
+      .subscribe({
 
-      next: (backendTrips) => {
+        next: (backendTrips) => {
 
-        console.log('🔥 ACTIVE TRIPS:', backendTrips);
+          console.log('🔥 ACTIVE TRIPS:', backendTrips);
 
-        this.trips = backendTrips.map(trip => {
+          this.trips = backendTrips.map(trip => {
 
-          const firstBatch = trip.batches?.[0];
+            const firstBatch = trip.batches?.[0];
 
-          return {
-            tripId: String(trip.tripId),
+            return {
+              tripId: String(trip.tripId),
 
-            title: trip.title,
+              title: trip.title,
 
-            destination: trip.destination,
+              destination: trip.destination,
 
-            durationDays: trip.durationDays,
+              durationDays: trip.durationDays,
 
-            startDate: firstBatch?.startDate ?? '',
+              startDate: firstBatch?.startDate ?? '',
 
-            endDate: firstBatch?.endDate ?? '',
+              endDate: firstBatch?.endDate ?? '',
 
-            registrationOpen: trip.registrationOpen,
+              registrationOpen: trip.registrationOpen,
 
-            registrationClose: trip.registrationClose,
+              registrationClose: trip.registrationClose,
 
-            seatsAvailable: firstBatch?.numberOfRooms ?? 0,
+              seatsAvailable: firstBatch?.numberOfRooms ?? 0,
 
-            totalSeats: firstBatch?.numberOfRooms ?? 0,
+              totalSeats: firstBatch?.numberOfRooms ?? 0,
 
-            status: 'Open'
-          };
+              status: 'Open'
+            };
 
-        });
+          });
 
-        this.cdr.detectChanges();
+          this.cdr.detectChanges();
 
-        console.log('🔥 ANGULAR TRIPS:', this.trips);
-      },
+          console.log('🔥 ANGULAR TRIPS:', this.trips);
+        },
 
-      error: (error) => {
+        error: (error) => {
 
-        console.error('🔥 ACTIVE TRIPS ERROR:', error);
+          console.error('🔥 ACTIVE TRIPS ERROR:', error);
 
-        this.loadError = true;
-        this.trips = [];
-      }
+          this.loadError = true;
+          this.trips = [];
+        }
 
-    });
-}
+      });
+  }
+
 
   // =========================================================
   // HELPERS
@@ -193,16 +199,4 @@ private loadTrips(): void {
     }
   }
 
-
-  // =========================================================
-  // BACKEND VERSION - USE LATER
-  // =========================================================
-
-  /*
-   * When the Spring Boot backend is ready, we can replace
-   * loadDemoTrips() with the HttpClient implementation.
-   *
-   * For now we deliberately use local data so that you can
-   * finish and test the UI independently from the backend.
-   */
 }

@@ -1,4 +1,4 @@
-import { Fn as Injectable, Hi as setClassMetadata, Ol as ɵɵinject, al as inject, dr as Service, fc as DOCUMENT, ro as ɵɵdefineService, wc as InjectionToken, wl as ɵɵdefineInjectable } from "./core-DE9QWxfw.js";
+import { Fn as Injectable, Hi as setClassMetadata, Ol as ɵɵinject, al as inject, dr as Service, fc as DOCUMENT, ro as ɵɵdefineService, wc as InjectionToken, wl as ɵɵdefineInjectable } from "./core-btcLWRjE.js";
 //#region node_modules/@angular/common/fesm2022/_platform_location-chunk.mjs
 /**
 * @license Angular v22.1.0

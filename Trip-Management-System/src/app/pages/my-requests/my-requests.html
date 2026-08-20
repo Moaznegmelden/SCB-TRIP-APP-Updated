@@ -1,139 +1,364 @@
-<header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
+<!-- =========================================================
+     COMMON HEADER
+========================================================= -->
+
+<app-header></app-header>
+
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+
+<div
+  class="page-header container"
+  style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
+
+  <div>
+
+    <h1>
+      My Requests
+    </h1>
+
+    <p>
+      View, track, and manage all your submitted trip requests
+      and application statuses.
+    </p>
+
   </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">AH</div>
-    <div class="user-info">
-      <span class="user-name">Employee · Ahmed Hassan</span>
-      <span class="user-role">Employee Portal</span>
-    </div>
-  </button>
-</div>
-</header>
-<div class="top-bar page-shell-nav">
-  <div class="breadcrumb">Portal / My requests</div>
-  <ul class="page-nav-links"><li><a href="#">Employee Services</a></li>
-    <li><a routerLink="/employee-dashboard">Trips</a></li>
-    <li><a routerLink="/my-requests" class="active">My requests</a></li>
-    <li><a href="#">Tasks</a></li></ul>
+
 </div>
 
-<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
-  <div>
-    <h1>My Requests</h1>
-    <p>View, track, and manage all your submitted trip requests and application statuses.</p>
-  </div>
-</div>
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
 
 <div class="container">
 
+
+  <!-- =======================================================
+       STATISTICS
+  ======================================================== -->
+
   <div class="stats-row">
+
+    <!-- PENDING -->
+
     <div class="stat-card">
-      <div class="stat-label">Pending</div>
-      <div class="stat-value" style="color:var(--pending)">{{ statPending }}</div>
+
+      <div class="stat-label">
+        Pending
+      </div>
+
+      <div
+        class="stat-value"
+        style="color:var(--pending)">
+
+        {{ statPending }}
+
+      </div>
+
     </div>
+
+
+    <!-- APPROVED -->
+
     <div class="stat-card">
-      <div class="stat-label">Approved</div>
-      <div class="stat-value" style="color:var(--success)">{{ statApproved }}</div>
+
+      <div class="stat-label">
+        Approved
+      </div>
+
+      <div
+        class="stat-value"
+        style="color:var(--success)">
+
+        {{ statApproved }}
+
+      </div>
+
     </div>
+
+
+    <!-- REJECTED -->
+
     <div class="stat-card">
-      <div class="stat-label">Rejected</div>
-      <div class="stat-value" style="color:var(--danger)">{{ statRejected }}</div>
+
+      <div class="stat-label">
+        Rejected
+      </div>
+
+      <div
+        class="stat-value"
+        style="color:var(--danger)">
+
+        {{ statRejected }}
+
+      </div>
+
     </div>
+
+
+    <!-- TOTAL -->
+
     <div class="stat-card">
-      <div class="stat-label">Total Submitted</div>
-      <div class="stat-value">{{ statTotal }}</div>
+
+      <div class="stat-label">
+        Total Submitted
+      </div>
+
+      <div class="stat-value">
+
+        {{ statTotal }}
+
+      </div>
+
     </div>
+
   </div>
 
-  <div class="card">
-    <div class="card-title">Submitted Requests</div>
 
-    <div class="tabs" id="requestTabs">
-      <button class="tab" [class.active]="activeTab === 'all'" (click)="switchTab('all')">All</button>
-      <button class="tab" [class.active]="activeTab === 'pending'" (click)="switchTab('pending')">Pending</button>
-      <button class="tab" [class.active]="activeTab === 'approved'" (click)="switchTab('approved')">Approved</button>
-      <button class="tab" [class.active]="activeTab === 'rejected'" (click)="switchTab('rejected')">Rejected</button>
+  <!-- =======================================================
+       REQUESTS CARD
+  ======================================================== -->
+
+  <div class="card">
+
+    <div class="card-title">
+
+      Submitted Requests
+
     </div>
+
+
+    <!-- =====================================================
+         FILTER TABS
+    ====================================================== -->
+
+    <div
+      class="tabs"
+      id="requestTabs">
+
+      <button
+        class="tab"
+        [class.active]="activeTab === 'all'"
+        (click)="switchTab('all')">
+
+        All
+
+      </button>
+
+
+      <button
+        class="tab"
+        [class.active]="activeTab === 'pending'"
+        (click)="switchTab('pending')">
+
+        Pending
+
+      </button>
+
+
+      <button
+        class="tab"
+        [class.active]="activeTab === 'approved'"
+        (click)="switchTab('approved')">
+
+        Approved
+
+      </button>
+
+
+      <button
+        class="tab"
+        [class.active]="activeTab === 'rejected'"
+        (click)="switchTab('rejected')">
+
+        Rejected
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         REQUEST TABLE
+    ====================================================== -->
 
     <div class="table-wrap">
+
       <table id="requestsTable">
+
         <thead>
+
           <tr>
-            <th>Trip</th>
-            <th>Destination</th>
-            <th>Departure</th>
-            <th>Applied On</th>
-            <th>Companions</th>
-            <th>Status</th>
-            <th>Action</th>
+
+            <th>
+              Trip
+            </th>
+
+            <th>
+              Destination
+            </th>
+
+            <th>
+              Departure
+            </th>
+
+            <th>
+              Applied On
+            </th>
+
+            <th>
+              Companions
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Action
+            </th>
+
           </tr>
+
         </thead>
+
+
         <tbody>
 
-  <tr *ngFor="let req of filteredRequests">
 
-    <td>
-      <strong>{{ req.tripTitle }}</strong>
-    </td>
+          <!-- =================================================
+               REQUEST ROWS
+          ================================================== -->
 
-    <td>
-      {{ req.destination }}
-    </td>
+          <tr
+            *ngFor="let req of filteredRequests">
 
-    <td>
-      {{ req.departure }}
-    </td>
 
-    <td>
-      {{ req.appliedOn }}
-    </td>
+            <!-- TRIP -->
 
-    <td>
-      {{ req.companions }}
-    </td>
+            <td>
 
-    <td>
-      <span
-        class="badge"
-        [ngClass]="'badge-' + req.status">
-        {{ req.statusDisplay }}
-      </span>
-    </td>
+              <strong>
+                {{ req.tripTitle }}
+              </strong>
 
-    <td>
-    <a
-  [routerLink]="['/follow-up', req.applicationId]"
-  class="btn btn-sm btn-outline">
-  View
-</a>
-    </td>
+            </td>
 
-  </tr>
 
-  <tr *ngIf="requests !== null && filteredRequests.length === 0 && !loadError">
-    <td colspan="7">
-      No requests found.
-    </td>
-  </tr>
+            <!-- DESTINATION -->
 
-  <tr *ngIf="loadError">
-    <td colspan="7">
-      Unable to load requests. Start the backend server.
-    </td>
-  </tr>
+            <td>
 
-</tbody>
+              {{ req.destination }}
+
+            </td>
+
+
+            <!-- DEPARTURE -->
+
+            <td>
+
+              {{ req.departure }}
+
+            </td>
+
+
+            <!-- APPLIED ON -->
+
+            <td>
+
+              {{ req.appliedOn }}
+
+            </td>
+
+
+            <!-- COMPANIONS -->
+
+            <td>
+
+              {{ req.companions }}
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span
+                class="badge"
+                [ngClass]="'badge-' + req.status">
+
+                {{ req.statusDisplay }}
+
+              </span>
+
+            </td>
+
+
+            <!-- ACTION -->
+
+            <td>
+
+              <a
+                [routerLink]="['/follow-up', req.applicationId]"
+                class="btn btn-sm btn-outline">
+
+                View
+
+              </a>
+
+            </td>
+
+          </tr>
+
+
+          <!-- =================================================
+               EMPTY STATE
+          ================================================== -->
+
+          <tr
+            *ngIf="
+              requests !== null &&
+              filteredRequests.length === 0 &&
+              !loadError
+            ">
+
+            <td colspan="7">
+
+              No requests found.
+
+            </td>
+
+          </tr>
+
+
+          <!-- =================================================
+               ERROR STATE
+          ================================================== -->
+
+          <tr
+            *ngIf="loadError">
+
+            <td colspan="7">
+
+              Unable to load requests.
+              Start the backend server.
+
+            </td>
+
+          </tr>
+
+
+        </tbody>
+
       </table>
+
     </div>
+
   </div>
 
 </div>

@@ -1,103 +1,162 @@
-<header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-  </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">AH</div>
-    <div class="user-info">
-      <span class="user-name">Employee · Ahmed Hassan</span>
-      <span class="user-role">Employee Portal</span>
-    </div>
-  </button>
-</div>
-</header>
-<div class="top-bar page-shell-nav">
-  <div class="breadcrumb">Portal / Trips</div>
-  <ul class="page-nav-links">
-  <li><a routerLink="/employee-dashboard" class="active">Trips</a></li>
+<app-header></app-header>
 
- <li *ngIf="isHrOrManager">
-  <a routerLink="/admin/trips/create">Create Trips</a>
-</li>
 
- <li>
-  <a routerLink="/my-requests">My Requests</a>
-</li>
-  <li><a href="#">Tasks</a></li>
-</ul>
-</div>
+<div
+  class="page-header container"
+  style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
 
-<div class="page-header container" style="max-width:1200px;margin:0 auto;padding:28px 24px 12px;">
   <div>
+
     <h1>Active Trips Dashboard</h1>
-    <p>Browse available active trips and apply for upcoming departures.</p>
+
+    <p>
+      Browse available active trips and apply for upcoming departures.
+    </p>
+
   </div>
+
 </div>
+
 
 <div class="container">
 
-
-
   <div class="card">
-    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+
+    <div
+      class="card-title"
+      style="display:flex;justify-content:space-between;align-items:center;">
+
       <span>Active Trips</span>
-      <span style="font-size:13px;font-weight:500;color:var(--text-muted);">{{ trips?.length || 0 }} trip(s)</span>
+
+      <span
+        style="font-size:13px;font-weight:500;color:var(--text-muted);">
+
+        {{ trips?.length || 0 }} trip(s)
+
+      </span>
+
     </div>
 
-    <div class="table-wrap" *ngIf="trips && trips.length > 0">
+
+    <div
+      class="table-wrap"
+      *ngIf="trips && trips.length > 0">
+
       <table>
+
         <thead>
+
           <tr>
+
             <th>Trip</th>
+
             <th>Destination</th>
+
             <th>Duration</th>
+
             <th>Registration window</th>
+
             <th>Status</th>
+
             <th>Actions</th>
+
           </tr>
+
         </thead>
+
+
         <tbody>
+
           <tr *ngFor="let trip of trips">
-            <td><strong>{{ trip.title }}</strong></td>
-            <td>{{ trip.destination }}</td>
-            <td>{{ trip.durationDays || 'N/A' }} days</td>
-            <td>{{ registrationWindow(trip) }}</td>
+
             <td>
-              <span class="badge" [ngClass]="trip.status === 'Upcoming' ? 'badge-pending' : 'badge-active'">
+              <strong>
+                {{ trip.title }}
+              </strong>
+            </td>
+
+
+            <td>
+              {{ trip.destination }}
+            </td>
+
+
+            <td>
+              {{ trip.durationDays || 'N/A' }} days
+            </td>
+
+
+            <td>
+              {{ registrationWindow(trip) }}
+            </td>
+
+
+            <td>
+
+              <span
+                class="badge"
+                [ngClass]="
+                  trip.status === 'Upcoming'
+                    ? 'badge-pending'
+                    : 'badge-active'
+                ">
+
                 {{ trip.status || 'Open' }}
+
               </span>
+
             </td>
+
+
             <td style="white-space:nowrap;">
+
               <a
-  [routerLink]="['/application']"
-  [queryParams]="{ tripId: trip.tripId }"
-  class="btn btn-sm btn-primary">
-  Apply to trip
-</a>
+                [routerLink]="['/application']"
+                [queryParams]="{ tripId: trip.tripId }"
+                class="btn btn-sm btn-primary">
+
+                Apply to trip
+
+              </a>
+
             </td>
+
           </tr>
+
         </tbody>
+
       </table>
+
     </div>
 
-    <div class="empty" *ngIf="trips && trips.length === 0">
+
+    <div
+      class="empty"
+      *ngIf="trips && trips.length === 0">
+
       No active trips available right now.
+
     </div>
 
-    <div class="empty" *ngIf="trips === null">
+
+    <div
+      class="empty"
+      *ngIf="trips === null">
+
       Loading active trips…
+
     </div>
 
-    <div class="empty" *ngIf="loadError">
-      Unable to connect to the backend. Start the Spring Boot app on port 8080 and try again.
+
+    <div
+      class="empty"
+      *ngIf="loadError">
+
+      Unable to connect to the backend.
+      Start the Spring Boot app on port 8080 and try again.
+
     </div>
+
   </div>
 
 </div>
