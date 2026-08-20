@@ -1,42 +1,70 @@
 {
+<<<<<<< HEAD
   "hash": "746c53c1",
   "configHash": "20fa3d16",
   "lockfileHash": "b200e9a2",
   "browserHash": "6ee5f0a4",
+=======
+  "hash": "a71dd6aa",
+  "configHash": "691ca629",
+  "lockfileHash": "b200e9a2",
+  "browserHash": "c4b00f9e",
+>>>>>>> origin/jana
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
+<<<<<<< HEAD
       "fileHash": "451dce22",
+=======
+      "fileHash": "f3276a37",
+>>>>>>> origin/jana
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
+<<<<<<< HEAD
       "fileHash": "52216273",
+=======
+      "fileHash": "46a69041",
+>>>>>>> origin/jana
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
+<<<<<<< HEAD
       "fileHash": "f3b0c2cd",
+=======
+      "fileHash": "e6f4df35",
+>>>>>>> origin/jana
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
+<<<<<<< HEAD
       "fileHash": "e37327c9",
+=======
+      "fileHash": "38666baf",
+>>>>>>> origin/jana
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
+<<<<<<< HEAD
       "fileHash": "7b7a5795",
+=======
+      "fileHash": "fb6aebc8",
+>>>>>>> origin/jana
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
+<<<<<<< HEAD
       "fileHash": "ab33b1e3",
       "needsInterop": false
     },
@@ -44,6 +72,9 @@
       "src": "../../../../../../node_modules/rxjs/dist/esm5/operators/index.js",
       "file": "rxjs_operators.js",
       "fileHash": "5cfdf8a1",
+=======
+      "fileHash": "45777876",
+>>>>>>> origin/jana
       "needsInterop": false
     }
   },
