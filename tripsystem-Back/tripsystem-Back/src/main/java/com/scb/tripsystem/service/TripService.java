@@ -105,8 +105,8 @@ public class TripService {
         if (!"PENDING_APPROVAL".equals(trip.getStatus().getStatusName())) {
             throw new RuntimeException("Only PENDING_APPROVAL trips can be approved");
         }
-
-        trip.setStatus(statusService.getByName("ACTIVE"));
+        
+        trip.setStatus(statusService.getByName("APPROVED_BY_MANAGER"));
         return tripRepository.save(trip);
     }
 
