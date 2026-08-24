@@ -1,8 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs';
 import { Header } from '../../header/header';
 
 type HistoryStatus =
@@ -10,6 +9,21 @@ type HistoryStatus =
   | 'approved'
   | 'rejected'
   | 'expired';
+
+interface HistoryRequest {
+  applicationId: number;
+  requestId: string;
+  empName: string;
+  empId: string;
+  tripName: string;
+  startDate: string;
+  endDate: string;
+  submissionDate: string;
+  status: HistoryStatus;
+  destination: string;
+  companions: number;
+  totalPrice: number;
+}
 
 interface ApplicationApi {
   applicationId?: number;
@@ -38,57 +52,18 @@ interface ApplicationApi {
   tripTitle?: string;
 }
 
-interface HistoryRequest {
-
-  applicationId: number;
-
-  requestId: string;
-
-  empName: string;
-
-  empId: string;
-
-  tripName: string;
-
-  startDate: string;
-
-  endDate: string;
-
-  submissionDate: string;
-
-  status: HistoryStatus;
-
-  destination: string;
-
-  companions: number;
-
-  totalPrice: number;
-}
-
 @Component({
-  selector: 'app-manager-history',
+  selector: 'app-app-approval',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    Header
-  ],
-  templateUrl: './manager-history.html'
+  imports: [CommonModule,Header],
+  templateUrl: './app-approval.html',
+  styleUrl: './app-approval.css',
 })
-export class ManagerHistory implements OnInit {
-
-  // =========================================================
-  // CURRENT USER
-  // =========================================================
-
-  currentUser: any = null;
+export class AppApproval implements OnInit {
 
   managerId: number | null = null;
 
-
-  // =========================================================
-  // PAGE STATE
-  // =========================================================
+  statPendingAction = 0;
 
   requests: HistoryRequest[] = [];
 
@@ -97,115 +72,68 @@ export class ManagerHistory implements OnInit {
   loadError = false;
 
 
-  // =========================================================
-  // STATISTICS
-  // =========================================================
-
-  statPendingAction = 0;
-
-  statApprovedThisMonth = 0;
-
-  statRejected = 0;
-
-  statExpired = 0;
-
-
-  // =========================================================
-  // TABS
-  // =========================================================
-
-  activeTab: HistoryStatus = 'pending';
-
-
   constructor(
     private http: HttpClient
   ) {}
 
 
-  // =========================================================
-  // INIT
-  // =========================================================
-
   ngOnInit(): void {
 
-    this.loadCurrentUser();
-
-  }
-
-
-  // =========================================================
-  // LOAD CURRENT USER
-  // =========================================================
-
-  private loadCurrentUser(): void {
+    console.log('🔥 APP APPROVAL PAGE LOADED');
 
     const currentUserJson =
       localStorage.getItem('currentUser');
 
+    console.log(
+      '🔥 CURRENT USER FROM LOCAL STORAGE:',
+      currentUserJson
+    );
+
     if (!currentUserJson) {
 
       console.error(
-        '🔥 MANAGER HISTORY: currentUser not found'
+        '🔥 NO CURRENT USER FOUND'
       );
 
-      this.loadError = true;
       this.loading = false;
+      this.loadError = true;
 
       return;
     }
 
     try {
 
-      this.currentUser =
+      const currentUser =
         JSON.parse(currentUserJson);
 
       console.log(
-        '🔥 MANAGER HISTORY USER:',
-        this.currentUser
+        '🔥 PARSED CURRENT USER:',
+        currentUser
       );
 
-      if (this.currentUser?.employeeId) {
+      /*
+       * Try to get the manager employee ID
+       * from the login response.
+       */
+      this.managerId =
+        currentUser.employeeId ??
+        currentUser.id ??
+        currentUser.employee_id ??
+        null;
 
-        this.managerId =
-          Number(this.currentUser.employeeId);
-
-      }
+      console.log(
+        '🔥 MANAGER ID:',
+        this.managerId
+      );
 
       if (!this.managerId) {
 
         console.error(
-          '🔥 MANAGER HISTORY: employeeId not found in currentUser'
+          '🔥 MANAGER ID NOT FOUND IN LOGIN RESPONSE'
         );
 
-        this.loadError = true;
         this.loading = false;
-
-        return;
-      }
-
-      const role =
-        String(this.currentUser?.role || '')
-          .toUpperCase()
-          .trim()
-          .replace(/[\s-]+/g, '_');
-
-      console.log(
-        '🔥 MANAGER HISTORY ROLE:',
-        role
-      );
-
-      if (
-        role !== 'MANAGER' &&
-        role !== 'LINE_MANAGER'
-      ) {
-
-        console.error(
-          '🔥 USER IS NOT A MANAGER:',
-          role
-        );
-
         this.loadError = true;
-        this.loading = false;
 
         return;
       }
@@ -215,20 +143,48 @@ export class ManagerHistory implements OnInit {
     } catch (error) {
 
       console.error(
-        '🔥 MANAGER HISTORY USER ERROR:',
+        '🔥 ERROR READING CURRENT USER:',
         error
       );
 
-      this.loadError = true;
       this.loading = false;
+      this.loadError = true;
 
     }
+
   }
 
 
-  // =========================================================
-  // LOAD APPROVAL HISTORY
-  // =========================================================
+  get filteredRequests(): HistoryRequest[] {
+
+    return this.requests.filter(
+      request => request.status === 'pending'
+    );
+
+  }
+
+
+  statusLabel(
+    status: HistoryStatus
+  ): string {
+
+    return (
+      status.charAt(0).toUpperCase() +
+      status.slice(1)
+    );
+
+  }
+
+
+  private updateStatistics(): void {
+
+    this.statPendingAction =
+      this.requests.filter(
+        request => request.status === 'pending'
+      ).length;
+
+  }
+
 
   loadRequests(): void {
 
@@ -238,6 +194,9 @@ export class ManagerHistory implements OnInit {
         '🔥 MANAGER ID IS MISSING'
       );
 
+      this.loading = false;
+      this.loadError = true;
+
       return;
     }
 
@@ -245,10 +204,10 @@ export class ManagerHistory implements OnInit {
     this.loadError = false;
 
     const apiUrl =
-      `/api/applications/manager/${this.managerId}`;
+      `/api/applications/manager/pending`;
 
     console.log(
-      '🔥 MANAGER APPROVAL HISTORY API:',
+      '🔥 MANAGER APPROVAL API:',
       apiUrl
     );
 
@@ -266,7 +225,7 @@ export class ManagerHistory implements OnInit {
         next: (applications) => {
 
           console.log(
-            '🔥 MANAGER APPLICATIONS:',
+            '🔥 APPLICATIONS RECEIVED:',
             applications
           );
 
@@ -278,7 +237,7 @@ export class ManagerHistory implements OnInit {
           this.updateStatistics();
 
           console.log(
-            '🔥 MANAGER APPROVAL HISTORY:',
+            '🔥 FINAL REQUESTS:',
             this.requests
           );
 
@@ -297,12 +256,9 @@ export class ManagerHistory implements OnInit {
         }
 
       });
+
   }
 
-
-  // =========================================================
-  // MAP API RESPONSE
-  // =========================================================
 
   private mapApplication(
     app: ApplicationApi
@@ -338,7 +294,9 @@ export class ManagerHistory implements OnInit {
         'N/A',
 
       status:
-        this.mapStatus(app.statusName),
+        this.mapStatus(
+          app.statusName
+        ),
 
       destination:
         app.destination ??
@@ -351,13 +309,11 @@ export class ManagerHistory implements OnInit {
       totalPrice:
         app.totalPrice ??
         0
+
     };
+
   }
 
-
-  // =========================================================
-  // MAP STATUS
-  // =========================================================
 
   private mapStatus(
     statusName?: string
@@ -401,83 +357,9 @@ export class ManagerHistory implements OnInit {
     }
 
     return 'pending';
+
   }
 
-
-  // =========================================================
-  // STATISTICS
-  // =========================================================
-
-  private updateStatistics(): void {
-
-    this.statPendingAction =
-      this.requests.filter(
-        r => r.status === 'pending'
-      ).length;
-
-    this.statApprovedThisMonth =
-      this.requests.filter(
-        r => r.status === 'approved'
-      ).length;
-
-    this.statRejected =
-      this.requests.filter(
-        r => r.status === 'rejected'
-      ).length;
-
-    this.statExpired =
-      this.requests.filter(
-        r => r.status === 'expired'
-      ).length;
-  }
-
-
-  // =========================================================
-  // TABS
-  // =========================================================
-
-  switchTab(
-    tab: HistoryStatus
-  ): void {
-
-    this.activeTab = tab;
-  }
-
-
-  get filteredRequests(): HistoryRequest[] {
-
-    return this.requests.filter(
-      r => r.status === this.activeTab
-    );
-  }
-
-
-  get pendingCount(): number {
-
-    return this.requests.filter(
-      r => r.status === 'pending'
-    ).length;
-  }
-
-
-  // =========================================================
-  // STATUS LABEL
-  // =========================================================
-
-  statusLabel(
-    status: HistoryStatus
-  ): string {
-
-    return (
-      status.charAt(0).toUpperCase() +
-      status.slice(1)
-    );
-  }
-
-
-  // =========================================================
-  // APPROVE / REJECT
-  // =========================================================
 
   actionRow(
     req: HistoryRequest,
@@ -491,6 +373,7 @@ export class ManagerHistory implements OnInit {
       );
 
       return;
+
     }
 
     const action =
@@ -505,6 +388,7 @@ export class ManagerHistory implements OnInit {
     ) {
 
       return;
+
     }
 
     const endpoint =
@@ -564,5 +448,7 @@ export class ManagerHistory implements OnInit {
         }
 
       });
+
   }
+
 }

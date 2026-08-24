@@ -1,0 +1,263 @@
+   <app-header></app-header>
+
+
+<div class="card">
+
+  <!-- =========================
+       TABS
+  ========================= -->
+
+  <div
+    class="tabs"
+    id="historyTabs">
+
+    <button
+      type="button"
+      class="tab">
+
+      Pending
+
+      <span
+        style="
+          background:var(--pending-bg);
+          color:var(--pending);
+          padding:2px 8px;
+          border-radius:10px;
+          font-size:11px;
+          margin-left:5px;
+        ">
+
+        {{ statPendingAction }}
+
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       EMPTY STATE
+  ========================= -->
+
+  <div
+    *ngIf="!loading && !loadError && filteredRequests.length === 0"
+    style="
+      text-align:center;
+      padding:45px 20px;
+      color:var(--text-muted);
+    ">
+
+    <h3 style="margin-bottom:8px;">
+      No requests
+    </h3>
+
+    <p style="margin:0;">
+      There are currently no requests waiting for approval.
+    </p>
+
+  </div>
+
+
+  <!-- LOADING -->
+
+  <div
+    *ngIf="loading"
+    style="
+      text-align:center;
+      padding:45px 20px;
+      color:var(--text-muted);
+    ">
+
+    Loading requests...
+
+  </div>
+
+
+  <!-- ERROR -->
+
+  <div
+    *ngIf="!loading && loadError"
+    style="
+      text-align:center;
+      padding:45px 20px;
+      color:#dc3545;
+    ">
+
+    Unable to load requests.
+
+    <br />
+
+    <button
+      type="button"
+      class="btn btn-sm btn-primary"
+      style="margin-top:15px;"
+      (click)="loadRequests()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       TABLE
+  ========================= -->
+
+  <div
+    class="table-wrap"
+    *ngIf="!loading && !loadError && filteredRequests.length > 0">
+
+    <table id="historyTable">
+
+      <thead>
+
+        <tr>
+
+          <th>Request ID</th>
+
+          <th>Employee Name</th>
+
+          <th>Employee ID</th>
+
+          <th>Trip Name</th>
+
+          <th>Start Date</th>
+
+          <th>End Date</th>
+
+          <th>Submission Date</th>
+
+          <th>Status</th>
+
+          <th>Action</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        <tr
+          *ngFor="let req of filteredRequests">
+
+
+          <!-- REQUEST ID -->
+
+          <td>
+
+            <strong>
+              {{ req.requestId }}
+            </strong>
+
+          </td>
+
+
+          <!-- EMPLOYEE NAME -->
+
+          <td class="emp-name">
+
+            {{ req.empName }}
+
+          </td>
+
+
+          <!-- EMPLOYEE ID -->
+
+          <td class="emp-id">
+
+            {{ req.empId }}
+
+          </td>
+
+
+          <!-- TRIP -->
+
+          <td class="trip-name">
+
+            {{ req.tripName }}
+
+          </td>
+
+
+          <!-- START DATE -->
+
+          <td>
+
+            {{ req.startDate }}
+
+          </td>
+
+
+          <!-- END DATE -->
+
+          <td>
+
+            {{ req.endDate }}
+
+          </td>
+
+
+          <!-- SUBMISSION DATE -->
+
+          <td>
+
+            {{ req.submissionDate }}
+
+          </td>
+
+
+          <!-- STATUS -->
+
+          <td>
+
+            <span class="badge">
+
+              {{ statusLabel(req.status) }}
+
+            </span>
+
+          </td>
+
+
+          <!-- ACTION -->
+
+          <td style="white-space:nowrap;">
+
+            <ng-container *ngIf="req.status === 'pending'">
+
+              <button
+                type="button"
+                class="btn btn-sm btn-success"
+                (click)="actionRow(req, 'approved')">
+
+                Approve
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                style="margin-left:6px;"
+                (click)="actionRow(req, 'rejected')">
+
+                Reject
+
+              </button>
+
+            </ng-container>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
