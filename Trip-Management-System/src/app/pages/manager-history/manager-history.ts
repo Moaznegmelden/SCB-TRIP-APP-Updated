@@ -1,10 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 type HistoryStatus = 'pending' | 'approved' | 'rejected' | 'expired';
 
+interface ApplicationApi {
+  applicationId?: number;
+  batchId?: number;
+  destination?: string;
+  employeeId?: number;
+  employeeName?: string;
+  employeeNumber?: string;
+  participants?: unknown[];
+  pickupPoint?: string;
+  roomsRequested?: number;
+  selectedAt?: string | null;
+  selectionMethod?: string | null;
+  statusName?: string;
+  totalPrice?: number;
+  transportType?: string;
+  tripId?: number;
+  tripTitle?: string;
+}
+
 interface HistoryRequest {
+  applicationId: number;
   requestId: string;
   empName: string;
   empId: string;
@@ -13,6 +35,9 @@ interface HistoryRequest {
   endDate: string;
   submissionDate: string;
   status: HistoryStatus;
+  destination: string;
+  companions: number;
+  totalPrice: number;
 }
 
 @Component({
@@ -21,74 +46,314 @@ interface HistoryRequest {
   imports: [CommonModule, RouterLink],
   templateUrl: './manager-history.html'
 })
-export class ManagerHistory {
+export class ManagerHistory implements OnInit {
 
-  // ---- Was the static <tr> rows in #historyTable ----
-  requests: HistoryRequest[] = [
-    { requestId: 'TRP-2026-00487', empName: 'Ahmed Hassan', empId: 'EMP-1042', tripName: 'Steigenberger El Gouna', startDate: '26-Jul-2026', endDate: '30-Jul-2026', submissionDate: '18-Jul-2026', status: 'pending' },
-    { requestId: 'TRP-2026-00491', empName: 'Sara Ali', empId: 'EMP-1088', tripName: 'Marsa Alam Resort', startDate: '15-Aug-2026', endDate: '18-Aug-2026', submissionDate: '20-Jul-2026', status: 'pending' },
-    { requestId: 'TRP-2026-00495', empName: 'Omar Farouk', empId: 'EMP-1102', tripName: 'Steigenberger El Gouna', startDate: '02-Aug-2026', endDate: '06-Aug-2026', submissionDate: '21-Jul-2026', status: 'pending' },
-    { requestId: 'TRP-2026-00501', empName: 'Nour El-Din', empId: 'EMP-1154', tripName: 'Ain Sokhna Escape', startDate: '05-Sep-2026', endDate: '07-Sep-2026', submissionDate: '22-Jul-2026', status: 'pending' },
-    { requestId: 'TRP-2026-00312', empName: 'Ahmed Hassan', empId: 'EMP-1042', tripName: 'Ain Sokhna Weekend', startDate: '05-Jun-2026', endDate: '07-Jun-2026', submissionDate: '01-May-2026', status: 'approved' },
-    { requestId: 'TRP-2026-00288', empName: 'Sara Ali', empId: 'EMP-1088', tripName: 'Sharm El Sheikh', startDate: '12-May-2026', endDate: '16-May-2026', submissionDate: '20-Apr-2026', status: 'approved' },
-    { requestId: 'TRP-2026-00245', empName: 'Omar Farouk', empId: 'EMP-1102', tripName: 'Sharm El Sheikh', startDate: '10-Apr-2026', endDate: '14-Apr-2026', submissionDate: '01-Mar-2026', status: 'rejected' },
-    { requestId: 'TRP-2026-00190', empName: 'Nour El-Din', empId: 'EMP-1154', tripName: 'Marsa Alam Resort', startDate: '01-Mar-2026', endDate: '04-Mar-2026', submissionDate: '10-Feb-2026', status: 'expired' }
-  ];
+  // =========================
+  // MANAGER
+  // =========================
 
-  // ---- Was static stat-card numbers in .stats-row (kept as-is, not tied to the table below — see notes) ----
-  statPendingAction = 4;
-  statApprovedThisMonth = 7;
-  statRejected = 2;
-  statExpired = 1;
+  private readonly MANAGER_ID = 1017;
 
-  // ---- Was document.querySelectorAll('#historyTabs .tab') click listeners ----
+  private readonly API_URL =
+  `http://localhost:8080/api/applications/manager/${this.MANAGER_ID}`;
+
+  // =========================
+  // PAGE STATE
+  // =========================
+
+  requests: HistoryRequest[] = [];
+
+  loading = true;
+
+  loadError = false;
+
+  // =========================
+  // STATISTICS
+  // =========================
+
+  statPendingAction = 0;
+  statApprovedThisMonth = 0;
+  statRejected = 0;
+  statExpired = 0;
+
+  // =========================
+  // TABS
+  // =========================
+
   activeTab: HistoryStatus = 'pending';
 
+  constructor(
+    private http: HttpClient
+  ) {}
+
+  // =========================
+  // INIT
+  // =========================
+
+  ngOnInit(): void {
+    this.loadRequests();
+  }
+
+  // =========================
+  // LOAD MANAGER REQUESTS
+  // =========================
+
+ loadRequests(): void {
+
+  this.loading = true;
+  this.loadError = false;
+
+  this.http
+    .get<ApplicationApi[]>(this.API_URL)
+    .pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    )
+    .subscribe({
+
+     next: (applications) => {
+
+  console.log(
+    '🔥 MANAGER APPLICATIONS:',
+    applications
+  );
+
+  this.requests = applications.map(app =>
+    this.mapApplication(app)
+  );
+
+  this.updateStatistics();
+
+  this.loading = false;
+
+  console.log(
+    '🔥 MANAGER REQUESTS:',
+    this.requests
+  );
+},
+
+      error: (error) => {
+
+        console.error(
+          '🔥 MANAGER APPLICATIONS ERROR:',
+          error
+        );
+
+        this.requests = [];
+        this.loadError = true;
+
+      }
+
+    });
+}
+
+  // =========================
+  // MAP API RESPONSE
+  // =========================
+
+  private mapApplication(
+    app: ApplicationApi
+  ): HistoryRequest {
+
+    return {
+
+      applicationId:
+        app.applicationId ?? 0,
+
+      requestId:
+        `REQ-${app.applicationId ?? 0}`,
+
+      empName:
+        app.employeeName ?? 'Unknown Employee',
+
+      empId:
+        app.employeeNumber ?? 'N/A',
+
+      tripName:
+        app.tripTitle ?? 'Trip',
+
+      startDate:
+        'N/A',
+
+      endDate:
+        'N/A',
+
+      submissionDate:
+        'N/A',
+
+      status:
+        this.mapStatus(app.statusName),
+
+      destination:
+        app.destination ?? 'N/A',
+
+      companions:
+        app.participants?.length ?? 0,
+
+      totalPrice:
+        app.totalPrice ?? 0
+    };
+  }
+
+  // =========================
+  // MAP STATUS
+  // =========================
+
+  private mapStatus(
+  statusName?: string
+): HistoryStatus {
+
+  const status =
+    (statusName ?? '').toUpperCase();
+
+  if (
+    status === 'PENDING_MANAGER' ||
+    status.includes('PENDING')
+  ) {
+    return 'pending';
+  }
+
+  if (status.includes('APPROV')) {
+    return 'approved';
+  }
+
+  if (status.includes('REJECT')) {
+    return 'rejected';
+  }
+
+  if (status.includes('EXPIRED')) {
+    return 'expired';
+  }
+
+  return 'pending';
+}
+
+  // =========================
+  // STATISTICS
+  // =========================
+
+  private updateStatistics(): void {
+
+    this.statPendingAction =
+      this.requests.filter(
+        r => r.status === 'pending'
+      ).length;
+
+    this.statApprovedThisMonth =
+      this.requests.filter(
+        r => r.status === 'approved'
+      ).length;
+
+    this.statRejected =
+      this.requests.filter(
+        r => r.status === 'rejected'
+      ).length;
+
+    this.statExpired =
+      this.requests.filter(
+        r => r.status === 'expired'
+      ).length;
+  }
+
+  // =========================
+  // TABS
+  // =========================
+
   switchTab(tab: HistoryStatus): void {
+
     this.activeTab = tab;
   }
 
-  // ---- Was row.style.display filtering by row.dataset.status === filter ----
   get filteredRequests(): HistoryRequest[] {
-    return this.requests.filter(r => r.status === this.activeTab);
+
+    return this.requests.filter(
+      r => r.status === this.activeTab
+    );
   }
 
-  // ---- Was the hardcoded "4" next to the Pending tab label ----
   get pendingCount(): number {
-    return this.requests.filter(r => r.status === 'pending').length;
+
+    return this.requests.filter(
+      r => r.status === 'pending'
+    ).length;
   }
 
-  statusLabel(status: HistoryStatus): string {
-    return status.charAt(0).toUpperCase() + status.slice(1);
+  // =========================
+  // STATUS LABEL
+  // =========================
+
+  statusLabel(
+    status: HistoryStatus
+  ): string {
+
+    return status.charAt(0).toUpperCase()
+      + status.slice(1);
   }
 
-  // ---- Was function actionRow(btn, newStatus) ----
-  actionRow(req: HistoryRequest, newStatus: 'approved' | 'rejected'): void {
-    const action = newStatus === 'approved' ? 'Approve' : 'Reject';
-    if (!confirm(`${action} this request?`)) return;
+  // =========================
+  // APPROVE / REJECT
+  // =========================
 
-    // If approved, store record so it can be added to the Employee Page
-    if (newStatus === 'approved') {
-      const approvedRecord = {
-        requestId: req.requestId,
-        empName: req.empName,
-        empId: req.empId,
-        tripName: req.tripName,
-        startDate: req.startDate,
-        endDate: req.endDate,
-        approvalDate: new Date().toISOString().split('T')[0]
-      };
+  actionRow(
+    req: HistoryRequest,
+    newStatus: 'approved' | 'rejected'
+  ): void {
 
-      const currentApproved = JSON.parse(localStorage.getItem('approvedEmployees') || '[]');
-      currentApproved.push(approvedRecord);
-      localStorage.setItem('approvedEmployees', JSON.stringify(currentApproved));
+    const action =
+      newStatus === 'approved'
+        ? 'Approve'
+        : 'Reject';
 
-      alert(`Request ${req.requestId} approved! ${req.empName} (${req.empId}) has been added to the employee records.`);
+    if (!confirm(`${action} this request?`)) {
+      return;
     }
 
-    // Update status — the table/badge/action-buttons re-render automatically
-    // from this state change (was manual DOM mutation of badge.className,
-    // badge.textContent, and actionCell.innerHTML in the original).
-    req.status = newStatus;
+    const url =
+      `http://localhost:8080/api/applications/` +
+      `${req.applicationId}/` +
+      `${newStatus === 'approved' ? 'approve' : 'reject'}` +
+      `?managerId=${this.MANAGER_ID}`;
+
+    this.http
+      .post<ApplicationApi>(
+        url,
+        {}
+      )
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            '🔥 MANAGER DECISION RESPONSE:',
+            response
+          );
+
+          req.status = newStatus;
+
+          this.updateStatistics();
+
+          alert(
+            `Request ${req.requestId} ${newStatus}.`
+          );
+
+          // Reload from backend so the table
+          // always reflects the real database state.
+          this.loadRequests();
+        },
+
+        error: (error) => {
+
+          console.error(
+            '🔥 MANAGER DECISION ERROR:',
+            error
+          );
+
+          alert(
+            `Unable to ${newStatus} this request.`
+          );
+        }
+
+      });
   }
 }

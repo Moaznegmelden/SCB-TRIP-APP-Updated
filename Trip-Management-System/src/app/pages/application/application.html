@@ -24,7 +24,9 @@
   <ul class="page-nav-links">
     <li><a href="#">Employee Services</a></li>
     <li><a routerLink="/employee-dashboard" class="active">Trips</a></li>
-    <li><a routerLink="/employee-dashboard">My requests</a></li>
+    <li>
+  <a routerLink="/my-requests">My requests</a>
+</li>
     <li><a href="#">Tasks</a></li>
   </ul>
 </div>
@@ -32,9 +34,23 @@
 <div class="page-header container">
   <div>
     <h1>Apply for Trip</h1>
-    <p>Steigenberger El Gouna · Configure companions, options and review the price.</p>
+    <p *ngIf="trip">
+  {{ trip.title }} · {{ trip.destination }}
+  · Configure companions, options and review the price.
+</p>
+
+<p *ngIf="!trip && loadingTrip">
+  Loading trip information...
+</p>
   </div>
-  <a routerLink="/trip-details" class="btn btn-outline btn-sm">← Back to trip details</a>
+  <a
+  [routerLink]="['/trip-details']"
+  [queryParams]="{ id: trip?.tripId }"
+  class="btn btn-outline btn-sm">
+
+  ← Back to trip details
+
+</a>
 </div>
 
 <div class="container">
@@ -50,11 +66,29 @@
           <div class="form-row">
             <div class="form-group" style="grid-column:1/-1;">
               <label>Select departure <span class="req">*</span></label>
-              <select class="form-control" id="departure" name="departure" required [(ngModel)]="departure">
-                <option value="">Select departure…</option>
-                <option value="1" data-base="2800">#1 · 26-Jul-2026 → 30-Jul-2026 (42 seats left)</option>
-                <option value="2" data-base="2800">#2 · 02-Aug-2026 → 06-Aug-2026 (55 seats left)</option>
-              </select>
+              <select
+  class="form-control"
+  id="departure"
+  name="departure"
+  required
+  [(ngModel)]="selectedBatchId">
+
+  <option [ngValue]="null">
+    Select departure…
+  </option>
+
+  <option
+    *ngFor="let batch of trip?.batches"
+    [ngValue]="batch.batchId">
+
+    #{{ batch.batchId }}
+    {{ batch.startDate }}
+    {{ batch.endDate }}
+    ({{ batch.numberOfRooms }} rooms)
+
+  </option>
+
+</select>
             </div>
           </div>
         </div>
@@ -94,13 +128,19 @@
               </div>
               <div class="form-group">
                 <label>Relation *</label>
-                <select class="form-control" required name="adultRelation{{ i }}" [(ngModel)]="companion.relation">
-                  <option value="">Select…</option>
-                  <option>Spouse</option>
-                  <option>Parent</option>
-                  <option>Sibling</option>
-                  <option>Child (adult)</option>
-                </select>
+                <select
+  class="form-control"
+  required
+  name="adultRelation{{ i }}"
+  [(ngModel)]="companion.relation">
+
+  <option value="">Select…</option>
+  <option>Spouse</option>
+  <option>Parent</option>
+  <option>Sibling</option>
+  <option>Child (adult)</option>
+
+</select>
               </div>
               <div class="form-group">
                 <label>National ID *</label>

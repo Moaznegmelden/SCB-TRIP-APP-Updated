@@ -54,6 +54,10 @@ export class HrApprovalDetails implements OnInit {
   showRejectReason = false;
 
   rejectionReasonInput = '';
+  
+  showReturnReason = false;
+
+  returnReasonInput = '';
 
 
  constructor(
@@ -145,6 +149,12 @@ export class HrApprovalDetails implements OnInit {
      * This allows the user to reopen it without losing text.
      */
   }
+
+
+  toggleReturnReason(show: boolean): void {
+
+  this.showReturnReason = show;
+}
 
 
   // =========================================================
@@ -263,4 +273,63 @@ export class HrApprovalDetails implements OnInit {
 
       });
   }
+  returnTrip(): void {
+
+  if (!this.trip) {
+    return;
+  }
+
+  const reason = this.returnReasonInput.trim();
+
+  if (!reason) {
+    alert('Please enter a reason for returning this trip.');
+    return;
+  }
+
+  const confirmed = window.confirm(
+    'Return this trip to the trip creator?'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const managerId = 1;
+
+  console.log(
+    '🔥 RETURNING TRIP:',
+    this.trip.id,
+    'MANAGER:',
+    managerId,
+    'REASON:',
+    reason
+  );
+
+  this.http
+    .post(
+      `/api/trips/${this.trip.id}/return?managerId=${managerId}`,
+      {
+        comments: reason
+      }
+    )
+    .subscribe({
+
+      next: (response) => {
+
+        console.log('🔥 RETURN RESPONSE:', response);
+
+        alert('Trip returned successfully.');
+
+        this.router.navigate(['/admin/trips/approvals']);
+      },
+
+      error: (error) => {
+
+        console.error('🔥 RETURN ERROR:', error);
+
+        alert('Failed to return trip.');
+      }
+
+    });
+}
 }

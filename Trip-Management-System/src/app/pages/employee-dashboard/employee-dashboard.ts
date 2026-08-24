@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 interface Trip {
   tripId: string;
@@ -64,12 +65,18 @@ export class EmployeeDashboard implements OnInit {
   };
 
 
+  constructor(
+  private http: HttpClient,
+  private cdr: ChangeDetectorRef
+) {}
+
+
   // =========================================================
   // INITIALIZATION
   // =========================================================
 
   ngOnInit(): void {
-    this.loadDemoTrips();
+  this.loadTrips();
   }
 
 
@@ -77,75 +84,63 @@ export class EmployeeDashboard implements OnInit {
   // DEMO TRIP DATA
   // =========================================================
 
- private loadDemoTrips(): void {
+private loadTrips(): void {
 
-  this.trips = [
+  this.loadError = false;
+  this.trips = null;
 
-    {
-      tripId: 'TRIP-001',
+  this.http
+    .get<any[]>('/api/trips/active')
+    .subscribe({
 
-      title: 'Steigenberger El Gouna',
-      destination: 'El Gouna',
+      next: (backendTrips) => {
 
-      durationDays: 5,
+        console.log('🔥 ACTIVE TRIPS:', backendTrips);
 
-      startDate: '2026-08-26',
-      endDate: '2026-08-30',
+        this.trips = backendTrips.map(trip => {
 
-      registrationOpen: '2026-08-01',
-      registrationClose: '2026-08-20',
+          const firstBatch = trip.batches?.[0];
 
-      seatsAvailable: 12,
-      totalSeats: 100,
+          return {
+            tripId: String(trip.tripId),
 
-      status: 'Open'
-    },
+            title: trip.title,
 
-    {
-      tripId: 'TRIP-002',
+            destination: trip.destination,
 
-      title: 'Steigenberger El Gouna',
-      destination: 'El Gouna',
+            durationDays: trip.durationDays,
 
-      durationDays: 5,
+            startDate: firstBatch?.startDate ?? '',
 
-      startDate: '2026-09-05',
-      endDate: '2026-09-09',
+            endDate: firstBatch?.endDate ?? '',
 
-      registrationOpen: '2026-08-05',
-      registrationClose: '2026-08-30',
+            registrationOpen: trip.registrationOpen,
 
-      seatsAvailable: 3,
-      totalSeats: 100,
+            registrationClose: trip.registrationClose,
 
-      status: 'Nearly full',
+            seatsAvailable: firstBatch?.numberOfRooms ?? 0,
 
-      waitlistAvailable: true
-    },
+            totalSeats: firstBatch?.numberOfRooms ?? 0,
 
-    {
-      tripId: 'TRIP-003',
+            status: 'Open'
+          };
 
-      title: 'Alexandria Summer Weekend',
-      destination: 'Alexandria',
+        });
 
-      durationDays: 3,
+        this.cdr.detectChanges();
 
-      startDate: '2026-10-20',
-      endDate: '2026-10-22',
+        console.log('🔥 ANGULAR TRIPS:', this.trips);
+      },
 
-      registrationOpen: '2026-10-01',
-      registrationClose: '2026-10-15',
+      error: (error) => {
 
-      seatsAvailable: 50,
-      totalSeats: 50,
+        console.error('🔥 ACTIVE TRIPS ERROR:', error);
 
-      status: 'Upcoming',
+        this.loadError = true;
+        this.trips = [];
+      }
 
-      registrationOpensText: 'Registration opens 1 Oct'
-    }
-
-  ];
+    });
 }
 
   // =========================================================

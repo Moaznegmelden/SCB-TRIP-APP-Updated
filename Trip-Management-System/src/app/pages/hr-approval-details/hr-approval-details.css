@@ -1,25 +1,121 @@
-:host { display:block; min-height:100vh; }
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
 
-/* HR trip review/detail. */
-.container-fluid.px-4 { padding-left:0 !important; padding-right:0 !important; }
-.container-fluid.px-4 > *:not(.top-bar) { width:min(100%,var(--shell)); margin-left:auto; margin-right:auto; }
-.container-fluid.px-4 > .top-bar { width:min(100%,var(--shell)); }
-.container-fluid.px-4 > .d-flex { padding-left:var(--gutter); padding-right:var(--gutter); }
+.approval-page {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
 
-.container-fluid.px-4 > .d-flex:first-of-type h3 { color:var(--primary-dark); font-size:24px; }
-.container-fluid.px-4 > .d-flex:first-of-type .btn { min-width:120px; }
+/* Breadcrumb */
+.approval-page > .top-bar {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+}
 
-.reason-panel { margin-left:var(--gutter) !important; margin-right:var(--gutter) !important; }
+/* Title + buttons */
+.approval-page > .d-flex {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+}
 
-.container-fluid.px-4 > .card { padding:22px; }
-.container-fluid.px-4 > .card h5 { color:var(--primary-dark); }
-.container-fluid.px-4 > .card .fw-semibold { color:var(--text); font-size:13px; }
-.container-fluid.px-4 > .card + .card { margin-top:0; }
-.container-fluid.px-4 table { min-width:720px; }
-.container-fluid.px-4 .alert-danger { margin-left:var(--gutter); margin-right:var(--gutter); border-radius:12px; }
+/* Reject reason */
+.approval-page > .reason-panel {
+  width: calc(100% - 48px) !important;
+  margin: 0 24px 24px 24px !important;
 
-@media (max-width:700px) {
-  .container-fluid.px-4 > .d-flex { flex-direction:column; }
-  .container-fluid.px-4 > .d-flex .d-flex { width:100%; }
-  .container-fluid.px-4 > .d-flex .btn { flex:1; }
+  display: block !important;
+  flex: 0 0 auto !important;
+
+  box-sizing: border-box !important;
+}
+
+/* BOTH CARDS */
+.approval-page > .card {
+  display: block !important;
+
+  width: calc(100% - 48px) !important;
+  margin-left: 24px !important;
+  margin-right: 24px !important;
+  margin-bottom: 24px !important;
+
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+
+  box-sizing: border-box !important;
+
+  float: none !important;
+  position: static !important;
+}
+
+/* Force second card below first */
+.approval-page > .card + .card {
+  margin-top: 0 !important;
+  clear: both !important;
+}
+
+/* Tables */
+.approval-page .table-responsive {
+  width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.approval-page table {
+  width: 100% !important;
+}
+
+/* Rejection alert */
+.approval-page > .mt-4 {
+  width: calc(100% - 48px) !important;
+  margin-left: 24px !important;
+  margin-right: 24px !important;
+
+  flex: 0 0 auto !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .approval-page > .d-flex {
+    flex-wrap: wrap !important;
+  }
+
+  .approval-page > .reason-panel,
+  .approval-page > .card,
+  .approval-page > .mt-4 {
+    width: calc(100% - 24px) !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+  }
+}
+.return-panel {
+  display: none;
+  margin-bottom: 24px;
+}
+
+.return-panel.show {
+  display: block;
+}
+
+.return-panel label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.return-panel textarea {
+  width: 100%;
+  min-height: 120px;
+}
+
+.return-panel .reason-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
 }

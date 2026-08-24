@@ -56,3 +56,154 @@
 @media (max-width:520px) {
   .container .card:first-child .form-row { grid-template-columns:1fr; }
 }
+
+
+/* =========================
+   FOLLOW UP - TIMELINE
+   ========================= */
+
+.timeline-card {
+  margin-top: 20px;
+}
+
+.timeline {
+  position: relative;
+  margin-top: 28px;
+  padding: 0 10px;
+}
+
+.timeline-item {
+  display: flex;
+  position: relative;
+  min-height: 90px;
+}
+
+.timeline-left {
+  width: 42px;
+  min-width: 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.timeline .dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #0b4aa2;
+  background: #ffffff;
+  color: #0b4aa2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: #d9e2f2;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.timeline-content {
+  padding-left: 18px;
+  padding-bottom: 30px;
+  flex: 1;
+}
+
+.tl-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #123b75;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.tl-meta {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 650px;
+}
+
+/* Completed step */
+
+.timeline-item.done .dot {
+  background: #0b4aa2;
+  border-color: #0b4aa2;
+  color: #ffffff;
+}
+
+.timeline-item.done .timeline-line {
+  background: #0b4aa2;
+}
+
+/* Current step */
+
+.timeline-item.current .dot {
+  background: #ffffff;
+  border-color: #0b4aa2;
+  color: #0b4aa2;
+  box-shadow: 0 0 0 5px rgba(11, 74, 162, 0.08);
+}
+
+
+/* =========================
+   REQUEST SUMMARY
+   ========================= */
+
+.card .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 40px;
+}
+
+.card .form-group {
+  min-height: 58px;
+}
+
+.card .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.card .form-group div {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+
+  .card .form-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .timeline {
+    padding: 0;
+  }
+
+  .timeline-content {
+    padding-left: 14px;
+  }
+
+}

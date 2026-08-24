@@ -64,7 +64,11 @@
               <td>{{ trip.createdBy }}</td>
               <td class="small text-muted">{{ trip.submittedAt | date:'dd MMM yyyy HH:mm' }}</td>
               <td class="text-end pe-4">
-                <a [routerLink]="['/admin/trips/approvals', trip.id]" class="btn btn-sm btn-scb-primary"></a>
+                <a
+                   [routerLink]="['/admin/trips/approvals', trip.id]"
+                    class="btn btn-sm btn-scb-primary">
+                    Review
+                </a>
               </td>
             </tr>
             <tr *ngIf="pendingTrips && pendingTrips.length === 0">

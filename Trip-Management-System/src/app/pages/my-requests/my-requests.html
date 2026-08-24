@@ -78,19 +78,60 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let req of filteredRequests">
-            <td><strong>{{ req.tripTitle }}</strong></td>
-            <td>{{ req.destination }}</td>
-            <td>{{ req.departure }}</td>
-            <td>{{ req.appliedOn }}</td>
-            <td>{{ req.companions }}</td>
-            <td><span class="badge" [ngClass]="'badge-' + req.status">{{ req.statusDisplay }}</span></td>
-            <td><a routerLink="/follow-up" class="btn btn-sm btn-outline">View</a></td>
-          </tr>
-          <tr *ngIf="loadError">
-            <td colspan="7">Unable to load requests. Start the backend server.</td>
-          </tr>
-        </tbody>
+
+  <tr *ngFor="let req of filteredRequests">
+
+    <td>
+      <strong>{{ req.tripTitle }}</strong>
+    </td>
+
+    <td>
+      {{ req.destination }}
+    </td>
+
+    <td>
+      {{ req.departure }}
+    </td>
+
+    <td>
+      {{ req.appliedOn }}
+    </td>
+
+    <td>
+      {{ req.companions }}
+    </td>
+
+    <td>
+      <span
+        class="badge"
+        [ngClass]="'badge-' + req.status">
+        {{ req.statusDisplay }}
+      </span>
+    </td>
+
+    <td>
+    <a
+  [routerLink]="['/follow-up', req.applicationId]"
+  class="btn btn-sm btn-outline">
+  View
+</a>
+    </td>
+
+  </tr>
+
+  <tr *ngIf="requests !== null && filteredRequests.length === 0 && !loadError">
+    <td colspan="7">
+      No requests found.
+    </td>
+  </tr>
+
+  <tr *ngIf="loadError">
+    <td colspan="7">
+      Unable to load requests. Start the backend server.
+    </td>
+  </tr>
+
+</tbody>
       </table>
     </div>
   </div>
