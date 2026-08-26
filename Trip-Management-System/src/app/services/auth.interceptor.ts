@@ -2,7 +2,8 @@ import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
-  const currentUserJson = localStorage.getItem('currentUser');
+  const currentUserJson =
+    sessionStorage.getItem('currentUser');
 
   if (!currentUserJson) {
     return next(req);
@@ -10,25 +11,31 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   try {
 
-    const currentUser = JSON.parse(currentUserJson);
+    const currentUser =
+      JSON.parse(currentUserJson);
 
-    const token = currentUser?.token;
+    const token =
+      currentUser?.token;
 
     if (!token) {
       return next(req);
     }
 
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const authReq =
+      req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
     return next(authReq);
 
   } catch (error) {
 
-    console.error('🔥 AUTH INTERCEPTOR ERROR:', error);
+    console.error(
+      '🔥 AUTH INTERCEPTOR ERROR:',
+      error
+    );
 
     return next(req);
   }

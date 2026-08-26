@@ -21,6 +21,7 @@ public class ApplicationResponse {
     private BigDecimal totalPrice;
     private String selectionMethod;
     private LocalDateTime selectedAt;
+    private LocalDateTime submittedAt;
     private List<ParticipantResponse> participants;
 
     public ApplicationResponse() {}
@@ -69,6 +70,14 @@ public class ApplicationResponse {
 
     public LocalDateTime getSelectedAt() { return selectedAt; }
     public void setSelectedAt(LocalDateTime selectedAt) { this.selectedAt = selectedAt; }
+
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
+    }
 
     public List<ParticipantResponse> getParticipants() { return participants; }
     public void setParticipants(List<ParticipantResponse> participants) { this.participants = participants; }

@@ -49,75 +49,116 @@ export class Login {
 
   login() {
 
-    console.log('🔥 LOGIN BUTTON CLICKED');
+  console.log('🔥 LOGIN BUTTON CLICKED');
 
-    this.errorMessage = '';
+  this.errorMessage = '';
 
-    if (!this.username || !this.password) {
-      this.errorMessage = 'Please enter username and password';
-      return;
-    }
+  if (!this.username || !this.password) {
 
-    this.isLoading = true;
+    this.errorMessage =
+      'Please enter username and password';
 
-    this.authService.login(this.username, this.password).subscribe({
+    return;
+  }
+
+  this.isLoading = true;
+
+  this.authService
+    .login(
+      this.username,
+      this.password
+    )
+    .subscribe({
 
       next: (response) => {
 
-        console.log('🔥 API RESPONSE:', response);
-        console.log('🔥 ROLE:', response.role);
+        console.log(
+          '🔥 API RESPONSE:',
+          response
+        );
 
-        localStorage.setItem(
+        console.log(
+          '🔥 ROLE:',
+          response.role
+        );
+
+
+        // =====================================================
+        // CURRENT USER
+        //
+        // IMPORTANT:
+        // sessionStorage is intentional.
+        //
+        // Each browser tab gets its own logged-in user.
+        // =====================================================
+
+        sessionStorage.setItem(
           'currentUser',
           JSON.stringify(response)
         );
 
+
+        // =====================================================
+        // LOGIN SUCCESS
+        // =====================================================
+
         this.isLoading = false;
 
-        if (response.role === 'HR_MANAGER') {
 
-          console.log('🔥 GOING TO HR APPROVAL');
+        console.log(
+          '🔥 LOGIN SUCCESS - GOING TO ACTIVE TRIPS'
+        );
 
-          this.router.navigate(['/admin/trips/approvals'])
-            .then(result => {
-              console.log('🔥 NAVIGATION RESULT:', result);
-            })
-            .catch(error => {
-              console.error('🔥 NAVIGATION ERROR:', error);
-            });
 
-        }
+        // =====================================================
+        // ALL ROLES START FROM ACTIVE TRIPS
+        //
+        // Employee
+        // Line Manager
+        // HR Admin
+        // HR Manager
+        // =====================================================
 
-        else if (response.role === 'HR_ADMIN') {
+        this.router
+          .navigate([
+            '/employee-dashboard'
+          ])
 
-          this.router.navigate(['/admin/trips/create']);
+          .then(result => {
 
-        }
+            console.log(
+              '🔥 NAVIGATION RESULT:',
+              result
+            );
 
-        else if (response.role === 'LINE_MANAGER') {
+          })
 
-          this.router.navigate(['/manager-history']);
+          .catch(error => {
 
-        }
+            console.error(
+              '🔥 NAVIGATION ERROR:',
+              error
+            );
 
-        else {
-
-          this.router.navigate(['/employee-dashboard']);
-
-        }
+          });
 
       },
 
+
       error: (error) => {
 
-        console.error('🔥 LOGIN API ERROR:', error);
+        console.error(
+          '🔥 LOGIN API ERROR:',
+          error
+        );
 
         this.isLoading = false;
-        this.errorMessage = 'Invalid username or password';
+
+        this.errorMessage =
+          'Invalid username or password';
 
       }
 
     });
-
-  }
+}
 }

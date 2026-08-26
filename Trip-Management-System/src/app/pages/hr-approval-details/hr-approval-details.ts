@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface Departure {
   startDate: string;
@@ -33,26 +33,15 @@ interface Trip {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
   ],
   templateUrl: './hr-approval-details.html',
   styleUrl: './hr-approval-details.css'
 })
 export class HrApprovalDetails implements OnInit {
 
-  // =========================================================
-  // TRIP
-  // =========================================================
-
   trip: Trip | null = null;
 
-
-  // =========================================================
-  // REJECTION PANEL
-  // =========================================================
-
   showRejectReason = false;
-
   rejectionReasonInput = '';
   
   showReturnReason = false;
@@ -60,94 +49,69 @@ export class HrApprovalDetails implements OnInit {
   returnReasonInput = '';
 
 
- constructor(
-  private route: ActivatedRoute,
-  private router: Router,
-  private http: HttpClient,
-  private cdr: ChangeDetectorRef
-) {}
-
-
-  // =========================================================
-  // INITIALIZATION
-  // =========================================================
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-
-    const id = Number(
-      this.route.snapshot.paramMap.get('id')
-    );
-
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadTrip(id);
   }
 
+  private loadTrip(id: number): void {
 
-  // =========================================================
-  // LOAD TRIP
-  // =========================================================
+    console.log('🔥 LOAD TRIP DETAILS:', id);
 
- private loadTrip(id: number): void {
+    this.http
+      .get<any>(`http://localhost:8080/api/trips/${id}`)
+      .subscribe({
 
-  console.log('🔥 LOAD TRIP DETAILS:', id);
+        next: (trip) => {
 
-  this.http
-    .get<any>(`/api/trips/${id}`)
-    .subscribe({
+          console.log('🔥 TRIP DETAILS RESPONSE:', trip);
 
-      next: (trip) => {
+          this.trip = {
+            id: trip.tripId,
+            title: trip.title,
+            destination: trip.destination,
+            duration: `${trip.durationDays} days`,
+            registrationOpens: trip.registrationOpen,
+            registrationCloses: trip.registrationClose,
+            familyDegree: '-',
+            numberOfCompanions: 0,
+            createdBy: trip.createdByName,
+            submittedAt: trip.createdAt,
+            status: trip.statusName,
 
-        console.log('🔥 TRIP DETAILS RESPONSE:', trip);
+            departures: (trip.batches ?? []).map((batch: any) => ({
+              startDate: batch.startDate,
+              endDate: batch.endDate,
+              capacity: batch.numberOfRooms ?? 0,
+              busSeats: 0
+            }))
+          };
 
-        this.trip = {
-          id: trip.tripId,
-          title: trip.title,
-          destination: trip.destination,
-          duration: `${trip.durationDays} days`,
-          registrationOpens: trip.registrationOpen,
-          registrationCloses: trip.registrationClose,
-          familyDegree: '-',
-          numberOfCompanions: 0,
-          createdBy: trip.createdByName,
-          submittedAt: trip.createdAt,
-          status: trip.statusName,
+          console.log('🔥 TRIP DATA FOR PAGE:', this.trip);
+          this.cdr.detectChanges();
+        },
 
-          departures: (trip.batches ?? []).map((batch: any) => ({
-            startDate: batch.startDate,
-            endDate: batch.endDate,
-            capacity: batch.numberOfRooms ?? 0,
-            busSeats: 0
-          }))
-        };
-
-        console.log('🔥 TRIP DATA FOR PAGE:', this.trip);
-        this.cdr.detectChanges();
-      },
-
-      error: (error) => {
-
-        console.error('🔥 TRIP DETAILS ERROR:', error);
-
-        this.trip = null;
-
-        alert('Failed to load trip details.');
-      }
-    });
-}
-
+        error: (error) => {
+          console.error('🔥 TRIP DETAILS ERROR:', error);
+          this.trip = null;
+          alert('Failed to load trip details.');
+        }
+      });
+  }
 
   // =========================================================
   // REJECTION PANEL
   // =========================================================
 
   toggleReason(show: boolean): void {
-
     this.showRejectReason = show;
-
-    /*
-     * If the panel is being closed,
-     * don't delete the typed reason.
-     * This allows the user to reopen it without losing text.
-     */
   }
 
 
@@ -163,56 +127,38 @@ export class HrApprovalDetails implements OnInit {
 
   approve(): void {
 
-  if (!this.trip) {
-    return;
+    if (!this.trip) {
+      return;
+    }
+
+    const confirmed = window.confirm('Approve this trip and publish it?');
+    if (!confirmed) {
+      return;
+    }
+
+    const managerId = 1;
+
+    console.log('🔥 APPROVING TRIP:', this.trip.id, 'MANAGER:', managerId);
+
+    this.http
+      .post(
+        `http://localhost:8080/api/trips/${this.trip.id}/approve?managerId=${managerId}`,
+        {}
+      )
+      .subscribe({
+
+        next: (response) => {
+          console.log('🔥 APPROVE RESPONSE:', response);
+          alert('Trip approved successfully.');
+          this.router.navigate(['/admin/trips/approvals']);
+        },
+
+        error: (error) => {
+          console.error('🔥 APPROVE ERROR:', error);
+          alert('Failed to approve trip.');
+        }
+      });
   }
-
-  const confirmed = window.confirm(
-    'Approve this trip and publish it?'
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  const managerId = 1;
-
-  console.log(
-    '🔥 APPROVING TRIP:',
-    this.trip.id,
-    'MANAGER:',
-    managerId
-  );
-
-  this.http
-    .post(
-      `/api/trips/${this.trip.id}/approve?managerId=${managerId}`,
-      {}
-    )
-    .subscribe({
-
-      next: (response) => {
-
-        console.log('🔥 APPROVE RESPONSE:', response);
-
-        alert('Trip approved successfully.');
-
-        this.router.navigate(['/admin/trips/approvals']);
-      },
-
-      error: (error) => {
-
-        console.error('🔥 APPROVE ERROR:', error);
-
-        alert('Failed to approve trip.');
-      }
-    });
-}
-
-
-    // =========================================================
-  // REJECT
-  // =========================================================
 
   reject(): void {
 
@@ -223,54 +169,80 @@ export class HrApprovalDetails implements OnInit {
     const reason = this.rejectionReasonInput.trim();
 
     if (!reason) {
-
-      alert(
-        'Please enter a reason for rejecting this trip.'
-      );
-
+      alert('Please enter a reason for rejecting this trip.');
       return;
     }
 
     const managerId = 1;
 
-    console.log(
-      '🔥 REJECTING TRIP:',
-      this.trip.id,
-      'MANAGER:',
-      managerId,
-      'REASON:',
-      reason
-    );
+    console.log('🔥 REJECTING TRIP:', this.trip.id, 'MANAGER:', managerId, 'REASON:', reason);
 
-    const body = {
-      comments: reason
-    };
+    const body = { comments: reason };
 
     this.http
       .post(
-        `/api/trips/${this.trip.id}/reject?managerId=${managerId}`,
+        `http://localhost:8080/api/trips/${this.trip.id}/reject?managerId=${managerId}`,
         body
       )
       .subscribe({
 
         next: (response) => {
-
           console.log('🔥 REJECT RESPONSE:', response);
-
           alert('Trip rejected successfully.');
-
           this.showRejectReason = false;
-
           this.router.navigate(['/admin/trips/approvals']);
         },
 
         error: (error) => {
-
           console.error('🔥 REJECT ERROR:', error);
-
           alert('Failed to reject trip.');
         }
+      });
+  }
 
+  // =========================================================
+  // RETURN TO HR PANEL
+  // =========================================================
+
+
+
+  returnToHr(): void {
+
+    if (!this.trip) {
+      return;
+    }
+
+    const reason = this.returnReasonInput.trim();
+
+    if (!reason) {
+      alert('Please enter a reason for returning this trip.');
+      return;
+    }
+
+    const managerId = 1;
+
+    console.log('🔥 RETURNING TRIP:', this.trip.id, 'MANAGER:', managerId, 'REASON:', reason);
+
+    const body = { comments: reason };
+
+    this.http
+      .post(
+        `http://localhost:8080/api/trips/${this.trip.id}/return?managerId=${managerId}`,
+        body
+      )
+      .subscribe({
+
+        next: (response) => {
+          console.log('🔥 RETURN RESPONSE:', response);
+          alert('Trip returned to HR successfully.');
+          this.showReturnReason = false;
+          this.router.navigate(['/admin/trips/approvals']); // 🔴 PLACEHOLDER_ROUTE
+        },
+
+        error: (error) => {
+          console.error('🔥 RETURN ERROR:', error);
+          alert('Failed to return trip.');
+        }
       });
   }
   returnTrip(): void {

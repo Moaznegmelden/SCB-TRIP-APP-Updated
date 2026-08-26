@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute ,  } from '@angular/router';
+import { Header } from '../../header/header';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 
@@ -19,7 +20,7 @@ interface FollowUpRequest {
   departureDate: string;
   status: string;
   statusDisplay: string;
-  submittedAt: string;
+ submittedAt: string | null;
   companionCount: number;
   totalAmount: number;
   timelineSteps: TimelineStep[];
@@ -37,6 +38,7 @@ interface ApplicationApi {
   roomsRequested?: number;
   selectedAt?: string | null;
   selectionMethod?: string | null;
+  submittedAt?: string | null;
   statusName?: string;
   totalPrice?: number;
   transportType?: string;
@@ -44,16 +46,16 @@ interface ApplicationApi {
   tripTitle?: string;
 }
 
-interface CurrentUser {
-  initials: string;
-  role: string;
-  fullName: string;
-}
+
 
 @Component({
   selector: 'app-follow-up',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+ imports: [
+  CommonModule,
+  RouterLink,
+  Header
+],
   templateUrl: './follow-up.html',
   styleUrl: './follow-up.css'
 })
@@ -70,19 +72,13 @@ export class FollowUp implements OnInit {
 
   loadError = false;
 
-  user: CurrentUser = {
-    initials: 'AH',
-    role: 'Employee',
-    fullName: 'Ahmed Hassan'
-  };
-
+ 
 
   // =========================
   // API
   // =========================
 
-  private readonly API_URL =
-    'http://localhost:8080/api/applications/my?employeeId=1015';
+ private readonly API_URL = '/api/applications/my';
 
 
   // =========================
@@ -235,8 +231,7 @@ export class FollowUp implements OnInit {
 
             // The current API response does not contain
             // submittedAt.
-            submittedAt:
-              new Date().toISOString(),
+            submittedAt: application.submittedAt ?? null,
 
             companionCount:
               application.participants?.length ?? 0,

@@ -1,113 +1,710 @@
-<header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-  </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">HU</div>
-    <div class="user-info">
-      <span class="user-name">HR User</span>
-      <span class="user-role">Maker Authority</span>
-    </div>
-  </button>
-</div>
-</header>
+<app-header></app-header>
+
 
 <div class="container-fluid px-4">
-  <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
-    <div class="fw-bold text-scb text-uppercase small">Administration / Trips / Selection</div>
-    <ul class="page-nav-links d-none d-md-flex">
-      <li><a href="#">Employee Services</a></li>
-      <li><a href="#">Trips</a></li>
-      <li><a href="#">My requests</a></li>
-      <li><a href="#">Tasks</a></li>
-      <li><a href="#" class="active">Administration</a></li>
-    </ul>
+
+  <div
+    class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
+
+    <div
+      class="fw-bold text-scb text-uppercase small">
+
+      Administration / Trips / Selection
+
+    </div>
+
   </div>
 
-  <div class="d-flex justify-content-between align-items-start mb-4">
-    <div>
-      <h3 class="fw-bold text-scb mb-1">Trip Selection &amp; Applicants Pool</h3>
-      <p class="text-muted small mb-0">Select allocation methodology and preview selected applicants for <strong>Steigenberger El Gouna</strong>.</p>
-    </div>
-    <div>
-      <a href="announcement.html" class="btn btn-primary shadow-sm">Go To Announcement</a>
-    </div>
+
+  <div class="mb-4">
+
+    <h3 class="fw-bold text-scb mb-1">
+      Trip Selection
+    </h3>
+
+    <p class="text-muted small mb-0">
+      Review applicants by trip or batch. A selection method can only
+      be chosen for one specific batch.
+    </p>
+
   </div>
 
-  <div class="card border-light-subtle shadow-sm p-4 mb-4">
-    <h5 class="fw-bold text-scb border-bottom pb-2 mb-3">1. Choose Allocation Logic</h5>
+
+  <!-- ERROR -->
+
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger shadow-sm">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+  <!-- SUCCESS -->
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success shadow-sm">
+
+    {{ successMessage }}
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- TRIP AND BATCH                                        -->
+  <!-- ===================================================== -->
+
+  <div
+    class="card border-light-subtle shadow-sm p-4 mb-4">
+
+    <div class="mb-4">
+
+      <h5 class="fw-bold text-scb mb-1">
+        1. Select Trip and Batch
+      </h5>
+
+      <p class="text-muted small mb-0">
+        Choose all trips, a specific trip, or one specific batch.
+      </p>
+
+    </div>
+
+
+    <div
+      *ngIf="loadingTrips"
+      class="text-center py-4">
+
+      Loading trips...
+
+    </div>
+
+
+    <div
+      *ngIf="
+        !loadingTrips &&
+        activeTrips.length === 0
+      "
+      class="alert alert-warning mb-0">
+
+      There are currently no active trips available.
+
+    </div>
+
+
+    <div
+      *ngIf="
+        !loadingTrips &&
+        activeTrips.length > 0
+      ">
+
+      <div class="row g-3">
+
+        <!-- TRIP -->
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Trip
+          </label>
+
+          <select
+            class="form-select"
+            [(ngModel)]="selectedTripId"
+            (ngModelChange)="onTripChanged()">
+
+            <option [ngValue]="null">
+              All Trips
+            </option>
+
+            <option
+              *ngFor="let trip of activeTrips"
+              [ngValue]="trip.tripId">
+
+              {{ trip.title }} —
+              {{ trip.destination }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- BATCH -->
+
+        <div
+          *ngIf="selectedTrip"
+          class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Batch
+          </label>
+
+          <select
+            class="form-select"
+            [(ngModel)]="selectedBatchId"
+            (ngModelChange)="onBatchChanged()">
+
+            <option [ngValue]="null">
+              All Batches
+            </option>
+
+            <option
+              *ngFor="
+                let batch of selectedTripBatches;
+                let i = index
+              "
+              [ngValue]="batch.batchId">
+
+              {{ batchLabel(batch, i) }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- TRIP INFORMATION -->
+
+      <div
+        *ngIf="selectedTrip"
+        class="mt-4 p-3 rounded bg-light">
+
+        <div class="row g-3">
+
+          <div class="col-md-4">
+
+            <div class="small text-muted">
+              Destination
+            </div>
+
+            <div class="fw-semibold">
+              {{ selectedTrip.destination }}
+            </div>
+
+          </div>
+
+
+          <div class="col-md-4">
+
+            <div class="small text-muted">
+              Duration
+            </div>
+
+            <div class="fw-semibold">
+              {{ selectedTrip.durationDays }} days
+            </div>
+
+          </div>
+
+
+          <div class="col-md-4">
+
+            <div class="small text-muted">
+              Available Batches
+            </div>
+
+            <div class="fw-semibold">
+              {{ selectedTripBatches.length }}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- APPLICANTS                                            -->
+  <!-- ===================================================== -->
+
+  <div
+    class="card border-light-subtle shadow-sm mb-4">
+
+    <div
+      class="card-header-custom d-flex justify-content-between align-items-center">
+
+      <div>
+
+        <h5 class="fw-bold text-scb mb-1">
+          2. Applicants Pool
+        </h5>
+
+        <p class="text-muted small mb-0">
+
+          <span *ngIf="isAllTripsSelected">
+            Showing applicants from all active trips.
+          </span>
+
+          <span *ngIf="isAllBatchesSelected">
+            Showing applicants from all batches of the selected trip.
+          </span>
+
+          <span *ngIf="isSpecificBatchSelected">
+            Showing applicants for the selected batch only.
+          </span>
+
+        </p>
+
+      </div>
+
+      <span class="badge bg-light text-dark border">
+
+        Total:
+        {{ applicants.length }}
+
+      </span>
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+      <div
+        *ngIf="loadingApplicants"
+        class="empty-state">
+
+        Loading applicants...
+
+      </div>
+
+
+      <div
+        *ngIf="
+          !loadingApplicants &&
+          applicants.length === 0
+        "
+        class="empty-state">
+
+        <div class="empty-icon">
+          ✓
+        </div>
+
+        <h6 class="fw-bold text-scb">
+          No applicants found
+        </h6>
+
+        <p class="text-muted mb-0">
+          There are no applications for the selected scope.
+        </p>
+
+      </div>
+
+
+      <div
+        *ngIf="
+          !loadingApplicants &&
+          applicants.length > 0
+        "
+        class="table-responsive">
+
+        <table
+          class="table table-hover align-middle mb-0">
+
+          <thead>
+
+            <tr>
+
+              <th class="ps-4">
+                Application
+              </th>
+
+              <th>
+                Employee
+              </th>
+
+              <th>
+                Department
+              </th>
+
+              <th>
+                Role
+              </th>
+
+              <th class="pe-4">
+                Submitted
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let applicant of pagedApplicants
+              ">
+
+              <td
+                class="ps-4 fw-semibold text-scb">
+
+                #{{ applicant.applicationId }}
+
+              </td>
+
+
+              <td>
+
+                <div class="fw-semibold">
+                  {{ applicant.employeeName }}
+                </div>
+
+                <div
+                  *ngIf="applicant.employeeNumber"
+                  class="small text-muted">
+
+                  {{ applicant.employeeNumber }}
+
+                </div>
+
+              </td>
+
+
+              <td>
+                {{ applicant.department || '—' }}
+              </td>
+
+
+              <td>
+                {{ applicant.role || '—' }}
+              </td>
+
+
+              <td class="pe-4 small">
+
+                {{
+                  applicant.submissionTimestamp
+                    | date:'dd MMM yyyy HH:mm'
+                }}
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- PAGINATION -->
+
+    <div
+      *ngIf="
+        applicants.length > pageSize
+      "
+      class="
+        card-footer
+        bg-white
+        border-top
+        d-flex
+        justify-content-between
+        align-items-center
+      ">
+
+      <div class="small text-muted">
+
+        Showing
+        {{ firstDisplayedApplicant }}
+        –
+        {{ lastDisplayedApplicant }}
+        of
+        {{ applicants.length }}
+
+      </div>
+
+
+      <div
+        class="d-flex align-items-center gap-2">
+
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [disabled]="currentPage === 1"
+          (click)="previousPage()">
+
+          Previous
+
+        </button>
+
+
+        <span class="small fw-semibold">
+
+          Page
+          {{ currentPage }}
+          of
+          {{ totalPages }}
+
+        </span>
+
+
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()">
+
+          Next
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- SELECTION METHOD - SPECIFIC BATCH ONLY                -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isSpecificBatchSelected"
+    class="card border-light-subtle shadow-sm p-4 mb-4">
+
+    <h5
+      class="fw-bold text-scb border-bottom pb-2 mb-4">
+
+      3. Choose Selection Method
+
+    </h5>
+
+
+    <div
+      *ngIf="loadingRequest"
+      class="text-muted small mb-3">
+
+      Checking selection request status...
+
+    </div>
+
+
+    <!-- PENDING STATUS -->
+
+    <div
+      *ngIf="latestRequest?.status === 'PENDING'"
+      class="alert alert-info">
+
+      <strong>Request Sent.</strong>
+
+      The
+      {{ latestRequest?.method }}
+      selection method for this batch is waiting for HR Manager approval.
+
+    </div>
+
+
+    <!-- APPROVED STATUS -->
+
+    <div
+      *ngIf="latestRequest?.status === 'APPROVED'"
+      class="alert alert-success">
+
+      <strong>Selection Approved.</strong>
+
+      This batch has already been approved for selection.
+
+    </div>
+
+
+    <!-- REJECTED STATUS -->
+
+    <div
+      *ngIf="latestRequest?.status === 'REJECTED'"
+      class="alert alert-warning">
+
+      <strong>The previous request was rejected.</strong>
+
+      <span
+        *ngIf="latestRequest?.rejectionReason">
+
+        Reason:
+        {{ latestRequest?.rejectionReason }}
+
+      </span>
+
+      <div class="mt-2">
+        You can choose a method and send a new request.
+      </div>
+
+    </div>
+
+
+    <p class="text-muted small mb-4">
+
+      The selection method is available only when one specific batch
+      is selected.
+
+    </p>
+
 
     <div class="row g-3">
-      <div class="col-md-6">
-        <div class="option-card-box d-flex align-items-start gap-3"
-             [class.active]="selectedStrategy === 'lottery'"
-             (click)="selectStrategy('lottery')">
-          <input type="radio" name="selectionStrategy" class="form-check-input mt-1" [checked]="selectedStrategy === 'lottery'">
-          <div>
-            <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 1: Random Selection (Lottery)</div>
-            <p class="text-muted small mb-2">Automated, unbiased random draw from all eligible applicants who registered before the deadline.</p>
-            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 11px;">Recommended for oversubscribed trips</span>
-          </div>
-        </div>
-      </div>
+
+      <!-- RANDOM -->
 
       <div class="col-md-6">
-        <div class="option-card-box d-flex align-items-start gap-3"
-             [class.active]="selectedStrategy === 'fcfs'"
-             (click)="selectStrategy('fcfs')">
-          <input type="radio" name="selectionStrategy" class="form-check-input mt-1" [checked]="selectedStrategy === 'fcfs'">
+
+        <div
+          class="
+            option-card-box
+            d-flex
+            align-items-start
+            gap-3
+            p-3
+            rounded
+            border
+          "
+          [class.active]="selectedMethod === 'RANDOM'"
+          [class.opacity-50]="!canChangeMethod"
+          (click)="selectMethod('RANDOM')">
+
+          <input
+            type="radio"
+            name="selectionMethod"
+            class="form-check-input mt-1"
+            [checked]="selectedMethod === 'RANDOM'"
+            [disabled]="!canChangeMethod"
+            (change)="selectMethod('RANDOM')" />
+
           <div>
-            <div class="fw-bold text-scb mb-1" style="font-size: 15px;">Option 2: First-Come, First-Served (FCFS)</div>
-            <p class="text-muted small mb-2">Seats are allocated strictly in order of submission timestamp until capacity (3 spots) is filled.</p>
-            <span class="badge bg-secondary-subtle text-secondary fw-bold" style="font-size: 11px;">Standard priority rule</span>
+
+            <div
+              class="fw-bold text-scb mb-1">
+
+              Random Selection (Lottery)
+
+            </div>
+
+            <p
+              class="text-muted small mb-0">
+
+              Applicants are selected randomly.
+
+            </p>
+
           </div>
+
         </div>
+
       </div>
+
+
+      <!-- FIFO -->
+
+      <div class="col-md-6">
+
+        <div
+          class="
+            option-card-box
+            d-flex
+            align-items-start
+            gap-3
+            p-3
+            rounded
+            border
+          "
+          [class.active]="selectedMethod === 'FIFO'"
+          [class.opacity-50]="!canChangeMethod"
+          (click)="selectMethod('FIFO')">
+
+          <input
+            type="radio"
+            name="selectionMethod"
+            class="form-check-input mt-1"
+            [checked]="selectedMethod === 'FIFO'"
+            [disabled]="!canChangeMethod"
+            (change)="selectMethod('FIFO')" />
+
+          <div>
+
+            <div
+              class="fw-bold text-scb mb-1">
+
+              First-Come, First-Served (FIFO)
+
+            </div>
+
+            <p
+              class="text-muted small mb-0">
+
+              Applicants are prioritized by submission time.
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
+
+
+    <!-- SEND TO MANAGER -->
+
+    <div class="selection-actions mt-4">
+
+      <button
+        type="button"
+        class="btn btn-scb-primary"
+        [disabled]="!canSubmit"
+        (click)="sendToManager()">
+
+        <span *ngIf="isSubmitting">
+          Sending...
+        </span>
+
+        <span
+          *ngIf="
+            !isSubmitting &&
+            latestRequest?.status === 'PENDING'
+          ">
+
+          Request Pending
+
+        </span>
+
+        <span
+          *ngIf="
+            !isSubmitting &&
+            latestRequest?.status === 'APPROVED'
+          ">
+
+          Selection Approved
+
+        </span>
+
+        <span
+          *ngIf="
+            !isSubmitting &&
+            latestRequest?.status !== 'PENDING' &&
+            latestRequest?.status !== 'APPROVED'
+          ">
+
+          Send to Manager
+
+        </span>
+
+      </button>
+
+    </div>
+
   </div>
 
-  <div class="card border-light-subtle shadow-sm p-4 mb-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-      <h5 class="fw-bold text-scb m-0">2. All Applied Employees ({{ applicantCount }} Applicants)</h5>
-      <span class="badge bg-light text-dark border fw-bold" style="font-size: 12px;">Capacity Quota: {{ confirmedCount }} Confirmed / {{ waitlistCount }} Waitlisted</span>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-hover align-middle table-custom mb-0">
-        <thead>
-          <tr>
-            <th>App ID</th>
-            <th>Employee Name</th>
-            <th>Department</th>
-            <th>Submission Timestamp</th>
-            <th>Eligibility</th>
-            <th>Preview Allocation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let applicant of applicants">
-            <td class="fw-bold text-muted">{{ applicant.appId }}</td>
-            <td><strong class="text-dark">{{ applicant.name }}</strong></td>
-            <td>{{ applicant.department }}</td>
-            <td>{{ applicant.timestamp }}</td>
-            <td>
-              <span *ngIf="applicant.eligible" class="badge bg-success-subtle text-success fw-bold">✓ Eligible</span>
-              <span *ngIf="!applicant.eligible" class="badge bg-danger-subtle text-danger fw-bold">✗ Not Eligible</span>
-            </td>
-            <td>
-              <span *ngIf="applicant.allocationStatus === 'confirmed'" class="badge bg-success text-white fw-bold">Selected (Confirmed)</span>
-              <span *ngIf="applicant.allocationStatus === 'waitlist'" class="badge bg-warning-subtle text-warning-emphasis fw-bold">Waitlist</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>

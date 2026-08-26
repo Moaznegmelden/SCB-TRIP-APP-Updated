@@ -14,11 +14,13 @@ interface CurrentUser {
 @Component({
   selector: 'app-header',
   standalone: true,
+
   imports: [
     CommonModule,
     RouterLink,
     RouterLinkActive
   ],
+
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
@@ -28,29 +30,40 @@ export class Header implements OnInit {
 
   role = '';
 
+
+  // =========================================================
+  // INITIALIZATION
+  // =========================================================
+
   ngOnInit(): void {
 
     const storedUser =
-      localStorage.getItem('currentUser');
+      sessionStorage.getItem('currentUser');
+
 
     if (!storedUser) {
+
       return;
     }
+
 
     try {
 
       this.currentUser =
         JSON.parse(storedUser);
 
+
       this.role =
         this.currentUser?.role
           ?.toUpperCase()
           ?.trim() || '';
 
+
       console.log(
         '🔥 HEADER USER:',
         this.currentUser
       );
+
 
       console.log(
         '🔥 HEADER ROLE:',
@@ -65,35 +78,51 @@ export class Header implements OnInit {
       );
 
       this.currentUser = null;
+
       this.role = '';
     }
   }
 
-  // =========================
+
+  // =========================================================
   // ROLE CHECKS
-  // =========================
+  // =========================================================
 
   isEmployee(): boolean {
+
     return this.role === 'EMPLOYEE';
   }
 
+
   isLineManager(): boolean {
+
     return this.role === 'LINE_MANAGER';
   }
 
+
   isHrAdmin(): boolean {
+
     return this.role === 'HR_ADMIN';
   }
 
+
   isHrManager(): boolean {
+
     return this.role === 'HR_MANAGER';
   }
 
-  // =========================
+
+  // =========================================================
   // TASK ACCESS
-  // =========================
+  //
+  // Employee       → NO Tasks
+  // Line Manager   → Tasks
+  // HR Admin       → Tasks
+  // HR Manager     → Tasks
+  // =========================================================
 
   hasTasks(): boolean {
+
     return (
       this.isLineManager() ||
       this.isHrAdmin() ||
@@ -101,47 +130,71 @@ export class Header implements OnInit {
     );
   }
 
-  // =========================
-  // CREATE TRIPS ACCESS
-  // =========================
+
+  // =========================================================
+  // CREATE TRIPS
+  //
+  // HR ADMIN ONLY
+  // =========================================================
 
   canCreateTrips(): boolean {
+
     return this.isHrAdmin();
   }
 
-  // =========================
+
+  // =========================================================
+  // APPROVAL HISTORY
+  //
+  // LINE MANAGER ONLY
+  // =========================================================
+
+  canViewApprovalHistory(): boolean {
+
+    return this.isLineManager();
+  }
+
+
+  // =========================================================
   // DISPLAY NAME
-  // =========================
+  // =========================================================
 
   get displayName(): string {
 
     if (!this.currentUser?.fullName) {
+
       return '';
     }
 
     return this.currentUser.fullName;
   }
 
-  // =========================
-  // AVATAR
-  // =========================
+
+  // =========================================================
+  // AVATAR INITIALS
+  // =========================================================
 
   get initials(): string {
 
     if (!this.currentUser?.fullName) {
+
       return '';
     }
+
 
     const parts =
       this.currentUser.fullName
         .trim()
         .split(/\s+/);
 
+
     if (parts.length === 1) {
+
       return parts[0]
         .substring(0, 2)
         .toUpperCase();
     }
+
 
     return (
       parts[0].charAt(0) +
@@ -149,9 +202,10 @@ export class Header implements OnInit {
     ).toUpperCase();
   }
 
-  // =========================
+
+  // =========================================================
   // ROLE LABEL
-  // =========================
+  // =========================================================
 
   get roleLabel(): string {
 

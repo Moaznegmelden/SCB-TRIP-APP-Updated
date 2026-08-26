@@ -86,12 +86,14 @@
 
   <ul class="page-nav-links">
 
-    <!-- =========================
-         COMMON TO EVERYONE
-         Trips
-    ========================== -->
+
+    <!-- =====================================================
+         TRIPS
+         COMMON TO ALL USERS
+    ====================================================== -->
 
     <li>
+
       <a
         routerLink="/employee-dashboard"
         routerLinkActive="active"
@@ -100,15 +102,17 @@
         Trips
 
       </a>
+
     </li>
 
 
-    <!-- =========================
-         COMMON TO EVERYONE
-         My Requests
-    ========================== -->
+    <!-- =====================================================
+         MY REQUESTS
+         COMMON TO ALL USERS
+    ====================================================== -->
 
     <li>
+
       <a
         routerLink="/my-requests"
         routerLinkActive="active">
@@ -116,29 +120,32 @@
         My requests
 
       </a>
+
     </li>
 
 
-    <!-- =========================
-         COMMON TO EVERYONE
-         History
-    ========================== -->
+    <!-- =====================================================
+         HISTORY
+         COMMON TO ALL USERS
+    ====================================================== -->
 
     <li>
+
       <a
-        routerLink="/manager-history"
+        routerLink="/history"
         routerLinkActive="active">
 
         History
 
       </a>
+
     </li>
 
 
-    <!-- =========================
+    <!-- =====================================================
+         CREATE TRIPS
          HR ADMIN ONLY
-         Create Trips
-    ========================== -->
+    ====================================================== -->
 
     <li *ngIf="canCreateTrips()">
 
@@ -153,16 +160,33 @@
     </li>
 
 
-    <!-- =========================
+    <!-- =====================================================
          TASKS
-         HR ADMIN
-         HR MANAGER
-         LINE MANAGER
-    ========================== -->
+         ROLE-BASED
+    ====================================================== -->
 
     <li *ngIf="hasTasks()">
 
-      <!-- HR ADMIN -->
+
+      <!-- ===================================================
+           LINE MANAGER
+           Employee Application Approvals
+      ==================================================== -->
+
+      <a
+        *ngIf="isLineManager()"
+        routerLink="/manager-approval"
+        routerLinkActive="active">
+
+        Tasks
+
+      </a>
+
+
+      <!-- ===================================================
+           HR ADMIN
+           Employee Selection
+      ==================================================== -->
 
       <a
         *ngIf="isHrAdmin()"
@@ -174,7 +198,10 @@
       </a>
 
 
-      <!-- HR MANAGER -->
+      <!-- ===================================================
+           HR MANAGER
+           Trip + Selection Approvals
+      ==================================================== -->
 
       <a
         *ngIf="isHrManager()"
@@ -186,18 +213,40 @@
       </a>
 
 
-      <!-- LINE MANAGER -->
+      <!-- ===================================================
+     HR ADMIN + HR MANAGER
+     Announcements
+=================================================== -->
+
+<a
+  *ngIf="isHrAdmin() || isHrManager()"
+  routerLink="/admin/trips/announcement"
+  routerLinkActive="active">
+
+  Go to Announcements
+
+</a>
+
+    </li>
+
+
+    <!-- =====================================================
+         APPROVAL HISTORY
+         LINE MANAGER ONLY
+    ====================================================== -->
+
+    <li *ngIf="canViewApprovalHistory()">
 
       <a
-        *ngIf="isLineManager()"
-        routerLink="/manager-history"
+        routerLink="/approval-history"
         routerLinkActive="active">
 
-        Tasks
+        Approval History
 
       </a>
 
     </li>
+
 
   </ul>
 

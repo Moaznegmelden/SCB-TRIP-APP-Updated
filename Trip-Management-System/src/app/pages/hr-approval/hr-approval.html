@@ -1,39 +1,22 @@
-<header class="brand-header">
-<div class="scb-logo-container">
-  <div class="scb-logo-waves">
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-    <div class="scb-wave"></div>
-  </div>
-  <div class="scb-logo-text">Suez Canal Bank</div>
-</div>
-<div class="header-brand-line"></div>
-<div class="user-dropdown-container">
-  <button class="user-profile-btn" type="button">
-    <div class="avatar-circle">HU</div>
-    <div class="user-info">
-      <span class="user-name">HR User</span>
-      <span class="user-role">Administration</span>
-    </div>
-  </button>
-</div>
-</header>
+<app-header></app-header>
 
 <div class="container-fluid px-4">
 
   <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
     <div class="fw-bold text-scb text-uppercase small">Administration / Trip Approvals</div>
+    
   </div>
+
+  <!-- ===================== SECTION 1: PENDING TRIP APPROVALS ===================== -->
 
   <div class="d-flex justify-content-between align-items-start mb-4">
     <div>
       <h3 class="fw-bold text-scb mb-1">Pending Trip Approvals</h3>
-     
       <p class="text-muted small mb-0">Review and approve or reject trips submitted</p>
     </div>
   </div>
 
-  <div class="card border-light-subtle shadow-sm">
+  <div class="card border-light-subtle shadow-sm mb-5">
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -64,16 +47,64 @@
               <td>{{ trip.createdBy }}</td>
               <td class="small text-muted">{{ trip.submittedAt | date:'dd MMM yyyy HH:mm' }}</td>
               <td class="text-end pe-4">
-                <a
-                   [routerLink]="['/admin/trips/approvals', trip.id]"
-                    class="btn btn-sm btn-scb-primary">
-                    Review
-                </a>
+                <a [routerLink]="['/admin/trips/approvals', trip.id]" class="btn btn-sm btn-scb-primary">View</a>
               </td>
             </tr>
             <tr *ngIf="pendingTrips && pendingTrips.length === 0">
               <td colspan="8" class="text-center text-muted py-5">
                 No trips currently pending approval.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2: SELECTION APPROVAL ===================== -->
+
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h3 class="fw-bold text-scb mb-1">Selection Approval</h3>
+      <p class="text-muted small mb-0">Review and approve or reject trip participant selections</p>
+    </div>
+  </div>
+
+  <div class="card border-light-subtle shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Trip Title</th>
+              <th>Batch</th>
+              <th>Selection Method</th>
+              <th>Requested By</th>
+              <th>Requested At</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of pendingSelections">
+              <td class="ps-4 fw-semibold">{{ s.tripName }}</td>
+              <td>{{ s.batchName }}</td>
+              <td>
+                <span class="badge bg-light text-dark border">{{ s.method }}</span>
+              </td>
+              <td>{{ s.requestedByName }}</td>
+              <td class="small text-muted">{{ s.requestedAt | date:'dd MMM yyyy HH:mm' }}</td>
+              <td class="text-end pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                  <button type="button" class="btn btn-sm btn-scb-primary" (click)="approveSelection(s.selectionRequestId)">Approve</button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="rejectSelection(s.selectionRequestId)">Reject</button>
+                  <!-- 🔴 No /return endpoint exists in SelectionController — button left disabled -->
+                  <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Not supported by backend yet">Return</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="pendingSelections && pendingSelections.length === 0">
+              <td colspan="6" class="text-center text-muted py-5">
+                No selection requests currently pending approval.
               </td>
             </tr>
           </tbody>

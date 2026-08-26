@@ -1,0 +1,474 @@
+<app-header></app-header>
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+
+<div
+  class="container"
+  style="max-width:1200px; margin:0 auto; padding:28px 24px 12px;"
+>
+
+  <div>
+
+    <h1>
+      History
+    </h1>
+
+    <p>
+      View your completed trip applications and their final results.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN CONTAINER
+========================================================= -->
+
+<div
+  class="container"
+  style="max-width:1200px;"
+>
+
+
+  <!-- =======================================================
+       LOADING
+  ======================================================== -->
+
+  <div
+    *ngIf="loading"
+    class="card"
+    style="text-align:center; padding:45px;"
+  >
+
+    <p style="margin:0;">
+      Loading your history...
+    </p>
+
+  </div>
+
+
+  <!-- =======================================================
+       ERROR
+  ======================================================== -->
+
+  <div
+    *ngIf="!loading && loadError"
+    class="card"
+    style="text-align:center; padding:45px;"
+  >
+
+    <h3>
+      Unable to load history
+    </h3>
+
+    <p>
+      There was a problem loading your trip history.
+    </p>
+
+    <button
+      type="button"
+      class="btn btn-outline"
+      (click)="loadHistory()"
+    >
+      Try Again
+    </button>
+
+  </div>
+
+
+  <!-- =======================================================
+       LOADED CONTENT
+  ======================================================== -->
+
+  <ng-container
+    *ngIf="!loading && !loadError"
+  >
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <div
+      class="stats-row"
+      style="
+        display:grid;
+        grid-template-columns:repeat(5, 1fr);
+        gap:16px;
+        margin-bottom:24px;
+      "
+    >
+
+      <!-- TOTAL -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Total Applications
+        </div>
+
+        <div class="stat-value">
+          {{ statTotal }}
+        </div>
+
+      </div>
+
+
+      <!-- SELECTED -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Selected
+        </div>
+
+        <div class="stat-value">
+          {{ statSelected }}
+        </div>
+
+      </div>
+
+
+      <!-- WAITLIST -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Waitlist
+        </div>
+
+        <div class="stat-value">
+          {{ statWaitlist }}
+        </div>
+
+      </div>
+
+
+      <!-- NOT SELECTED -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Not Selected
+        </div>
+
+        <div class="stat-value">
+          {{ statNotSelected }}
+        </div>
+
+      </div>
+
+      <div class="stat-card">
+
+  <div class="stat-label">
+    Rejected
+  </div>
+
+  <div class="stat-value">
+    {{ statRejected }}
+  </div>
+
+</div>
+
+    </div>
+
+
+    <!-- =====================================================
+         HISTORY CARD
+    ====================================================== -->
+
+    <div class="card">
+
+
+      <!-- ===================================================
+           TABS
+      ==================================================== -->
+
+      <div
+        class="tabs"
+        style="margin-bottom:20px;"
+      >
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'all'"
+          (click)="switchTab('all')"
+        >
+          All
+
+          <span>
+            {{ statTotal }}
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'selected'"
+          (click)="switchTab('selected')"
+        >
+          Selected
+
+          <span>
+            {{ statSelected }}
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'waitlist'"
+          (click)="switchTab('waitlist')"
+        >
+          Waitlist
+
+          <span>
+            {{ statWaitlist }}
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab === 'not_selected'"
+          (click)="switchTab('not_selected')"
+        >
+          Not Selected
+
+          <span>
+            {{ statNotSelected }}
+          </span>
+
+        </button>
+
+        <button
+  type="button"
+  class="tab"
+  [class.active]="activeTab === 'rejected'"
+  (click)="switchTab('rejected')"
+>
+  Rejected
+
+  <span>
+    {{ statRejected }}
+  </span>
+
+</button>
+
+      </div>
+
+
+      <!-- ===================================================
+           EMPTY STATE
+      ==================================================== -->
+
+      <div
+        *ngIf="filteredHistory.length === 0"
+        style="
+          text-align:center;
+          padding:45px 20px;
+          color:var(--text-muted);
+        "
+      >
+
+        <h3>
+          No applications found
+        </h3>
+
+        <p>
+          You don't have any applications in this category.
+        </p>
+
+      </div>
+
+
+      <!-- ===================================================
+           TABLE
+      ==================================================== -->
+
+      <div
+        class="table-wrap"
+        *ngIf="filteredHistory.length > 0"
+      >
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Request ID
+              </th>
+
+              <th>
+                Trip
+              </th>
+
+              <th>
+                Destination
+              </th>
+
+              <th>
+                Batch
+              </th>
+
+              <th>
+                Rooms
+              </th>
+
+              <th>
+                Companions
+              </th>
+
+              <th>
+                Total Price
+              </th>
+
+              <th>
+                Selection Method
+              </th>
+
+              <th>
+                Result Date
+              </th>
+
+              <th>
+                Status
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let item of filteredHistory"
+            >
+
+              <!-- REQUEST ID -->
+
+              <td>
+
+                <strong>
+                  {{ item.requestId }}
+                </strong>
+
+              </td>
+
+
+              <!-- TRIP -->
+
+              <td>
+
+                {{ item.tripTitle }}
+
+              </td>
+
+
+              <!-- DESTINATION -->
+
+              <td>
+
+                {{ item.destination }}
+
+              </td>
+
+
+              <!-- BATCH -->
+
+              <td>
+
+                {{ item.batchId }}
+
+              </td>
+
+
+              <!-- ROOMS -->
+
+              <td>
+
+                {{ item.roomsRequested }}
+
+              </td>
+
+
+              <!-- COMPANIONS -->
+
+              <td>
+
+                {{ item.companions }}
+
+              </td>
+
+
+              <!-- TOTAL PRICE -->
+
+              <td>
+
+                {{ item.totalPrice | number:'1.2-2' }}
+
+              </td>
+
+
+              <!-- SELECTION METHOD -->
+
+              <td>
+
+                {{ item.selectionMethod }}
+
+              </td>
+
+
+              <!-- DATE -->
+
+              <td>
+
+                {{ item.selectedAt }}
+
+              </td>
+
+
+              <!-- STATUS -->
+
+              <td>
+
+                <span
+                  class="badge"
+                  [ngClass]="
+                    'badge-' + item.status
+                  "
+                >
+
+                  {{ item.statusDisplay }}
+
+                </span>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

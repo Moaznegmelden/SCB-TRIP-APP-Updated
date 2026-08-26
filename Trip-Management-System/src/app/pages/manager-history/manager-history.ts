@@ -1,42 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef,Component,OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+
 import { Header } from '../../header/header';
 
+
 type HistoryStatus =
-  | 'pending'
   | 'approved'
-  | 'rejected'
-  | 'expired';
+  | 'rejected';
 
-interface ApplicationApi {
+
+interface ApprovalHistoryApi {
+
+  id?: number;
+
   applicationId?: number;
-  batchId?: number;
 
-  destination?: string;
+  actionByEmployeeId?: number;
 
-  employeeId?: number;
-  employeeName?: string;
-  employeeNumber?: string;
+  roleAtAction?: string;
 
-  participants?: unknown[];
+  action?: string;
 
-  pickupPoint?: string;
-  roomsRequested?: number;
+  comments?: string;
 
-  selectedAt?: string | null;
-  selectionMethod?: string | null;
+  actionAt?: string;
 
-  statusName?: string;
+  application?: {
 
-  totalPrice?: number;
-  transportType?: string;
+    applicationId?: number;
 
-  tripId?: number;
-  tripTitle?: string;
+    employeeName?: string;
+
+    employeeNumber?: string;
+
+    tripTitle?: string;
+
+    destination?: string;
+
+    createdAt?: string;
+
+    statusName?: string;
+
+  };
 }
+
 
 interface HistoryRequest {
 
@@ -60,22 +69,28 @@ interface HistoryRequest {
 
   destination: string;
 
-  companions: number;
+  comments: string;
 
-  totalPrice: number;
+  actionDate: string;
 }
 
+
 @Component({
+
   selector: 'app-manager-history',
+
   standalone: true,
+
   imports: [
     CommonModule,
-    RouterLink,
     Header
   ],
+
   templateUrl: './manager-history.html'
+
 })
 export class ManagerHistory implements OnInit {
+
 
   // =========================================================
   // CURRENT USER
@@ -101,25 +116,24 @@ export class ManagerHistory implements OnInit {
   // STATISTICS
   // =========================================================
 
-  statPendingAction = 0;
-
-  statApprovedThisMonth = 0;
+  statApproved = 0;
 
   statRejected = 0;
 
-  statExpired = 0;
+  statTotal = 0;
 
 
   // =========================================================
   // TABS
   // =========================================================
 
-  activeTab: HistoryStatus = 'pending';
+  activeTab: HistoryStatus | 'all' = 'all';
 
 
-  constructor(
-    private http: HttpClient
-  ) {}
+ constructor(
+  private http: HttpClient,
+  private cdr: ChangeDetectorRef
+) {}
 
 
   // =========================================================
@@ -140,267 +154,358 @@ export class ManagerHistory implements OnInit {
   private loadCurrentUser(): void {
 
     const currentUserJson =
-      localStorage.getItem('currentUser');
+      sessionStorage.getItem('currentUser');
+
 
     if (!currentUserJson) {
 
       console.error(
-        '🔥 MANAGER HISTORY: currentUser not found'
+        '🔥 APPROVAL HISTORY: currentUser not found'
       );
 
-      this.loadError = true;
       this.loading = false;
+
+      this.loadError = true;
 
       return;
     }
+
 
     try {
 
       this.currentUser =
         JSON.parse(currentUserJson);
 
+
       console.log(
-        '🔥 MANAGER HISTORY USER:',
+        '🔥 APPROVAL HISTORY USER:',
         this.currentUser
       );
 
-      if (this.currentUser?.employeeId) {
 
-        this.managerId =
-          Number(this.currentUser.employeeId);
+      this.managerId =
+        Number(
+          this.currentUser?.employeeId
+        );
 
+
+      const role =
+        String(
+          this.currentUser?.role || ''
+        )
+          .toUpperCase()
+          .trim();
+
+
+      console.log(
+        '🔥 APPROVAL HISTORY ROLE:',
+        role
+      );
+
+
+      // =====================================================
+      // LINE MANAGER ONLY
+      // =====================================================
+
+      if (role !== 'LINE_MANAGER') {
+
+        console.error(
+          '🔥 USER IS NOT A LINE MANAGER:',
+          role
+        );
+
+        this.loading = false;
+
+        this.loadError = true;
+
+        return;
       }
+
 
       if (!this.managerId) {
 
         console.error(
-          '🔥 MANAGER HISTORY: employeeId not found in currentUser'
+          '🔥 APPROVAL HISTORY: employeeId not found'
         );
 
-        this.loadError = true;
         this.loading = false;
+
+        this.loadError = true;
 
         return;
       }
 
-      const role =
-        String(this.currentUser?.role || '')
-          .toUpperCase()
-          .trim()
-          .replace(/[\s-]+/g, '_');
-
-      console.log(
-        '🔥 MANAGER HISTORY ROLE:',
-        role
-      );
-
-      if (
-        role !== 'MANAGER' &&
-        role !== 'LINE_MANAGER'
-      ) {
-
-        console.error(
-          '🔥 USER IS NOT A MANAGER:',
-          role
-        );
-
-        this.loadError = true;
-        this.loading = false;
-
-        return;
-      }
 
       this.loadRequests();
 
     } catch (error) {
 
       console.error(
-        '🔥 MANAGER HISTORY USER ERROR:',
+        '🔥 APPROVAL HISTORY USER ERROR:',
         error
       );
 
-      this.loadError = true;
       this.loading = false;
 
+      this.loadError = true;
+
     }
+
   }
 
 
   // =========================================================
-  // LOAD APPROVAL HISTORY
+  // LOAD LINE MANAGER APPROVAL HISTORY
+  //
+  // IMPORTANT:
+  // No managerId is sent from Angular.
+  //
+  // Backend gets the current manager from JWT.
   // =========================================================
 
   loadRequests(): void {
 
-    if (!this.managerId) {
-
-      console.error(
-        '🔥 MANAGER ID IS MISSING'
-      );
-
-      return;
-    }
-
     this.loading = true;
+
     this.loadError = false;
 
+
     const apiUrl =
-      `/api/applications/manager/${this.managerId}`;
+      `/api/applications/manager/approval-history`;
+
 
     console.log(
       '🔥 MANAGER APPROVAL HISTORY API:',
       apiUrl
     );
 
+
     this.http
-      .get<ApplicationApi[]>(apiUrl)
+
+      .get<ApprovalHistoryApi[]>(apiUrl)
+
       .pipe(
-        finalize(() => {
 
-          this.loading = false;
+       finalize(() => {
 
-        })
+  this.loading = false;
+
+  console.log(
+    '🔥 MANAGER APPROVAL HISTORY LOADING FINISHED'
+  );
+
+  this.cdr.detectChanges();
+
+})
+
       )
+
       .subscribe({
 
-        next: (applications) => {
+        next: (history) => {
 
           console.log(
-            '🔥 MANAGER APPLICATIONS:',
-            applications
+            '🔥 MANAGER APPROVAL HISTORY RESPONSE:',
+            history
           );
 
+
           this.requests =
-            applications.map(app =>
-              this.mapApplication(app)
-            );
+            history
+
+              .map(item =>
+                this.mapHistory(item)
+              )
+
+              .filter(item =>
+                item.status === 'approved' ||
+                item.status === 'rejected'
+              );
+
 
           this.updateStatistics();
+          this.cdr.detectChanges();
+
 
           console.log(
-            '🔥 MANAGER APPROVAL HISTORY:',
+            '🔥 FINAL MANAGER APPROVAL HISTORY:',
             this.requests
           );
 
         },
 
+
         error: (error) => {
 
           console.error(
-            '🔥 MANAGER APPLICATIONS ERROR:',
+            '🔥 MANAGER APPROVAL HISTORY ERROR:',
             error
           );
 
+
           this.requests = [];
+
           this.loadError = true;
 
         }
+        
 
       });
+
   }
 
 
   // =========================================================
-  // MAP API RESPONSE
+  // MAP APPROVAL HISTORY
   // =========================================================
 
-  private mapApplication(
-    app: ApplicationApi
+  private mapHistory(
+    item: ApprovalHistoryApi
   ): HistoryRequest {
+
+
+    const application =
+      item.application;
+
 
     return {
 
       applicationId:
-        app.applicationId ?? 0,
+        item.applicationId ??
+        application?.applicationId ??
+        0,
+
 
       requestId:
-        `REQ-${app.applicationId ?? 0}`,
+        `REQ-${
+          item.applicationId ??
+          application?.applicationId ??
+          0
+        }`,
+
 
       empName:
-        app.employeeName ??
+        application?.employeeName ??
         'Unknown Employee',
 
+
       empId:
-        app.employeeNumber ??
+        application?.employeeNumber ??
         'N/A',
 
+
       tripName:
-        app.tripTitle ??
+        application?.tripTitle ??
         'Trip',
+
 
       startDate:
         'N/A',
 
+
       endDate:
         'N/A',
 
+
       submissionDate:
-        'N/A',
+        this.formatDateTime(
+          application?.createdAt
+        ),
+
 
       status:
-        this.mapStatus(app.statusName),
+        this.mapAction(
+          item.action
+        ),
+
 
       destination:
-        app.destination ??
+        application?.destination ??
         'N/A',
 
-      companions:
-        app.participants?.length ??
-        0,
 
-      totalPrice:
-        app.totalPrice ??
-        0
+      comments:
+        item.comments ??
+        '',
+
+
+      actionDate:
+        this.formatDateTime(
+          item.actionAt
+        )
+
     };
+
   }
 
 
   // =========================================================
-  // MAP STATUS
+  // MAP ACTION
   // =========================================================
 
-  private mapStatus(
-    statusName?: string
+  private mapAction(
+    action?: string
   ): HistoryStatus {
 
-    const status =
-      (statusName ?? '')
-        .toUpperCase();
+    const normalized =
+      (action ?? '')
+        .toUpperCase()
+        .trim();
+
 
     if (
-      status === 'PENDING_MANAGER' ||
-      status.includes('PENDING')
-    ) {
-
-      return 'pending';
-
-    }
-
-    if (
-      status.includes('APPROV')
-    ) {
-
-      return 'approved';
-
-    }
-
-    if (
-      status.includes('REJECT')
+      normalized.includes('REJECT')
     ) {
 
       return 'rejected';
 
     }
 
-    if (
-      status.includes('EXPIRED')
-    ) {
 
-      return 'expired';
+    return 'approved';
+
+  }
+
+
+  // =========================================================
+  // DATE FORMAT
+  // =========================================================
+
+  private formatDateTime(
+    value?: string
+  ): string {
+
+    if (!value) {
+
+      return 'N/A';
 
     }
 
-    return 'pending';
+
+    const date =
+      new Date(value);
+
+
+    if (Number.isNaN(
+      date.getTime()
+    )) {
+
+      return value;
+
+    }
+
+
+    return date.toLocaleString(
+      'en-GB',
+      {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }
+    );
+
   }
 
 
@@ -410,25 +515,23 @@ export class ManagerHistory implements OnInit {
 
   private updateStatistics(): void {
 
-    this.statPendingAction =
+    this.statApproved =
       this.requests.filter(
-        r => r.status === 'pending'
+        request =>
+          request.status === 'approved'
       ).length;
 
-    this.statApprovedThisMonth =
-      this.requests.filter(
-        r => r.status === 'approved'
-      ).length;
 
     this.statRejected =
       this.requests.filter(
-        r => r.status === 'rejected'
+        request =>
+          request.status === 'rejected'
       ).length;
 
-    this.statExpired =
-      this.requests.filter(
-        r => r.status === 'expired'
-      ).length;
+
+    this.statTotal =
+      this.requests.length;
+
   }
 
 
@@ -437,26 +540,32 @@ export class ManagerHistory implements OnInit {
   // =========================================================
 
   switchTab(
-    tab: HistoryStatus
+    tab: HistoryStatus | 'all'
   ): void {
 
     this.activeTab = tab;
+
   }
 
+
+  // =========================================================
+  // FILTERED HISTORY
+  // =========================================================
 
   get filteredRequests(): HistoryRequest[] {
 
+    if (this.activeTab === 'all') {
+
+      return this.requests;
+
+    }
+
+
     return this.requests.filter(
-      r => r.status === this.activeTab
+      request =>
+        request.status === this.activeTab
     );
-  }
 
-
-  get pendingCount(): number {
-
-    return this.requests.filter(
-      r => r.status === 'pending'
-    ).length;
   }
 
 
@@ -465,104 +574,21 @@ export class ManagerHistory implements OnInit {
   // =========================================================
 
   statusLabel(
-    status: HistoryStatus
+    status: HistoryStatus | 'all'
   ): string {
+
+    if (status === 'all') {
+
+      return 'All';
+
+    }
+
 
     return (
       status.charAt(0).toUpperCase() +
       status.slice(1)
     );
+
   }
 
-
-  // =========================================================
-  // APPROVE / REJECT
-  // =========================================================
-
-  actionRow(
-    req: HistoryRequest,
-    newStatus: 'approved' | 'rejected'
-  ): void {
-
-    if (!this.managerId) {
-
-      alert(
-        'Manager information is missing.'
-      );
-
-      return;
-    }
-
-    const action =
-      newStatus === 'approved'
-        ? 'Approve'
-        : 'Reject';
-
-    if (
-      !confirm(
-        `${action} this request?`
-      )
-    ) {
-
-      return;
-    }
-
-    const endpoint =
-      newStatus === 'approved'
-        ? 'approve'
-        : 'reject';
-
-    const url =
-      `/api/applications/` +
-      `${req.applicationId}/` +
-      `${endpoint}` +
-      `?managerId=${this.managerId}`;
-
-    console.log(
-      '🔥 MANAGER DECISION API:',
-      url
-    );
-
-    this.http
-      .post<ApplicationApi>(
-        url,
-        {}
-      )
-      .subscribe({
-
-        next: (response) => {
-
-          console.log(
-            '🔥 MANAGER DECISION RESPONSE:',
-            response
-          );
-
-          req.status =
-            newStatus;
-
-          this.updateStatistics();
-
-          alert(
-            `Request ${req.requestId} ${newStatus}.`
-          );
-
-          this.loadRequests();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            '🔥 MANAGER DECISION ERROR:',
-            error
-          );
-
-          alert(
-            `Unable to ${newStatus} this request.`
-          );
-
-        }
-
-      });
-  }
 }

@@ -5,7 +5,8 @@ import com.scb.tripsystem.service.AllocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.scb.tripsystem.entity.Employee;
+import com.scb.tripsystem.service.CurrentUserService;
 import java.util.Map;
 
 @RestController
@@ -14,6 +15,7 @@ import java.util.Map;
 public class HrTripController {
 
     private final AllocationService allocationService;
+    private final CurrentUserService currentUserService;
 
     /**
      * Used by Selection Approval page AND Announcement page
@@ -33,12 +35,30 @@ public class HrTripController {
             @PathVariable Long tripId,
             @RequestBody(required = false) Map<String, String> body) {
 
-        String message = body != null ? body.get("message") : null;
-        allocationService.publishAnnouncement(tripId, message);
+        Employee manager =
+                currentUserService.getCurrentEmployee();
 
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "Announcement published successfully"
-        ));
+        currentUserService.requireRole(
+                manager,
+                "HR_MANAGER"
+        );
+
+        String message =
+                body != null
+                        ? body.get("message")
+                        : null;
+
+        allocationService.publishAnnouncement(
+                tripId,
+                message
+        );
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "message",
+                        "Announcement published successfully"
+                )
+        );
     }
 }

@@ -28,7 +28,7 @@ public class ApplicationController {
 
 
     // =========================================================
-    // EMPLOYEE - APPLY FOR TRIP
+    // EMPLOYEE / ALL EMPLOYEES - APPLY FOR TRIP
     // =========================================================
 
     @PostMapping
@@ -40,7 +40,9 @@ public class ApplicationController {
 
             @RequestBody ApplicationCreateRequest request) {
 
-        // Get employee from JWT
+        // Always get the employee from the authenticated JWT.
+        // Never trust an employee ID coming from the frontend.
+
         Employee employee =
                 currentUserService.getCurrentEmployee();
 
@@ -100,7 +102,7 @@ public class ApplicationController {
 
 
     // =========================================================
-    // EMPLOYEE - MY APPLICATIONS
+    // ALL EMPLOYEES - MY REQUESTS
     // =========================================================
 
     @GetMapping("/my")
@@ -122,6 +124,28 @@ public class ApplicationController {
 
 
     // =========================================================
+    // ALL EMPLOYEES - MY HISTORY
+    // =========================================================
+
+    @GetMapping("/my/history")
+    public ResponseEntity<List<ApplicationResponse>>
+    getMyHistory() {
+
+        Employee employee =
+                currentUserService.getCurrentEmployee();
+
+        List<ApplicationResponse> list =
+                applicationService
+                        .getMyHistory(employee)
+                        .stream()
+                        .map(this::toApplicationResponse)
+                        .collect(Collectors.toList());
+
+        return ResponseEntity.ok(list);
+    }
+
+
+    // =========================================================
     // APPLICATION HISTORY
     // =========================================================
 
@@ -130,9 +154,23 @@ public class ApplicationController {
     getHistory(
             @PathVariable Long applicationId) {
 
+        Employee employee =
+                currentUserService.getCurrentEmployee();
+
+        // The service must verify ownership / manager access
+        // before exposing the application's approval history.
+
+        Application application =
+                applicationService.getApplicationById(
+                        applicationId,
+                        employee
+                );
+
         List<ApprovalHistoryResponse> list =
                 applicationService
-                        .getApplicationHistory(applicationId)
+                        .getApplicationHistory(
+                                application.getApplicationId()
+                        )
                         .stream()
                         .map(this::toHistoryResponse)
                         .collect(Collectors.toList());
@@ -142,7 +180,7 @@ public class ApplicationController {
 
 
     // =========================================================
-    // LINE MANAGER
+    // LINE MANAGER - ALL APPLICATIONS OF DIRECT REPORTS
     // =========================================================
 
     @GetMapping("/manager")
@@ -171,7 +209,7 @@ public class ApplicationController {
 
 
     // =========================================================
-    // LINE MANAGER - PENDING
+    // LINE MANAGER - PENDING TASKS
     // =========================================================
 
     @GetMapping("/manager/pending")
@@ -345,6 +383,8 @@ public class ApplicationController {
 
                 tripId,
 
+
+
                 request.getMethod(),
 
                 hrAdmin
@@ -366,10 +406,14 @@ public class ApplicationController {
     getApplication(
             @PathVariable Long applicationId) {
 
+        Employee employee =
+                currentUserService.getCurrentEmployee();
+
         Application app =
                 applicationService
                         .getApplicationById(
-                                applicationId
+                                applicationId,
+                                employee
                         );
 
         return ResponseEntity.ok(
@@ -416,6 +460,9 @@ public class ApplicationController {
                 app.getSelectedAt()
         );
 
+        dto.setSubmittedAt(
+                app.getCreatedAt()
+        );
 
         if (app.getStatus() != null) {
 
@@ -423,7 +470,6 @@ public class ApplicationController {
                     app.getStatus().getStatusName()
             );
         }
-
 
         if (app.getEmployee() != null) {
 
@@ -440,7 +486,6 @@ public class ApplicationController {
             );
         }
 
-
         if (app.getTrip() != null) {
 
             dto.setTripId(
@@ -456,14 +501,12 @@ public class ApplicationController {
             );
         }
 
-
         if (app.getBatch() != null) {
 
             dto.setBatchId(
                     app.getBatch().getBatchId()
             );
         }
-
 
         if (app.getParticipants() != null) {
 
@@ -480,6 +523,33 @@ public class ApplicationController {
         }
 
         return dto;
+    }
+
+
+    // =========================================================
+// LINE MANAGER - APPROVAL HISTORY
+// =========================================================
+
+    @GetMapping("/manager/approval-history")
+    public ResponseEntity<List<ApprovalHistoryResponse>>
+    getManagerApprovalHistory() {
+
+        Employee manager =
+                currentUserService.getCurrentEmployee();
+
+        currentUserService.requireRole(
+                manager,
+                "LINE_MANAGER"
+        );
+
+        List<ApprovalHistoryResponse> list =
+                applicationService
+                        .getManagerApprovalHistory(manager)
+                        .stream()
+                        .map(this::toHistoryResponse)
+                        .collect(Collectors.toList());
+
+        return ResponseEntity.ok(list);
     }
 
 

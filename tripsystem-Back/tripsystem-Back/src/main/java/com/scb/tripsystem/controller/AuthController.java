@@ -45,21 +45,46 @@ public class AuthController {
         String username = body.get("username");
         String password = body.get("password");
 
+        System.out.println("LOGIN USERNAME: " + username);
+        System.out.println("USER FOUND: " +
+                employeeRepository.findByEmployeeNumber(username).isPresent());
+
         // -------------------------
         // Authenticate username/password
         // -------------------------
 
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                password
-                        )
-                );
+        Authentication authentication;
 
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(authentication);
+        try {
+
+            authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    password
+                            )
+                    );
+
+            System.out.println("=================================");
+            System.out.println("LOGIN AUTHENTICATION SUCCESS");
+            System.out.println("USER: " + username);
+            System.out.println("=================================");
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(authentication);
+
+        } catch (Exception e) {
+
+            System.out.println("=================================");
+            System.out.println("LOGIN AUTHENTICATION FAILED");
+            System.out.println("USER: " + username);
+            System.out.println("ERROR TYPE: " + e.getClass().getName());
+            System.out.println("ERROR MESSAGE: " + e.getMessage());
+            System.out.println("=================================");
+
+            throw e;
+        }
 
         // -------------------------
         // Get employee from database

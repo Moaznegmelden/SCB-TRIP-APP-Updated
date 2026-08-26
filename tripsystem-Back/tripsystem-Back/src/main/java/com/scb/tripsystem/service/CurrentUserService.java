@@ -36,13 +36,34 @@ public class CurrentUserService {
         String employeeNumber =
                 authentication.getName();
 
-        return employeeRepository
-                .findByEmployeeNumber(employeeNumber)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Current employee not found"
-                        )
-                );
+        Employee employee =
+                employeeRepository
+                        .findByEmployeeNumber(employeeNumber)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Current employee not found"
+                                )
+                        );
+
+        System.out.println("=================================");
+        System.out.println("CURRENT USER NUMBER: " + employee.getEmployeeNumber());
+        System.out.println("CURRENT USER NAME: " + employee.getFullName());
+
+        if (employee.getRole() != null) {
+            System.out.println(
+                    "CURRENT USER ROLE: " +
+                            employee.getRole().getRoleName()
+            );
+        }
+
+        System.out.println(
+                "CURRENT USER ID: " +
+                        employee.getEmployeeId()
+        );
+
+        System.out.println("=================================");
+
+        return employee;
     }
 
 

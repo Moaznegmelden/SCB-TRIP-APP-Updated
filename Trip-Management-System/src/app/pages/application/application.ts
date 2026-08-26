@@ -233,7 +233,7 @@ formatDate(date: string): string {
     return;
   }
 
-  const employeeId = 1015;
+  
 
   const payload = {
 
@@ -268,17 +268,16 @@ formatDate(date: string): string {
   console.log('🔥 APPLICATION REQUEST:', {
     tripId: this.trip.tripId,
     batchId: this.selectedBatchId,
-    employeeId,
     payload
   });
 
   this.submitting = true;
 
   this.http
-    .post(
-      `/api/applications?tripId=${this.trip.tripId}&batchId=${this.selectedBatchId}&employeeId=${employeeId}`,
-      payload
-    )
+  .post(
+    `/api/applications?tripId=${this.trip.tripId}&batchId=${this.selectedBatchId}`,
+    payload
+  )
     .subscribe({
 
       next: (response) => {

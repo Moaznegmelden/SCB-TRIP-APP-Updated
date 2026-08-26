@@ -73,15 +73,15 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // -------------------------
-                        // PUBLIC
-                        // -------------------------
+                                // -------------------------
+                                // PUBLIC
+                                // -------------------------
 
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
+                                .requestMatchers(
+                                        "/api/auth/**",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**"
+                                ).permitAll()
 
 
 
@@ -102,95 +102,95 @@ public class SecurityConfig {
 
 
 
-                        // =========================
-                        // ACTIVE TRIPS
-                        // =========================
+                                // =========================
+                                // ACTIVE TRIPS
+                                // =========================
 
-                        .requestMatchers(
-                                "/api/trips/active"
-                        ).hasAnyRole(
-                                "EMPLOYEE",
-                                "LINE_MANAGER",
-                                "HR_ADMIN",
-                                "HR_MANAGER"
-                        )
-
-
-                        // =========================
-                        // HR ADMIN
-                        // =========================
-
-                        .requestMatchers(
-                                "/api/trips"
-                        ).hasRole("HR_ADMIN")
-
-                        .requestMatchers(
-                                "/api/trips/*/batches"
-                        ).hasRole("HR_ADMIN")
-
-                        .requestMatchers(
-                                "/api/trips/*/submit"
-                        ).hasRole("HR_ADMIN")
-
-
-                        // HR ADMIN APPLICATION TASKS
-                        // Selection / processing
-                        .requestMatchers(
-                                "/api/applications/trip/*/ready-for-selection"
-                        ).hasRole("HR_ADMIN")
-
-                        .requestMatchers(
-                                "/api/applications/trip/*/select"
-                        ).hasRole("HR_ADMIN")
-
-
-                        // =========================
-                        // HR MANAGER
-                        // =========================
-
-                        // HR Manager approves trips
-                        // created/submitted by HR Admin
-
-                        .requestMatchers(
-                                "/api/trips/pending"
-                        ).hasRole("HR_MANAGER")
-
-                        .requestMatchers(
-                                "/api/trips/*/approve"
-                        ).hasRole("HR_MANAGER")
-
-                        .requestMatchers(
-                                "/api/trips/*/reject"
-                        ).hasRole("HR_MANAGER")
-
-                        .requestMatchers(
-                                "/api/trips/*/return"
-                        ).hasRole("HR_MANAGER")
-
-
-                        // =========================
-                        // LINE MANAGER
-                        // =========================
-
-                        // Applications of
-                        // employees under this manager
-
-                        .requestMatchers(
-                                "/api/applications/manager/**"
-                        ).hasRole("LINE_MANAGER")
-
-                        .requestMatchers(
-                                "/api/applications/*/approve"
-                        ).hasRole("LINE_MANAGER")
-
-                        .requestMatchers(
-                                "/api/applications/*/reject"
-                        ).hasRole("LINE_MANAGER")
+                                .requestMatchers(
+                                        "/api/trips/active"
+                                ).hasAnyRole(
+                                        "EMPLOYEE",
+                                        "LINE_MANAGER",
+                                        "HR_ADMIN",
+                                        "HR_MANAGER"
+                                )
 
 
                                 // =========================
-                               // EMPLOYEE / PERSONAL REQUESTS
-                              // =========================
+                                // HR ADMIN
+                                // =========================
+
+                                .requestMatchers(
+                                        "/api/trips"
+                                ).hasRole("HR_ADMIN")
+
+                                .requestMatchers(
+                                        "/api/trips/*/batches"
+                                ).hasRole("HR_ADMIN")
+
+                                .requestMatchers(
+                                        "/api/trips/*/submit"
+                                ).hasRole("HR_ADMIN")
+
+
+                                // HR ADMIN APPLICATION TASKS
+                                // Selection / processing
+                                .requestMatchers(
+                                        "/api/applications/trip/*/ready-for-selection"
+                                ).hasRole("HR_ADMIN")
+
+                                .requestMatchers(
+                                        "/api/applications/trip/*/select"
+                                ).hasRole("HR_ADMIN")
+
+
+                                // =========================
+                                // HR MANAGER
+                                // =========================
+
+                                // HR Manager approves trips
+                                // created/submitted by HR Admin
+
+                                .requestMatchers(
+                                        "/api/trips/pending"
+                                ).hasRole("HR_MANAGER")
+
+                                .requestMatchers(
+                                        "/api/trips/*/approve"
+                                ).hasRole("HR_MANAGER")
+
+                                .requestMatchers(
+                                        "/api/trips/*/reject"
+                                ).hasRole("HR_MANAGER")
+
+                                .requestMatchers(
+                                        "/api/trips/*/return"
+                                ).hasRole("HR_MANAGER")
+
+
+                                // =========================
+                                // LINE MANAGER
+                                // =========================
+
+                                // Applications of
+                                // employees under this manager
+
+                                .requestMatchers(
+                                        "/api/applications/manager/**"
+                                ).hasRole("LINE_MANAGER")
+
+                                .requestMatchers(
+                                        "/api/applications/*/approve"
+                                ).hasRole("LINE_MANAGER")
+
+                                .requestMatchers(
+                                        "/api/applications/*/reject"
+                                ).hasRole("LINE_MANAGER")
+
+
+                                // =========================
+// EMPLOYEE / PERSONAL REQUESTS
+// =========================
 
                                 .requestMatchers(
                                         "/api/applications"
@@ -210,25 +210,69 @@ public class SecurityConfig {
                                         "HR_MANAGER"
                                 )
 
+                                .requestMatchers(
+                                        "/api/applications/my/history"
+                                ).hasAnyRole(
+                                        "EMPLOYEE",
+                                        "LINE_MANAGER",
+                                        "HR_ADMIN",
+                                        "HR_MANAGER"
+                                )
 
-                        // =========================
-                        // AUTHENTICATED USERS
-                        // =========================
+// =========================
+// SELECTION
+// =========================
 
-                        .requestMatchers(
-                                "/api/trips/*"
-                        ).authenticated()
+// HR ADMIN - view applicants
+                                .requestMatchers(
+                                        "/api/selections/applicants",
+                                        "/api/selections/trip/*/applicants",
+                                        "/api/selections/trip/*/batch/*/applicants"
+                                ).hasRole("HR_ADMIN")
 
-                        .requestMatchers(
-                                "/api/applications/*"
-                        ).authenticated()
+// HR ADMIN - submit selection request
+                                .requestMatchers(
+                                        "/api/selections/trip/*/batch/*/requests"
+                                ).hasRole("HR_ADMIN")
+
+// HR ADMIN - get latest request
+                                .requestMatchers(
+                                        "/api/selections/trip/*/batch/*/latest"
+                                ).hasRole("HR_ADMIN")
+
+// HR MANAGER - pending requests
+                                .requestMatchers(
+                                        "/api/selections/pending"
+                                ).hasRole("HR_MANAGER")
+
+// HR MANAGER - approve / reject
+                                .requestMatchers(
+                                        "/api/selections/requests/*/approve",
+                                        "/api/selections/requests/*/reject"
+                                ).hasRole("HR_MANAGER")
 
 
-                        // =========================
-                        // EVERYTHING ELSE
-                        // =========================
 
-                        .anyRequest().authenticated()
+
+
+                                // =========================
+                                // AUTHENTICATED USERS
+                                // =========================
+
+                                .requestMatchers(
+                                        "/api/trips/*"
+                                ).authenticated()
+
+                                .requestMatchers(
+                                        "/api/applications/*"
+                                ).authenticated()
+
+
+                                // =========================
+                                // EVERYTHING ELSE
+                                // =========================
+
+                                .anyRequest().authenticated()
                 )
 
 

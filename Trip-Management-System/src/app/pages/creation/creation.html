@@ -32,7 +32,7 @@
         <p class="text-muted small mb-0">Configure the trip, departures, eligibility, capacity and approval rules before publication.</p>
       </div>
       <div>
-        <button type="submit" name="action" value="submit" class="btn btn-scb-primary" [disabled]="submitting">Submit for approval</button>
+        <button type="submit" class="btn btn-scb-primary" [disabled]="submitting">Submit for approval</button>
       </div>
     </div>
 
@@ -52,8 +52,8 @@
               <input type="text" id="destination" name="destination" class="form-control" [(ngModel)]="destination" placeholder="e.g. El Gouna" required>
             </div>
             <div class="col-md-4">
-              <label for="duration" class="form-label">Duration *</label>
-              <input type="text" id="duration" name="duration" class="form-control" [(ngModel)]="duration" placeholder="e.g. 5 days / 4 nights" required>
+              <label for="duration" class="form-label">Duration (days) *</label>
+              <input type="number" id="duration" name="duration" class="form-control" [(ngModel)]="duration" placeholder="e.g. 5" required>
             </div>
           </div>
 
@@ -66,8 +66,7 @@
               <label for="registrationCloses" class="form-label">Registration closes *</label>
               <input type="datetime-local" id="registrationCloses" name="registrationCloses" class="form-control" [(ngModel)]="registrationCloses" required>
             </div>
-
-
+          </div>
 
           <div class="departures-box">
             <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
@@ -83,6 +82,10 @@
                 <label [for]="'endDate-' + i" class="form-label">End date ({{ i + 1 }}) *</label>
                 <input type="date" [id]="'endDate-' + i" [name]="'endDate-' + i" class="form-control form-control-lg fs-6" [(ngModel)]="dep.endDate" required>
               </div>
+              <div class="col-md-2">
+                <label [for]="'rooms-' + i" class="form-label">Rooms ({{ i + 1 }}) *</label>
+                <input type="number" [id]="'rooms-' + i" [name]="'rooms-' + i" class="form-control" [(ngModel)]="dep.numberOfRooms" required>
+              </div>
 
               <div class="col-md-2 text-end">
                 <button type="button" class="btn btn-link text-danger text-decoration-none fw-bold p-0 pb-2" (click)="removeDeparture(i)">Remove</button>
@@ -95,5 +98,5 @@
       </div>
 
     </div>
-
+  </form>
 </div>

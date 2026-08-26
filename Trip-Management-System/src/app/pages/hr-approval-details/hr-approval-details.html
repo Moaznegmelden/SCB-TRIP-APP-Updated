@@ -19,178 +19,95 @@
 </div>
 </header>
 
-<div class="approval-page" *ngIf="trip">
+<div class="container-fluid px-4" *ngIf="trip">
 
   <div class="top-bar d-flex justify-content-between align-items-center pb-2 mb-3">
-    <div class="fw-bold text-scb text-uppercase small">
-      <a routerLink="/admin/trips/approvals" class="text-decoration-none text-scb">Administration / Trip Approvals</a>
-      / Review
-    </div>
+    <div class="fw-bold text-scb text-uppercase small">Administration / Trip Approvals / Review</div>
   </div>
 
-  <div class="d-flex justify-content-between align-items-start mb-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
-      <h3 class="fw-bold text-scb mb-1">{{ trip.title }}</h3>
+      <h3 class="fw-bold text-scb mb-1">{{ trip?.title }}</h3>
       <p class="text-muted small mb-0">
-        Submitted by <strong>{{ trip.createdBy }}</strong>
-        on <span>{{ trip.submittedAt | date:'dd MMM yyyy HH:mm' }}</span>
+        Submitted by <strong>{{ trip?.createdBy }}</strong> on {{ trip?.submittedAt | date:'dd MMM yyyy HH:mm' }}
       </p>
     </div>
-      <div class="d-flex gap-2">
-
-  <button
-  type="button"
-  class="btn btn-outline-secondary"
-  (click)="toggleReturnReason(true)">
-  Return
-</button>
-
-  <button
-    type="button"
-    class="btn btn-outline-danger"
-    (click)="toggleReason(true)">
-    Reject
-  </button>
-
-  <button
-    type="button"
-    class="btn btn-scb-primary"
-    (click)="approve()">
-    Approve &amp; Publish
-  </button>
-
-</div>
-
-</div>
-
-<div class="return-panel" [class.show]="showReturnReason">
-
-  <label>
-    Reason for return <span class="req">*</span>
-  </label>
-
-  <textarea
-    class="form-control"
-    rows="3"
-    [(ngModel)]="returnReasonInput"
-    name="returnReasonInput"
-    placeholder="Please enter the reason for returning this trip...">
-  </textarea>
-
-  <div class="reason-actions">
-
-    <button
-      type="button"
-      class="btn btn-ghost btn-sm"
-      (click)="toggleReturnReason(false)">
-      Cancel
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-warning btn-sm"
-      (click)="returnTrip()">
-      Confirm return
-    </button>
-
-  </div>
-
-</div>
-
-<div
-  class="reason-panel"
-  [class.show]="showReturnReason">
-
-  <label>
-    Reason for return <span class="req">*</span>
-  </label>
-
-  <textarea
-    class="form-control"
-    rows="3"
-    [(ngModel)]="returnReasonInput"
-    name="returnReasonInput"
-    placeholder="Please enter the reason for returning this trip...">
-  </textarea>
-
-  <div class="reason-actions">
-
-    <button
-      type="button"
-      class="btn btn-ghost btn-sm"
-      (click)="toggleReturnReason(false)">
-      Cancel
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-warning btn-sm"
-      (click)="returnTrip()">
-      Confirm return
-    </button>
-
-  </div>
-
-</div>
-
-  <div class="reason-panel" [class.show]="showRejectReason">
-    <label>Reason for rejection <span class="req">*</span></label>
-    <textarea class="form-control" rows="3" [(ngModel)]="rejectionReasonInput" name="rejectionReasonInput"
-              placeholder="Please enter the reason for rejecting this trip…"></textarea>
-    <div class="reason-actions">
-      <button class="btn btn-ghost btn-sm" (click)="toggleReason(false)">Cancel</button>
-      <button class="btn btn-danger btn-sm" (click)="reject()">Confirm rejection</button>
+    <div class="d-flex align-items-center gap-3">
+      <button type="button" class="btn btn-link text-secondary text-decoration-none fw-bold" (click)="toggleReturnReason(true)">Return to HR</button>
+      <button type="button" class="btn btn-link text-danger text-decoration-none fw-bold" (click)="toggleReason(true)">Reject</button>
+      <button type="button" class="btn btn-scb-primary" (click)="approve()">Approve &amp; Publish</button>
     </div>
   </div>
 
-  <!-- Trip Information Card -->
+  <!-- Rejection panel -->
+  <div *ngIf="showRejectReason" class="mb-4">
+    <label class="form-label">Reason for rejection <span class="text-danger">*</span></label>
+    <textarea class="form-control" rows="4" [(ngModel)]="rejectionReasonInput" placeholder="Please enter the reason for rejecting this trip..."></textarea>
+    <div class="mt-2">
+      <button type="button" class="btn btn-light" (click)="toggleReason(false)">Cancel</button>
+      <button type="button" class="btn btn-danger" (click)="reject()">Confirm rejection</button>
+    </div>
+  </div>
+
+  <!-- Return to HR panel -->
+  <div *ngIf="showReturnReason" class="mb-4">
+    <label class="form-label">Reason for returning to HR <span class="text-danger">*</span></label>
+    <textarea class="form-control" rows="4" [(ngModel)]="returnReasonInput" placeholder="Please enter the reason for returning this trip to HR..."></textarea>
+    <div class="mt-2">
+      <button type="button" class="btn btn-light" (click)="toggleReturnReason(false)">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="returnToHr()">Confirm return</button>
+    </div>
+  </div>
+
+  <!-- Trip Information -->
   <div class="card border-light-subtle shadow-sm p-4 mb-4">
     <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Trip Information</h5>
 
-    <div class="row g-3 mb-3">
+    <div class="row g-4 mb-3">
       <div class="col-md-4">
-        <label class="form-label">Trip title</label>
-        <div class="fw-semibold">{{ trip.title }}</div>
+        <div class="text-muted small text-uppercase">Trip Title</div>
+        <div>{{ trip?.title }}</div>
       </div>
       <div class="col-md-4">
-        <label class="form-label">Destination</label>
-        <div class="fw-semibold">{{ trip.destination }}</div>
+        <div class="text-muted small text-uppercase">Destination</div>
+        <div>{{ trip?.destination }}</div>
       </div>
       <div class="col-md-4">
-        <label class="form-label">Duration</label>
-        <div class="fw-semibold">{{ trip.duration }}</div>
+        <div class="text-muted small text-uppercase">Duration</div>
+        <div>{{ trip?.duration }}</div>
       </div>
     </div>
 
-    <div class="row g-3 mb-3">
+    <div class="row g-4">
       <div class="col-md-3">
-        <label class="form-label">Registration opens</label>
-        <div class="fw-semibold">{{ trip.registrationOpens | date:'dd MMM yyyy HH:mm' }}</div>
+        <div class="text-muted small text-uppercase">Registration Opens</div>
+        <div>{{ trip?.registrationOpens | date:'dd MMM yyyy HH:mm' }}</div>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Registration closes</label>
-        <div class="fw-semibold">{{ trip.registrationCloses | date:'dd MMM yyyy HH:mm' }}</div>
+        <div class="text-muted small text-uppercase">Registration Closes</div>
+        <div>{{ trip?.registrationCloses | date:'dd MMM yyyy HH:mm' }}</div>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Family Degree</label>
-        <div class="fw-semibold">{{ trip.familyDegree }}</div>
+        <div class="text-muted small text-uppercase">Family Degree</div>
+        <div>{{ trip?.familyDegree }}</div>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Companions Limit</label>
-        <div class="fw-semibold">{{ trip.numberOfCompanions }}</div>
+        <div class="text-muted small text-uppercase">Companions Limit</div>
+        <div>{{ trip?.numberOfCompanions }}</div>
       </div>
     </div>
   </div>
 
-  <!-- Departures Card -->
-  <div class="card border-light-subtle shadow-sm p-4">
-    <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Departures Configuration</h5>
-
+  <!-- Departures Configuration -->
+  <div class="card border-light-subtle shadow-sm">
+    <div class="card-body p-4 pb-0">
+      <h5 class="fw-bold text-scb border-bottom pb-2 mb-4">Departures Configuration</h5>
+    </div>
     <div class="table-responsive">
-      <table class="table table-sm align-middle">
+      <table class="table align-middle mb-0">
         <thead class="table-light">
           <tr>
-            <th>#</th>
+            <th class="ps-4">#</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Capacity</th>
@@ -198,8 +115,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let dep of trip.departures; let i = index">
-            <td>{{ i + 1 }}</td>
+          <tr *ngFor="let dep of trip?.departures; let i = index">
+            <td class="ps-4">{{ i + 1 }}</td>
             <td>{{ dep.startDate | date:'dd MMM yyyy' }}</td>
             <td>{{ dep.endDate | date:'dd MMM yyyy' }}</td>
             <td>{{ dep.capacity }}</td>
@@ -207,13 +124,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <div class="mt-4" *ngIf="trip.status === 'REJECTED'">
-    <div class="alert alert-danger">
-      <strong>Rejection reason:</strong>
-      <span>{{ trip.rejectionReason }}</span>
     </div>
   </div>
 
