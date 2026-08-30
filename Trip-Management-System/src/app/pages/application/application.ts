@@ -177,7 +177,7 @@ private loadTrip(tripId: number): void {
   this.loadError = false;
 
   this.http
-    .get<TripDetails>(`/api/trips/${tripId}`)
+    .get<TripDetails>(`http://localhost:8081/api/trips/${tripId}`)
     .subscribe({
 
       next: (trip) => {
@@ -275,7 +275,7 @@ formatDate(date: string): string {
 
   this.http
   .post(
-    `/api/applications?tripId=${this.trip.tripId}&batchId=${this.selectedBatchId}`,
+    `http://localhost:8081/api/applications?tripId=${this.trip.tripId}&batchId=${this.selectedBatchId}`,
     payload
   )
     .subscribe({

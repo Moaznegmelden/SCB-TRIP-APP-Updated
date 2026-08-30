@@ -12,7 +12,7 @@ export interface StatusApi {
 })
 export class StatusService {
 
-  private readonly API_URL = '/api/statuses';
+  private readonly API_URL = 'http://localhost:8081/api/statuses';
 
   constructor(private http: HttpClient) {}
 

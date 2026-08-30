@@ -78,7 +78,7 @@ export class FollowUp implements OnInit {
   // API
   // =========================
 
- private readonly API_URL = '/api/applications/my';
+ private readonly API_URL = 'http://localhost:8081/api/applications/my';
 
 
   // =========================

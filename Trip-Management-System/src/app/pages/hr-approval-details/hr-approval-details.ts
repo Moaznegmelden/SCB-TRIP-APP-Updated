@@ -66,7 +66,7 @@ export class HrApprovalDetails implements OnInit {
     console.log('🔥 LOAD TRIP DETAILS:', id);
 
     this.http
-      .get<any>(`http://localhost:8080/api/trips/${id}`)
+      .get<any>(`http://localhost:8081/api/trips/${id}`)
       .subscribe({
 
         next: (trip) => {
@@ -142,7 +142,7 @@ export class HrApprovalDetails implements OnInit {
 
     this.http
       .post(
-        `http://localhost:8080/api/trips/${this.trip.id}/approve?managerId=${managerId}`,
+        `http://localhost:8081/api/trips/${this.trip.id}/approve?managerId=${managerId}`,
         {}
       )
       .subscribe({
@@ -181,7 +181,7 @@ export class HrApprovalDetails implements OnInit {
 
     this.http
       .post(
-        `http://localhost:8080/api/trips/${this.trip.id}/reject?managerId=${managerId}`,
+        `http://localhost:8081/api/trips/${this.trip.id}/reject?managerId=${managerId}`,
         body
       )
       .subscribe({
@@ -227,7 +227,7 @@ export class HrApprovalDetails implements OnInit {
 
     this.http
       .post(
-        `http://localhost:8080/api/trips/${this.trip.id}/return?managerId=${managerId}`,
+        `http://localhost:8081/api/trips/${this.trip.id}/return?managerId=${managerId}`,
         body
       )
       .subscribe({
@@ -279,7 +279,7 @@ export class HrApprovalDetails implements OnInit {
 
   this.http
     .post(
-      `/api/trips/${this.trip.id}/return?managerId=${managerId}`,
+      `http://localhost:8081/api/trips/${this.trip.id}/return?managerId=${managerId}`,
       {
         comments: reason
       }

@@ -93,7 +93,7 @@ export class HrApproval implements OnInit {
     this.pendingTrips = null;
 
     this.http
-      .get<BackendPendingTrip[]>('http://localhost:8080/api/trips/pending')
+      .get<BackendPendingTrip[]>('http://localhost:8081/api/trips/pending')
       .subscribe({
 
         next: (trips) => {
@@ -131,7 +131,7 @@ loadPendingSelections(): void {
 
   this.http
     .get<BackendSelectionRequest[]>(
-      `http://localhost:8080/api/selections/pending?managerId=${this.managerId}`
+      `http://localhost:8081/api/selections/pending?managerId=${this.managerId}`
     )
     .subscribe({
 
@@ -185,7 +185,7 @@ loadPendingSelections(): void {
 
   this.http
     .post(
-      `http://localhost:8080/api/selections/requests/${requestId}/approve?managerId=${this.managerId}`,
+      `http://localhost:8081/api/selections/requests/${requestId}/approve?managerId=${this.managerId}`,
       {}
     )
     .subscribe({
@@ -216,7 +216,7 @@ loadPendingSelections(): void {
 
   this.http
     .post(
-      `http://localhost:8080/api/selections/requests/${requestId}/reject?managerId=${this.managerId}`,
+      `http://localhost:8081/api/selections/requests/${requestId}/reject?managerId=${this.managerId}`,
       { comments: reason.trim() }
     )
     .subscribe({

@@ -23,7 +23,7 @@ export interface AllocationResult {
 })
 export class HrTripService {
 
-  private baseUrl = 'http://localhost:8080/api/hr/trips';
+  private baseUrl = 'http://localhost:8081/api/hr/trips';
 
   constructor(
     private http: HttpClient
