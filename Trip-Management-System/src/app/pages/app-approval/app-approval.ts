@@ -404,7 +404,7 @@ export class AppApproval implements OnInit {
 
 
     const apiUrl =
-      '/api/applications/manager/pending';
+      'http://localhost:8081/api/applications/manager/pending';
 
 
     console.log(
@@ -720,7 +720,7 @@ export class AppApproval implements OnInit {
 
 
     const url =
-      `/api/applications/` +
+      `http://localhost:8081/api/applications/` +
       `${req.applicationId}/` +
       `${endpoint}` +
       `?managerId=${this.managerId}`;

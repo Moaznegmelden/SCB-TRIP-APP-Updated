@@ -95,7 +95,7 @@ export class EmployeeDashboard implements OnInit {
     this.trips = null;
 
     this.http
-      .get<any[]>('/api/trips/active')
+      .get<any[]>('http://localhost:8081/api/trips/active')
       .subscribe({
 
         next: (backendTrips) => {

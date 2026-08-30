@@ -29,7 +29,7 @@ interface Trip {
 })
 export class TripDetails implements OnInit {
 
-  private readonly apiBase = 'http://localhost:8080/api';
+  private readonly apiBase = 'http://localhost:8081/api';
 
   tripName = 'Loading...';
   tripLocationDuration = '';

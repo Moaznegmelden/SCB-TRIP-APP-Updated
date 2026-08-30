@@ -89,7 +89,7 @@ type AllocationMethod =
 })
 export class Selection implements OnInit {
 
-  readonly apiUrl = 'http://localhost:8080/api';
+  readonly apiUrl = 'http://localhost:8081/api';
 
   activeTrips: ActiveTrip[] = [];
 

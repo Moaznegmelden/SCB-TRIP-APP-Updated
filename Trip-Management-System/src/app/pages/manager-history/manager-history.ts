@@ -271,7 +271,7 @@ export class ManagerHistory implements OnInit {
 
 
     const apiUrl =
-      `/api/applications/manager/approval-history`;
+      `http://localhost:8081/api/applications/manager/approval-history`;
 
 
     console.log(

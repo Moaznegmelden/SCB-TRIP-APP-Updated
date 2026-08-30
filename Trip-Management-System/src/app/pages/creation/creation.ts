@@ -57,7 +57,7 @@ export class Creation {
     this.submitting = true;
 
     this.http.post<any>(
-      `http://localhost:8080/api/trips?createdById=${createdById}`,
+      `http://localhost:8081/api/trips?createdById=${createdById}`,
       tripPayload
     ).subscribe({
       next: (trip) => {
@@ -65,7 +65,7 @@ export class Creation {
 
         const batchRequests = this.departures.map(dep =>
           this.http.post(
-            `http://localhost:8080/api/trips/${tripId}/batches?createdById=${createdById}`,
+            `http://localhost:8081/api/trips/${tripId}/batches?createdById=${createdById}`,
             {
               startDate: dep.startDate,
               endDate: dep.endDate,
@@ -75,7 +75,7 @@ export class Creation {
         );
 
         Promise.all(batchRequests)
-          .then(() => this.http.post(`http://localhost:8080/api/trips/${tripId}/submit`, {}).toPromise())
+          .then(() => this.http.post(`http://localhost:8081/api/trips/${tripId}/submit`, {}).toPromise())
           .then(() => {
             this.submitting = false;
             alert('Trip created and submitted for approval!');

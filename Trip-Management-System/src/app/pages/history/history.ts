@@ -58,7 +58,7 @@ export class History implements OnInit {
   // =========================================================
 
   private readonly API_URL =
-    '/api/applications/my/history';
+    'http://localhost:8081/api/applications/my/history';
 
 
   // =========================================================
